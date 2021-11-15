@@ -1,0 +1,95 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.asciidoctor.convert' version '1.5.8'
+	id "org.flywaydb.flyway" version "7.0.3"
+	id 'java'
+}
+
+group = 'com.rubminds'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	
+	/**
+	 * Lombok
+	 */
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	/**
+	 * Security
+	 */
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	/**
+	 * JWT Dependencies
+	 */
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.1'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1', 'io.jsonwebtoken:jjwt-jackson:0.11.1'
+
+	/**
+	 * Database
+	 */
+	runtimeOnly 'mysql:mysql-connector-java'
+	implementation "org.flywaydb:flyway-core"
+	runtimeOnly 'com.h2database:h2'
+
+	/**
+	 * Test Dependencies
+	 */
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	testImplementation('org.mockito:mockito-inline:3.4.0')
+	testImplementation('org.mockito:mockito-core:3.4.0')
+	testImplementation('org.mockito:mockito-junit-jupiter:3.4.0')
+}
+
+jar {
+	enabled = false
+}
+
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+/*************************
+ * Flyway
+ *************************/
+flyway {
+	baselineVersion = 0
+	encoding = 'UTF-8'
+	validateOnMigrate = true
+	baselineOnMigrate = true
+	locations = ["filesystem:${file('src/main/resources/db/migration').absolutePath}"]
+}

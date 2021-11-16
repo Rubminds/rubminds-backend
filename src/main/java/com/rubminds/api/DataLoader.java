@@ -1,5 +1,7 @@
 package com.rubminds.api;
 
+import com.rubminds.api.post.domain.Skill;
+import com.rubminds.api.post.domain.repository.SkiilRepository;
 import com.rubminds.api.user.domain.Role;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
@@ -17,6 +19,7 @@ import java.util.List;
 @Profile("local")
 public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
+    private final SkiilRepository skiilRepository;
 
     @Override
     public void run(String... args) {
@@ -25,8 +28,24 @@ public class DataLoader implements CommandLineRunner {
             for (int i = 1; i < 10; i++) {
                 User user = User.builder().oauthId(String.valueOf(i)).nickname("테스터" + i).job("학생").provider(SignupProvider.RUBMINDS).role(Role.USER).signupCheck(true).build();
                 users.add(user);
+
             }
             userRepository.saveAll(users);
+        }
+        if (skiilRepository.findAll().isEmpty()){
+            List<Skill> skills = new ArrayList<>();
+            String[] skillnames = new String[] {"Spring","NodeJs","React","Python","Java"};
+
+            for(String i :skillnames){
+                Skill skill = Skill.builder().skill(i).build();
+                skills.add(skill);
+            }
+
+
+            skiilRepository.saveAll(skills);
+
+
+
         }
     }
 }

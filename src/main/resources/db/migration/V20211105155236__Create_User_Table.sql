@@ -7,7 +7,7 @@ CREATE TABLE `user`
     `job`          VARCHAR(50),
     `introduce`    VARCHAR(255),
     `provider`     VARCHAR(30) NOT NULL,
-    `signup_check` TINYINT(1)  NOT NULL,
+    `signup_check` BOOLEAN  NOT NULL,
     `role`         VARCHAR(20) NOT NULL,
     `created_at`   DATETIME    NOT NULL,
     `updated_at`   DATETIME DEFAULT NULL,

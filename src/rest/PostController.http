@@ -1,0 +1,19 @@
+POST {{apiUrl}}/post/upload
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "title" : "안녕하세요",
+  "content" : "스터디 보집합니다",
+  "headcount" : 3,
+  "kinds" : "PROJECT",
+  "meeting": "BOTH",
+  "post_status" : "GATHERING",
+  "region" : "서울"
+
+}
+
+> {%
+client.global.set("authorizationToken", "Bearer " + response.body.accessToken);
+client.log("Auth Token : " + client.global.get("authorizationToken"));
+%}

@@ -1,9 +1,12 @@
 package com.rubminds.api.user.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
+import com.rubminds.api.post.domain.Post;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -30,4 +33,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> post = new ArrayList<Post>();
 }

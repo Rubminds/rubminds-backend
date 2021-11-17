@@ -1,7 +1,7 @@
 package com.rubminds.api;
 
-import com.rubminds.api.post.domain.Skill;
-import com.rubminds.api.post.domain.repository.SkiilRepository;
+import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.domain.repository.SkiilRepository;
 import com.rubminds.api.user.domain.Role;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;

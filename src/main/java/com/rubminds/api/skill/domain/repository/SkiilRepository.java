@@ -1,7 +1,7 @@
-package com.rubminds.api.post.domain.repository;
+package com.rubminds.api.skill.domain.repository;
 
-import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.Skill;
+
+import com.rubminds.api.skill.domain.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

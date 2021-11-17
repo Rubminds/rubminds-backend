@@ -18,6 +18,7 @@ public class PostController {
     @PostMapping("/upload")
     public Long savePost(@RequestBody UploadPostRequest request, @CurrentUser CustomUserDetails customUserDetails) {
         Long postId = postService.savePost(request, customUserDetails.getUser());
+        //여기에다가 스킬 저장하는것도 추가.
         return postId;
     }
 

@@ -4,7 +4,6 @@ import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
-import com.rubminds.api.post.domain.Skill;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
@@ -19,7 +18,6 @@ public class UploadPostResponse {
     public static class Upload {
         private Long id;
         private User user;
-        private List<Skill> skill;
         private String title;
         private String content;
         private int headcount;

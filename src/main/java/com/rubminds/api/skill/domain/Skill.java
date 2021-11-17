@@ -1,11 +1,9 @@
-package com.rubminds.api.post.domain;
-import com.rubminds.api.user.domain.User;
+package com.rubminds.api.skill.domain;
+
+import com.rubminds.api.post.domain.Post;
 import lombok.*;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @Getter
@@ -18,10 +16,6 @@ public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="post_id")
-    private Post post;
 
     private String skill;
 

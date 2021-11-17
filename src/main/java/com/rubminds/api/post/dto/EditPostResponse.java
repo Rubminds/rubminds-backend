@@ -10,22 +10,23 @@ import lombok.*;
 
 import java.util.List;
 
-
 @Data
 @Getter
 @Builder
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UploadPostRequest {
-        private User user;
-        private String title;
-        private String content;
-        //private List<Skill> skill;
-        private int headcount;
-        private Kinds kinds;
-        private Meeting meeting;
-        private PostStatus postsStatus;
-        private Region region;
- }
+public class EditPostResponse {
+    private Long id;
+    private User user;
+    private List<Skill> skill;
+    private String title;
+    private String content;
+    private int headcount;
+    private Kinds kinds;
+    private Meeting meeting;
+    private PostStatus postsStatus;
+    private Region region;
 
+
+
+}

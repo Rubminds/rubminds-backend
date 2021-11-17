@@ -35,5 +35,5 @@ public class User extends BaseEntity {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Post> post = new ArrayList<Post>();
+    private List<Post> post = new ArrayList<>();
 }

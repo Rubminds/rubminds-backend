@@ -34,7 +34,8 @@ public class DataLoader implements CommandLineRunner {
         }
         if (skiilRepository.findAll().isEmpty()){
             List<Skill> skills = new ArrayList<>();
-            String[] skillnames = new String[] {"Spring","NodeJs","React","Python","Java"};
+            String[] skillnames = new String[] {"Spring","JavaScript","TypeScript","Node.js","React,js","Vue.js","Python","Python",
+                                                "Java","C","C++","C#","Django","Go","Swift","Kotlin","Angular.js","Ruby","Java","Flutter"};
 
             for(String i :skillnames){
                 Skill skill = Skill.builder().skill(i).build();

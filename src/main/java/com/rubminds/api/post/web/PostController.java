@@ -1,8 +1,6 @@
 package com.rubminds.api.post.web;//package com.rubminds.api.post.web;
 
-import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.dto.EditPostRequest;
-import com.rubminds.api.post.dto.SkillRequest;
 import com.rubminds.api.post.dto.UploadPostRequest;
 import com.rubminds.api.post.service.PostService;
 import com.rubminds.api.user.security.userdetails.CurrentUser;

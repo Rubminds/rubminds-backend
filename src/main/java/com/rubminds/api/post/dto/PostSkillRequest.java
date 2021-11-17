@@ -13,6 +13,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class SkillRequest {
+public class PostSkillRequest {
     private String skill;
 }

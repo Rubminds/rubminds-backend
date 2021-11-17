@@ -10,7 +10,7 @@ import lombok.*;
 
 import java.util.List;
 
-public class SkillResponse {
+public class PostSkillResponse {
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

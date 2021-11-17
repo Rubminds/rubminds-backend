@@ -4,14 +4,10 @@ import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
-import com.rubminds.api.post.dto.EditPostResponse;
-import com.rubminds.api.post.dto.SkillRequest;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @Getter @Setter
@@ -27,9 +23,6 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Skill> skill = new ArrayList<>() ;
 
     @Column(nullable = false)
     private String title;
@@ -62,14 +55,6 @@ public class Post {
         user.getPost();
     }
 
-//    private void addSkill(Skill skills) {
-//        skills.builder().post(this);
-//        skill.add(skills);
-//    }
-
-//    public static Post createPost(User user, String title, String content,
-//                                  int headcount, Kinds kinds, Meeting meeting, PostStatus postsStatus,
-//                                  Region region, Skill ...skill){
 
     public static Post createPost(User user, String title, String content,
                                   int headcount, Kinds kinds, Meeting meeting, PostStatus postsStatus,
@@ -87,9 +72,6 @@ public class Post {
                         .region(region)
                         .build();
 
-//        for(Skill i : skill ){
-//            post.addSkill(i);
-//        }
 
         return post;
     }

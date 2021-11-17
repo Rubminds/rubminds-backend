@@ -21,7 +21,6 @@ public class UploadPostRequest {
         private User user;
         private String title;
         private String content;
-        //private List<Skill> skill;
         private int headcount;
         private Kinds kinds;
         private Meeting meeting;

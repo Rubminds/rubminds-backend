@@ -24,8 +24,6 @@ public class PostService {
      */
     @Transactional
     public Long savePost(UploadPostRequest request, User user){
-//        Skill skill1 = new Skill();
-//        skill1 = Skill.createSkills(skillRequest.getSkill());
         Post post1 = new Post();
         post1 = Post.createPost(user, request.getTitle(), request.getContent(), request.getHeadcount(), request.getKinds(), request.getMeeting(),
                                 request.getPostsStatus(),request.getRegion());

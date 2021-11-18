@@ -23,11 +23,8 @@ public class PostController {
     }
 
     @PutMapping("/{id}/edit")
-    public Long editPost(@RequestBody EditPostRequest request, @PathVariable("id") Long id,
-                         @CurrentUser CustomUserDetails customUserDetails) {
-        Long postId = postService.EditPost(id,request, customUserDetails.getUser());
-        postService.findOne(id);
-
+    public Long editPost(@RequestBody EditPostRequest request, @PathVariable("id") Long id) {
+        Long postId = postService.EditPost(id,request);
         return postId;
     }
 

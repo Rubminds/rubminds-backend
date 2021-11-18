@@ -10,7 +10,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "title" : "안녕하세요",
+  "title" : "2요",
   "content" : "스터디 모집합니다",
   "headcount" : 3,
   "kinds" : "PROJECT",
@@ -26,7 +26,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "title" : "1234",
+  "title" : "154444",
   "content" : "수정완료",
   "headcount" : 1,
   "kinds" : "PROJECT",

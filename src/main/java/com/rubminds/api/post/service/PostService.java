@@ -37,10 +37,10 @@ public class PostService {
      *
      */
     @Transactional
-    public Long EditPost(Long id, EditPostRequest request, User user) {
+    public Long EditPost(Long id, EditPostRequest request) {
         Post findpost = new Post();
         findpost = PostRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        Post.editPost(findpost,user,request.getTitle(), request.getContent(), request.getHeadcount(), request.getKinds(), request.getMeeting(),
+        findpost.editPost(request.getTitle(), request.getContent(), request.getHeadcount(), request.getKinds(), request.getMeeting(),
                                  request.getPostsStatus(),request.getRegion());
 
         return id;

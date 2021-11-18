@@ -76,30 +76,20 @@ public class Post {
         return post;
     }
 
-    public static void editPost(Post post1,User user, String title, String content,
-                                int headcount, Kinds kinds, Meeting meeting, PostStatus postsStatus,
-                                Region region){
-        post1.setUser(user);
-        post1.setTitle(title);
-        post1.setContent(content);
-        post1.setHeadcount(headcount);
-        post1.setPostStatus(postsStatus);
-        post1.setKinds(kinds);
-        post1.setRegion(region);
-        post1.setMeeting(meeting);
+    public void editPost( String title, String content, int headcount, Kinds kinds, Meeting meeting,
+                          PostStatus postsStatus, Region region){
 
-//        post1 = Post.builder()
-//                .user(user)
-//                .title(title)
-//                .content(content)
-//                .headcount(headcount)
-//                .kinds(kinds)
-//                .meeting(meeting)
-//                .postStatus(postsStatus)
-//                .region(region)
-//                .build();
-//
-//        System.out.println(post1.title);
+        this.title = title;
+        this.content = content;
+        this.headcount = headcount;
+        this.kinds = kinds;
+        this.meeting = meeting;
+        this.postStatus = postsStatus;
+        this.headcount = headcount;
+        this.kinds = kinds;
+        this.meeting = meeting;
+        this.region = region;
+
     }
 
 }

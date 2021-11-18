@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,19 +19,19 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse.Signup> signup(@CurrentUser CustomUserDetails customUserDetails, @RequestBody AuthRequest.Signup request, HttpServletResponse response){
-        AuthResponse.Signup signupResponse = userService.signup(customUserDetails, request);
+    public ResponseEntity<AuthResponse.Signup> signup(@CurrentUser CustomUserDetails customUserDetails, @RequestBody AuthRequest.Signup request){
+        AuthResponse.Signup signupResponse = userService.signup(customUserDetails.getUser().getId(), request);
         return ResponseEntity.ok().body(signupResponse);
     }
 
     @GetMapping("/mypage")
-    public ResponseEntity<UserResponse.Info> mypage(@CurrentUser CustomUserDetails customUserDetails, HttpServletResponse response){
-        UserResponse.Info mypageResponse = userService.mypage(customUserDetails);
+    public ResponseEntity<UserResponse.Info> mypage(@CurrentUser CustomUserDetails customUserDetails){
+        UserResponse.Info mypageResponse = userService.mypage(customUserDetails.getUser().getId());
         return ResponseEntity.ok().body(mypageResponse);
     }
 
     @GetMapping("/info")
-    public ResponseEntity<UserResponse.Info> info(@RequestBody UserRequest.Info request, HttpServletResponse response){
+    public ResponseEntity<UserResponse.Info> info(@RequestBody UserRequest.Info request){
         UserResponse.Info infoResponse = userService.info(request);
         return ResponseEntity.ok().body(infoResponse);
     }

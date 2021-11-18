@@ -34,10 +34,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-    public void update(AuthRequest.Signup request){
+    public void signup(AuthRequest.Signup request){
         this.nickname = request.getNickname();
         this.job = request.getJob();
         this.introduce = request.getIntroduce();
-        this.signupCheck = true;
     }
 }

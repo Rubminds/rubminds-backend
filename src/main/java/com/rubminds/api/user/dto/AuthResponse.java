@@ -32,14 +32,12 @@ public class AuthResponse {
         private String nickname;
         private String job;
         private String introduce;
-        private boolean signupCheck;
-        public static Signup build(Long id, String nickname, String job, String introduce, boolean signupCheck) {
+        public static Signup build(Long id, String nickname, String job, String introduce) {
             return Signup.builder()
                     .id(id)
                     .nickname(nickname)
                     .job(job)
                     .introduce(introduce)
-                    .signupCheck(signupCheck)
                     .build();
         }
     }

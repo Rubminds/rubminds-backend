@@ -18,14 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
-    @Transactional
     public AuthResponse.Signup signup(@CurrentUser CustomUserDetails customUserDetails, AuthRequest.Signup request){
         User user = userRepository.findById(customUserDetails.getUser().getId()).orElseThrow(UserNotFoundException::new);
         if(userRepository.existsByNickname(request.getNickname())){
             throw new DuplicateNicknameException();
         }
-        user.update(request);
-        return AuthResponse.Signup.build(user.getId(), user.getNickname(), user.getJob(), user.getIntroduce() ,user.isSignupCheck());
+        user.signup(request);
+        return AuthResponse.Signup.build(user.getId(), user.getNickname(), user.getJob(), user.getIntroduce());
     }
 
 

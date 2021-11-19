@@ -1,0 +1,44 @@
+POST {{apiUrl}}/post/1/delete
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{}
+
+###
+POST {{apiUrl}}/post/upload
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "title" : "2요",
+  "content" : "스터디 모집합니다",
+  "headcount" : 3,
+  "kinds" : "PROJECT",
+  "meeting": "BOTH",
+  "postsStatus" : "GATHERING",
+  "region" : "서울"
+
+}
+
+###
+PUT {{apiUrl}}/post/1/edit
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "title" : "154444",
+  "content" : "수정완료",
+  "headcount" : 1,
+  "kinds" : "PROJECT",
+  "meeting": "BOTH",
+  "postsStatus" : "GATHERING",
+  "region" : "서울"
+
+}
+
+> {%
+client.global.set("authorizationToken", "Bearer " + response.body.accessToken);
+client.log("Auth Token : " + client.global.get("authorizationToken"));
+%}
+
+

@@ -3,7 +3,6 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "id": "1",
   "nickname": "테스트",
   "job": "학생",
   "introduce": "test ok"

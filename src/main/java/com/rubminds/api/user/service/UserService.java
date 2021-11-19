@@ -20,6 +20,7 @@ public class UserService {
 
     public AuthResponse.Signup signup(Long id, AuthRequest.Signup request){
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
         if(userRepository.existsByNickname(request.getNickname())){
             throw new DuplicateNicknameException();
         }
@@ -31,12 +32,10 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return UserResponse.Info.build(user.getId(), user.getNickname(), user.getJob(), user.getIntroduce());
     }
+  
     public UserResponse.Info info(UserRequest.Info request){
         User user = userRepository.findById(request.getId()).orElseThrow(UserNotFoundException::new);
         return UserResponse.Info.build(user.getId(), user.getNickname(), user.getJob(), user.getIntroduce());
     }
 
-
-
 }
-

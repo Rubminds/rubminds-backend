@@ -10,4 +10,7 @@ UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickname(String nickname);
 
     Optional<User> findByOauthId(String oauthId);
+
+    boolean existsByNickname(String nickname);
+
 }

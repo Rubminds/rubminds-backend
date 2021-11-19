@@ -7,3 +7,19 @@ Content-Type: application/json;charset=UTF-8
   "job": "학생",
   "introduce": "test ok"
 }
+
+### 마이페이지 조회
+GET {{apiUrl}}/user/mypage
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+### 회원 정보 조회
+GET {{apiUrl}}/user/info
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id": "2"
+}
+
+

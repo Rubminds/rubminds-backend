@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface SkiilRepository extends JpaRepository<Skill, Long> {
+public interface SkillRepository extends JpaRepository<Skill, Long> {
     Optional<Skill> findById(Long id);
-
-
 }

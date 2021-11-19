@@ -2,7 +2,6 @@ package com.rubminds.api.user.web;
 
 import com.rubminds.api.user.dto.AuthRequest;
 import com.rubminds.api.user.dto.AuthResponse;
-import com.rubminds.api.user.dto.UserRequest;
 import com.rubminds.api.user.dto.UserResponse;
 import com.rubminds.api.user.security.userdetails.CurrentUser;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
@@ -19,21 +18,21 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse.Signup> signup(@CurrentUser CustomUserDetails customUserDetails, @RequestBody AuthRequest.Signup request){
-        AuthResponse.Signup signupResponse = userService.signup(customUserDetails.getUser().getId(), request);
+    public ResponseEntity<AuthResponse.Signup> signup(@RequestBody AuthRequest.Signup request, @CurrentUser CustomUserDetails customUserDetails) {
+        AuthResponse.Signup response = userService.signup(request, customUserDetails.getUser());
 
-        return ResponseEntity.ok().body(signupResponse);
+        return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/mypage")
-    public ResponseEntity<UserResponse.Info> mypage(@CurrentUser CustomUserDetails customUserDetails){
-        UserResponse.Info mypageResponse = userService.mypage(customUserDetails.getUser().getId());
-        return ResponseEntity.ok().body(mypageResponse);
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse.Info> getMe(@CurrentUser CustomUserDetails customUserDetails) {
+        UserResponse.Info response = userService.getMe(customUserDetails.getUser());
+        return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<UserResponse.Info> info(@RequestBody UserRequest.Info request){
-        UserResponse.Info infoResponse = userService.info(request);
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse.Info> userInfo(@PathVariable Long userId) {
+        UserResponse.Info infoResponse = userService.getUserInfo(userId);
         return ResponseEntity.ok().body(infoResponse);
     }
 }

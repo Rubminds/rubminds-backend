@@ -18,14 +18,14 @@ spring:
       client:
         registration:
           google:
-            client-id: ????? ???
-            client-secret: ???
+            client-id: 클라이언트 아이디
+            client-secret: 비밀키
             scope: profile, email
 
 kakao:
   client:
-    id: ????????
-    secret: ???
+    id: 클라이언트 아이디
+    secret: 비밀키
 
 oauth2:
   success:

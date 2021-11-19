@@ -4,7 +4,6 @@ import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.domain.repository.UserRepository;
 import com.rubminds.api.user.dto.AuthRequest;
 import com.rubminds.api.user.dto.AuthResponse;
-import com.rubminds.api.user.dto.UserRequest;
 import com.rubminds.api.user.dto.UserResponse;
 import com.rubminds.api.user.exception.DuplicateNicknameException;
 import com.rubminds.api.user.exception.UserNotFoundException;
@@ -13,29 +12,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
-    public AuthResponse.Signup signup(Long id, AuthRequest.Signup request){
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-
-        if(userRepository.existsByNickname(request.getNickname())){
+    @Transactional
+    public AuthResponse.Signup signup(AuthRequest.Signup request, User user) {
+        User findUser = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        if (userRepository.existsByNickname(request.getNickname())) {
             throw new DuplicateNicknameException();
         }
-        user.signup(request);
-        return AuthResponse.Signup.build(user.getId(), user.getNickname(), user.getJob(), user.getIntroduce());
+        findUser.signup(request);
+        return AuthResponse.Signup.build(findUser);
     }
 
-    public UserResponse.Info mypage(Long id){
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-        return UserResponse.Info.build(user.getId(), user.getNickname(), user.getJob(), user.getIntroduce());
-    }
-  
-    public UserResponse.Info info(UserRequest.Info request){
-        User user = userRepository.findById(request.getId()).orElseThrow(UserNotFoundException::new);
-        return UserResponse.Info.build(user.getId(), user.getNickname(), user.getJob(), user.getIntroduce());
+    public UserResponse.Info getMe(User user) {
+        return UserResponse.Info.build(user);
     }
 
+    public UserResponse.Info getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return UserResponse.Info.build(user);
+    }
 }

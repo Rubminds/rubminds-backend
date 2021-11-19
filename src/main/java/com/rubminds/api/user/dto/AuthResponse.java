@@ -1,6 +1,6 @@
 package com.rubminds.api.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.token.Token;
 import lombok.*;
 
@@ -32,12 +32,13 @@ public class AuthResponse {
         private String nickname;
         private String job;
         private String introduce;
-        public static Signup build(Long id, String nickname, String job, String introduce) {
+
+        public static Signup build(User user) {
             return Signup.builder()
-                    .id(id)
-                    .nickname(nickname)
-                    .job(job)
-                    .introduce(introduce)
+                    .id(user.getId())
+                    .nickname(user.getNickname())
+                    .job(user.getJob())
+                    .introduce(user.getIntroduce())
                     .build();
         }
     }

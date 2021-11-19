@@ -38,10 +38,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-
-    @OneToMany(mappedBy = "user")
-    private List<Post> post = new ArrayList<>();
-
     public void signup(AuthRequest.Signup request){
         this.nickname = request.getNickname();
         this.job = request.getJob();

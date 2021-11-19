@@ -1,6 +1,7 @@
 package com.rubminds.api.user.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
+import com.rubminds.api.user.dto.AuthRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,8 @@ public class User extends BaseEntity {
 
     private String job;
 
+    private String introduce;
+
     private boolean signupCheck;
 
     @Enumerated(EnumType.STRING)
@@ -30,4 +33,10 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    public void signup(AuthRequest.Signup request){
+        this.nickname = request.getNickname();
+        this.job = request.getJob();
+        this.introduce = request.getIntroduce();
+    }
 }

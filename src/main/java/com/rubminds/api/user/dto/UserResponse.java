@@ -1,5 +1,6 @@
 package com.rubminds.api.user.dto;
 
+import com.rubminds.api.user.domain.User;
 import lombok.*;
 
 public class UserResponse {
@@ -12,12 +13,13 @@ public class UserResponse {
         private String nickname;
         private String job;
         private String introduce;
-        public static UserResponse.Info build(Long id, String nickname, String job, String introduce) {
+
+        public static UserResponse.Info build(User user) {
             return UserResponse.Info.builder()
-                    .id(id)
-                    .nickname(nickname)
-                    .job(job)
-                    .introduce(introduce)
+                    .id(user.getId())
+                    .nickname(user.getNickname())
+                    .job(user.getJob())
+                    .introduce(user.getIntroduce())
                     .build();
         }
     }

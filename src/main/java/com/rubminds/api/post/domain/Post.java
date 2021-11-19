@@ -1,28 +1,31 @@
 package com.rubminds.api.post.domain;
 
+import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
+import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
 
 @Builder
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "post")
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name = "user_id")
+    private User writer;
 
     @Column(nullable = false)
     private String title;
@@ -49,58 +52,26 @@ public class Post {
     @Column(nullable = false)
     private Region region;
 
-
-    public void setUser(User user){
-        this.user = user;
-        user.getPost();
+    public void update(PostRequest.Update request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.headcount = request.getHeadcount();
+        this.kinds = request.getKinds();
+        this.meeting = request.getMeeting();
+        this.postStatus = request.getPostsStatus();
+        this.region = request.getRegion();
     }
 
-
-    public static Post createPost(User user, String title, String content,
-                                  int headcount, Kinds kinds, Meeting meeting, PostStatus postsStatus,
-                                  Region region){
-
-
-        Post post = Post.builder()
-                        .user(user)
-                        .title(title)
-                        .content(content)
-                        .headcount(headcount)
-                        .kinds(kinds)
-                        .meeting(meeting)
-                        .postStatus(postsStatus)
-                        .region(region)
-                        .build();
-
-
-        return post;
+    public static Post create(PostRequest.Create request, User user) {
+        return Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .headcount(request.getHeadcount())
+                .kinds(request.getKinds())
+                .meeting(request.getMeeting())
+                .postStatus(request.getPostsStatus())
+                .region(request.getRegion())
+                .writer(user)
+                .build();
     }
-
-    public void editPost( String title, String content, int headcount, Kinds kinds, Meeting meeting,
-                          PostStatus postsStatus, Region region){
-
-        this.title = title;
-        this.content = content;
-        this.headcount = headcount;
-        this.kinds = kinds;
-        this.meeting = meeting;
-        this.postStatus = postsStatus;
-        this.headcount = headcount;
-        this.kinds = kinds;
-        this.meeting = meeting;
-        this.region = region;
-
-    }
-
 }
-
-
-
-
-
-
-
-
-
-
-

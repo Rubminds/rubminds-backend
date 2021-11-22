@@ -29,7 +29,7 @@ public class PostRequest {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Update {
-        private User user;
+        private User writer;
         private String title;
         private String content;
         private int headcount;

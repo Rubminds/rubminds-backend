@@ -3,9 +3,11 @@ package com.rubminds.api.post.web;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.service.PostService;
+import com.rubminds.api.user.dto.UserResponse;
 import com.rubminds.api.user.security.userdetails.CurrentUser;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,12 @@ public class PostController {
         return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId) {
+        PostResponse.Info infoResponse = postService.getPost(postId);
+        return ResponseEntity.ok().body(infoResponse);
+    }
+
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.Update request) {
         PostResponse.OnlyId response = postService.update(postId, request);
@@ -36,4 +44,6 @@ public class PostController {
     public void delete(@PathVariable("postId") Long postId) {
         postService.delete(postId);
     }
+
+
 }

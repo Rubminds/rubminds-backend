@@ -1,5 +1,6 @@
 package com.rubminds.api.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
@@ -13,7 +14,8 @@ public class PostRequest {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Create {
-        private User user;
+        @JsonIgnore
+        private String user;
         private String title;
         private String content;
         private int headcount;
@@ -29,7 +31,7 @@ public class PostRequest {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Update {
-        private User writer;
+        private String writer;
         private String title;
         private String content;
         private int headcount;

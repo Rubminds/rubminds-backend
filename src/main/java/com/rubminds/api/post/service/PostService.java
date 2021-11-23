@@ -1,12 +1,11 @@
 package com.rubminds.api.post.service;
 
 import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.PostSearch;
 import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
+import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.user.domain.User;
-import com.rubminds.api.user.dto.UserResponse;
 import com.rubminds.api.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,8 +26,8 @@ public class PostService {
     }
 
     public PostResponse.Info getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(UserNotFoundException::new);
-        return PostResponse.Info.build(post);
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        return PostResponse.Info.build(post,post.getWriter());
     }
 
 

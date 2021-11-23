@@ -32,18 +32,18 @@ public class DataLoader implements CommandLineRunner {
             }
             userRepository.saveAll(users);
         }
-//        if (skillRepository.findAll().isEmpty()){
-//            List<Skill> skills = new ArrayList<>();
-//            String[] skillnames = new String[] {"Spring","JavaScript","TypeScript","Node.js","React,js","Vue.js","Python","Python",
-//                                                "Java","C","C++","C#","Django","Go","Swift","Kotlin","Angular.js","Ruby","Java","Flutter"};
-//
-//            for(String i :skillnames){
-//                Skill skill = Skill.builder().skill(i).build();
-//                skills.add(skill);
-//            }
-//
-//
-//            skillRepository.saveAll(skills);
-//        }
+        if (skillRepository.findAll().isEmpty()){
+            List<Skill> skills = new ArrayList<>();
+            String[] skillnames = new String[] {"Spring","JavaScript","TypeScript","Node.js","React,js","Vue.js","Python","Python",
+                                                "Java","C","C++","C#","Django","Go","Swift","Kotlin","Angular.js","Ruby","Java","Flutter"};
+
+            for(String i :skillnames){
+                Skill skill = Skill.builder().name(i).build();
+                skills.add(skill);
+            }
+
+
+            skillRepository.saveAll(skills);
+        }
     }
 }

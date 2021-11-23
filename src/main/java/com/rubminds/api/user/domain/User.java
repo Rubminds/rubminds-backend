@@ -43,4 +43,6 @@ public class User extends BaseEntity {
         this.job = request.getJob();
         this.introduce = request.getIntroduce();
     }
+
+
 }

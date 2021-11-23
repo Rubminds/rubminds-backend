@@ -1,0 +1,18 @@
+= Rubminds API 문서 (Post)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+= Post
+---
+== 기본 API
+
+=== 게시글 생성
+`POST /api/post`
+
+=== 게시글 조회
+`POST /api/post/{postid}`

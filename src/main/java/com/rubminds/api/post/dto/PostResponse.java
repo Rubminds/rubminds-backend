@@ -1,5 +1,6 @@
 package com.rubminds.api.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
@@ -29,7 +30,7 @@ public class PostResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Info {
         private Long id;
-        private User writer;
+        private String writer;
         private String title;
         private String content;
         private int headcount;
@@ -38,16 +39,17 @@ public class PostResponse {
         private PostStatus postsStatus;
         private Region region;
 
-        public static PostResponse.Info build(Post post) {
+        public static PostResponse.Info build(Post post, User user) {
             return Info.builder()
                     .id(post.getId())
-                    .writer(post.getWriter())
+                    .writer(user.getNickname())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .headcount(post.getHeadcount())
                     .kinds(post.getKinds())
                     .meeting(post.getMeeting())
                     .postsStatus(post.getPostStatus())
+                    .region(post.getRegion())
                     .build();
         }
 

@@ -1,7 +1,7 @@
 package com.rubminds.api.post.domain.repository;
 
 import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.PostSearch;
+
 import com.rubminds.api.post.dto.PostResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,6 +14,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByRegion(String region);
 
 
-    List<PostResponse.Info> findAllByString(PostSearch postSearch);
+
 }
 

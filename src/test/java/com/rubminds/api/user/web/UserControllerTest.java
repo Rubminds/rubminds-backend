@@ -55,6 +55,7 @@ class UserControllerTest extends MvcTest {
                 .build();
         AuthResponse.Signup response = AuthResponse.Signup.build(user);
 
+
         given(userService.signup(any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(post("/api/user/signup")

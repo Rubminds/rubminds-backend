@@ -1,6 +1,5 @@
 package com.rubminds.api.post.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;

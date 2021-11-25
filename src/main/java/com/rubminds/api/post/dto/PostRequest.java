@@ -22,7 +22,6 @@ public class PostRequest {
         private Region region;
     }
 
-    @Setter
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

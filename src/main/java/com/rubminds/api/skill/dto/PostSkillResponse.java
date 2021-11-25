@@ -1,5 +1,8 @@
 package com.rubminds.api.skill.dto;
 
+import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.skill.domain.PostSkill;
+import com.rubminds.api.skill.domain.Skill;
 import lombok.*;
 
 public class PostSkillResponse {
@@ -10,11 +13,13 @@ public class PostSkillResponse {
     public static class addSkill {
         private Long id;
         private String skill;
+        private Long post;
 
-        public static addSkill build(Long id, String skill) {
+        public static addSkill build(PostSkill postSkill) {
             return addSkill.builder()
-                    .id(id)
-                    .skill(skill)
+                    .id(postSkill.getId())
+                    .post(postSkill.getPost().getId())
+                    .skill(postSkill.getSkill().getName())
                     .build();
         }
     }

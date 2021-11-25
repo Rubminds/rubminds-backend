@@ -1,0 +1,15 @@
+### 스킬 추가하기
+POST {{apiUrl}}/postskill
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "post_id" : "1",
+  "skill_id" : "1"
+}
+
+
+###삭제하기
+DELETE {{apiUrl}}/postskill/1
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8

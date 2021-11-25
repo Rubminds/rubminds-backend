@@ -52,6 +52,7 @@ class UserControllerTest extends MvcTest {
                 .nickname("동그라미")
                 .introduce("안녕하세요!")
                 .job("학생")
+                .skillId(1L)
                 .build();
         AuthResponse.Signup response = AuthResponse.Signup.build(user);
 
@@ -69,7 +70,8 @@ class UserControllerTest extends MvcTest {
                         requestFields(
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
                                 fieldWithPath("introduce").type(JsonFieldType.STRING).description("소개"),
-                                fieldWithPath("job").type(JsonFieldType.STRING).description("직업")
+                                fieldWithPath("job").type(JsonFieldType.STRING).description("직업"),
+                                fieldWithPath("skillId").type(JsonFieldType.NUMBER).description("관심기술")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),

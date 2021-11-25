@@ -1,5 +1,8 @@
 package com.rubminds.api.user.service;
 
+import com.rubminds.api.skill.Exception.SkillNotFoundException;
+import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.domain.repository.UserRepository;
 import com.rubminds.api.user.dto.AuthRequest;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final SkillRepository skillRepository;
 
     @Transactional
     public AuthResponse.Signup signup(AuthRequest.Signup request, User user) {
@@ -23,7 +27,8 @@ public class UserService {
         if (userRepository.existsByNickname(request.getNickname())) {
             throw new DuplicateNicknameException();
         }
-        findUser.signup(request);
+        Skill skill = skillRepository.findById(request.getSkillId()).orElseThrow(SkillNotFoundException::new);
+        findUser.signup(request,skill);
         return AuthResponse.Signup.build(findUser);
     }
 

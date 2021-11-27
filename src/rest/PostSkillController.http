@@ -4,12 +4,18 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "post_id" : "1",
-  "skill_id" : "1"
+  "post_id" : "2",
+  "skill_id" : "3"
 }
 
 
 ###삭제하기
 DELETE {{apiUrl}}/postskill/1
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+
+###포스트 가져오기
+GET {{apiUrl}}/postskill/2
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8

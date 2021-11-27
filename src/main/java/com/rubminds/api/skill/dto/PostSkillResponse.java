@@ -9,7 +9,7 @@ public class PostSkillResponse {
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor()
     public static class addSkill {
         private Long id;
         private String skill;

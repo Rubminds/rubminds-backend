@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -37,5 +38,12 @@ public class PostSkillService {
         postSkillRepository.deleteById(postskillid);
     }
 
+    public List<PostSkill> findAll(Long postid) {
+        Post post = postRepository.findById(postid).orElseThrow(PostNotFoundException::new);
+        System.out.println("제목"+post.getTitle());
+        List<PostSkill> skills = postSkillRepository.findAllByPost(post);
+        System.out.println(skills);
+        return skills;
+    }
 
 }

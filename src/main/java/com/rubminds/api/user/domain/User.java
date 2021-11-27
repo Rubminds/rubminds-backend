@@ -1,9 +1,7 @@
 package com.rubminds.api.user.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
-import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
-import com.rubminds.api.skill.dto.SkillRequest;
 import com.rubminds.api.user.dto.AuthRequest;
 
 import lombok.*;
@@ -48,11 +46,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-    public void signup(AuthRequest.Signup request, Skill skill){
+    public void signup(AuthRequest.Signup request, List<UserSkill> userSkills){
         this.nickname = request.getNickname();
         this.job = request.getJob();
         this.introduce = request.getIntroduce();
-        UserSkill.create(this, skill);
+        this.userSkills.addAll(userSkills);
     }
 
 }

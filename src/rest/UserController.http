@@ -6,7 +6,7 @@ Content-Type: application/json;charset=UTF-8
   "nickname": "테스트1",
   "job": "학생",
   "introduce": "test ok",
-  "skillId": 1
+  "skillIds": [1, 2]
 }
 
 ###

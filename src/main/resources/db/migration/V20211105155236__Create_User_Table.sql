@@ -9,6 +9,8 @@ CREATE TABLE `user`
     `provider`     VARCHAR(30) NOT NULL,
     `signup_check` BOOLEAN     NOT NULL,
     `role`         VARCHAR(20) NOT NULL,
+    `attend_level` DOUBLE   DEFAULT 0,
+    `work_level`   DOUBLE   DEFAULT 0,
     `created_at`   DATETIME    NOT NULL,
     `updated_at`   DATETIME DEFAULT NULL,
     `deleted_at`   DATETIME DEFAULT NULL,

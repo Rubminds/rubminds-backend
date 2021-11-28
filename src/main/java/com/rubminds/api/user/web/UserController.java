@@ -20,7 +20,6 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse.Signup> signup(@RequestBody AuthRequest.Signup request, @CurrentUser CustomUserDetails customUserDetails) {
         AuthResponse.Signup response = userService.signup(request, customUserDetails.getUser());
-
         return ResponseEntity.ok().body(response);
     }
 

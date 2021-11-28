@@ -1,7 +1,7 @@
 package com.rubminds.api.user.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
-import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.user.dto.AuthRequest;
 
 import lombok.*;
@@ -21,6 +21,10 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<UserSkill> userSkills = new ArrayList<>();
+
     private String oauthId;
 
     private String nickname;
@@ -31,6 +35,10 @@ public class User extends BaseEntity {
 
     private boolean signupCheck;
 
+    private double attendLevel;
+
+    private double workLevel;
+
     @Enumerated(EnumType.STRING)
     private SignupProvider provider;
 
@@ -38,9 +46,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-    public void signup(AuthRequest.Signup request){
+    public void signup(AuthRequest.Signup request, List<UserSkill> userSkills){
         this.nickname = request.getNickname();
         this.job = request.getJob();
         this.introduce = request.getIntroduce();
+        this.userSkills.addAll(userSkills);
     }
+
 }

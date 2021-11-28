@@ -9,9 +9,9 @@
 
 = User
 ---
-== 기본 API
+== *기본* API
 
-=== 회원가입
+=== *회원가입*
 
 `POST /api/user/signup`
 
@@ -22,3 +22,38 @@ include::{snippets}/user-signup/request-fields.adoc[]
 성공 응답 HTTP
 include::{snippets}/user-signup/http-response.adoc[]
 include::{snippets}/user-signup/response-fields.adoc[]
+
+=== *회원정보 수정*
+
+`POST /api/user/update`
+
+요청 HTTP
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
+
+=== *현재 회원정보*
+
+`GET /api/user/me`
+
+요청 HTTP
+include::{snippets}/user-me/http-request.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/user-me/http-response.adoc[]
+include::{snippets}/user-me/response-fields.adoc[]
+
+=== *회원정보 조회*
+
+`GET /api/user/1`
+
+요청 HTTP
+include::{snippets}/user-info/http-request.adoc[]
+include::{snippets}/user-info/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/user-info/http-response.adoc[]
+include::{snippets}/user-info/response-fields.adoc[]

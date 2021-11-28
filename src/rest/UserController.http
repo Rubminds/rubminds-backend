@@ -10,6 +10,18 @@ Content-Type: application/json;charset=UTF-8
 }
 
 ###
+POST {{apiUrl}}/user/update
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "nickname": "테스트",
+  "job": "학생",
+  "introduce": "test",
+  "skillIds": [1, 5]
+}
+
+###
 GET {{apiUrl}}/user/me
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8

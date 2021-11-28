@@ -27,14 +27,14 @@ public class AuthResponse {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Signup {
+    public static class Update {
         private Long id;
         private String nickname;
         private String job;
         private String introduce;
 
-        public static Signup build(User user) {
-            return Signup.builder()
+        public static Update build(User user) {
+            return Update.builder()
                     .id(user.getId())
                     .nickname(user.getNickname())
                     .job(user.getJob())

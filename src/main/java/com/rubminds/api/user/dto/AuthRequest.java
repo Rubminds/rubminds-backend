@@ -17,7 +17,7 @@ public class AuthRequest {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Signup {
+    public static class Update {
         private String nickname;
         private String job;
         private String introduce;

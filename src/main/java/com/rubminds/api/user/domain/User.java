@@ -46,7 +46,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
-    public void signup(AuthRequest.Signup request, List<UserSkill> userSkills){
+    public void update(AuthRequest.Update request, List<UserSkill> userSkills){
         this.nickname = request.getNickname();
         this.job = request.getJob();
         this.introduce = request.getIntroduce();

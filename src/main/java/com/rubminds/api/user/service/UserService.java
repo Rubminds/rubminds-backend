@@ -4,6 +4,7 @@ import com.rubminds.api.skill.Exception.SkillNotFoundException;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
+import com.rubminds.api.skill.domain.repository.UserSkillRepository;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.domain.repository.UserRepository;
 import com.rubminds.api.user.dto.AuthRequest;
@@ -24,25 +25,48 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
+    private final UserSkillRepository userSkillRepository;
 
     @Transactional
-    public AuthResponse.Signup signup(AuthRequest.Signup request, User user) {
+    public AuthResponse.Update signup(AuthRequest.Update request, User user){
+        User findUser = findUser(user);
+        duplicateNickname(request.getNickname());
+        findUser.update(request, setUserSkills(request, findUser));
+        return AuthResponse.Update.build(findUser);
+    }
+
+    @Transactional
+    public AuthResponse.Update update(AuthRequest.Update request, User user){
+        User findUser = findUser(user);
+        duplicateNickname(request.getNickname());
+        userSkillRepository.deleteAllByUser(findUser);
+        findUser.update(request, setUserSkills(request, findUser));
+        return AuthResponse.Update.build(findUser);
+    }
+
+    public User findUser(User user){
         User findUser = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
-        if (userRepository.existsByNickname(request.getNickname())) {
+        return findUser;
+    }
+
+    public void duplicateNickname(String nickname){
+        if(userRepository.existsByNickname(nickname)) {
             throw new DuplicateNicknameException();
         }
+    }
+
+    public List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
         List<UserSkill> userSkills = new ArrayList<>();
         for(Long skillId : request.getSkillIds()){
             Skill findSkill = skillRepository.findById(skillId).orElseThrow(SkillNotFoundException::new);
-            UserSkill userSkill = UserSkill.create(findUser, findSkill);
+            UserSkill userSkill = UserSkill.create(user, findSkill);
             userSkills.add(userSkill);
         }
-        findUser.signup(request, userSkills);
-        return AuthResponse.Signup.build(findUser);
+        return userSkills;
     }
 
     public UserResponse.Info getMe(User user) {
-        return UserResponse.Info.build(user);
+        return UserResponse.Info.build(findUser(user));
     }
 
     public UserResponse.Info getUserInfo(Long userId) {

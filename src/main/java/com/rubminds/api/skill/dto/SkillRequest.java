@@ -1,26 +1,23 @@
-package com.rubminds.api.user.dto;
+package com.rubminds.api.skill.dto;
 
 import lombok.*;
 
 import java.util.List;
 
-public class AuthRequest {
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Login {
-        private String id;
-    }
+public class SkillRequest {
 
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Update {
-        private String nickname;
-        private String job;
-        private String introduce;
-        private List<Long> skillIds;
+    public static class GetSkill {
+        private Long skillId;
+    }
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetSkills {
+        private List<Long> skills;
     }
 }

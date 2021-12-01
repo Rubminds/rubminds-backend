@@ -40,9 +40,7 @@ public class PostSkillService {
 
     public List<PostSkill> findAll(Long postid) {
         Post post = postRepository.findById(postid).orElseThrow(PostNotFoundException::new);
-        System.out.println("제목"+post.getTitle());
         List<PostSkill> skills = postSkillRepository.findAllByPost(post);
-        System.out.println(skills);
         return skills;
     }
 

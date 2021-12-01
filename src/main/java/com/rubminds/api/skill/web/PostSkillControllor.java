@@ -1,9 +1,10 @@
 package com.rubminds.api.skill.web;
 
-import com.rubminds.api.skill.Service.PostSkillService;
+
 import com.rubminds.api.skill.domain.PostSkill;
 import com.rubminds.api.skill.dto.PostSkillRequest;
 import com.rubminds.api.skill.dto.PostSkillResponse;
+import com.rubminds.api.skill.service.PostSkillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

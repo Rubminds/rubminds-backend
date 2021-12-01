@@ -8,7 +8,6 @@ Content-Type: application/json;charset=UTF-8
   "skill_id" : "3"
 }
 
-
 ###삭제하기
 DELETE {{apiUrl}}/postskill/1
 Authorization: {{authorizationToken}}

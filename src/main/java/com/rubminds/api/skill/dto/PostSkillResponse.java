@@ -3,7 +3,11 @@ package com.rubminds.api.skill.dto;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.skill.domain.PostSkill;
 import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.domain.UserSkill;
 import lombok.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PostSkillResponse {
     @Getter

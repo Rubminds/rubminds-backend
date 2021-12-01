@@ -30,10 +30,7 @@ public class PostSkillControllor {
 
     @GetMapping("/{post_id}")
     public ResponseEntity<List<PostSkillResponse.addSkill>> findskill (@PathVariable("post_id") Long postId) {
-        System.out.println("======================================================================");
-        System.out.println("게시글 야이디"+postId);
         List<PostSkill> skills = postSkillService.findAll(postId);
-        System.out.println(skills);
 
         List<PostSkillResponse.addSkill> collect = skills.stream()
                 .map(s -> new PostSkillResponse.addSkill(s.getId(),s.getSkill().getName(),s.getPost().getId()))

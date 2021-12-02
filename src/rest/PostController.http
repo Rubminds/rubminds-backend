@@ -1,3 +1,9 @@
+GET {{apiUrl}}/post/4
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+
+###
 POST {{apiUrl}}/post
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8

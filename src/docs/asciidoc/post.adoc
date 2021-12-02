@@ -1,0 +1,50 @@
+= Rubminds API 문서 (Post)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+= Post
+---
+== 기본 API
+
+=== 게시글 생성
+`POST /api/post`
+
+요청 HTTP
+include::{snippets}/post_create/http-request.adoc[]
+include::{snippets}/post_create/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_create/http-response.adoc[]
+include::{snippets}/post_create/response-fields.adoc[]
+
+
+
+
+
+=== 게시글 수정
+`PUT /api/post/{postid}`
+
+요청 HTTP
+include::{snippets}/post_update/http-request.adoc[]
+include::{snippets}/post_update/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_update/http-response.adoc[]
+include::{snippets}/post_update/response-fields.adoc[]
+
+
+
+
+=== 게시글 삭제
+`DELETE /api/post/{postid}`
+
+요청 HTTP
+include::{snippets}/post_delete/http-request.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_delete/http-response.adoc[]

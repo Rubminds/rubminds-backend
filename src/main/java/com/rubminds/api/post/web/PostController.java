@@ -26,6 +26,12 @@ public class PostController {
         return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId) {
+        PostResponse.Info infoResponse = postService.getPost(postId);
+        return ResponseEntity.ok().body(infoResponse);
+    }
+
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.Update request) {
         PostResponse.OnlyId response = postService.update(postId, request);
@@ -36,4 +42,6 @@ public class PostController {
     public void delete(@PathVariable("postId") Long postId) {
         postService.delete(postId);
     }
+
+
 }

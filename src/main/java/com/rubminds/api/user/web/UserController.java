@@ -18,9 +18,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse.Signup> signup(@RequestBody AuthRequest.Signup request, @CurrentUser CustomUserDetails customUserDetails) {
-        AuthResponse.Signup response = userService.signup(request, customUserDetails.getUser());
+    public ResponseEntity<AuthResponse.Update> signup(@RequestBody AuthRequest.Update request, @CurrentUser CustomUserDetails customUserDetails) {
+        AuthResponse.Update response = userService.signup(request, customUserDetails.getUser());
+        return ResponseEntity.ok().body(response);
+    }
 
+    @PostMapping("/update")
+    public ResponseEntity<AuthResponse.Update> update(@RequestBody AuthRequest.Update request, @CurrentUser CustomUserDetails customUserDetails) {
+        AuthResponse.Update response = userService.update(request, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 

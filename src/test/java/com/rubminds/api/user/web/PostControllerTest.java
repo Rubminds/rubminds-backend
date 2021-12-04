@@ -6,6 +6,7 @@ import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
+import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.service.PostService;
@@ -30,6 +31,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("게시물 정보입력(생성) 문서화")
@@ -90,7 +92,7 @@ public class PostControllerTest extends MvcTest {
                 .characterEncoding("UTF-8")
         );
 
-        results.andExpect(status().isOk())
+        results.andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(document("post_create",
                         requestFields(
@@ -99,7 +101,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("region").type(JsonFieldType.STRING).description("지역"),
                                 fieldWithPath("postsStatus").type(JsonFieldType.STRING).description("진행상태"),
                                 fieldWithPath("kinds").type(JsonFieldType.STRING).description("글종류"),
-                                fieldWithPath("headcount").type(JsonFieldType.STRING).description("모집인원"),
+                                fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
                                 fieldWithPath("meeting").type(JsonFieldType.STRING).description("미팅방법"),
                                 fieldWithPath("writer").type(JsonFieldType.STRING).description("작성자 닉네임")
                         ),
@@ -112,6 +114,7 @@ public class PostControllerTest extends MvcTest {
     @Test
     @DisplayName("게시물 수정 문서화")
     public void updatePost() throws Exception {
+        Long id = 1L;
         PostRequest.Create request = PostRequest.Create.builder()
                 .writer(user.getNickname())
                 .title("테스트")
@@ -124,12 +127,13 @@ public class PostControllerTest extends MvcTest {
                 .build();
 
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post);
-        given(postService.create(any(), any())).willReturn(response);
+        given(postService.update(any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(put("/api/post/1")
+        ResultActions results = mvc.perform(put("/api/post/{id}",id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .characterEncoding("UTF-8")
+                .param("id","게시글 id")
         );
 
         results.andExpect(status().isOk())
@@ -149,5 +153,33 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글 식별자")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("게시물 삭제 문서화")
+    public void deletePost() throws Exception {
+        Long id = 1L;
+        PostRequest.Create request = PostRequest.Create.builder()
+                .writer(user.getNickname())
+                .title("테스트")
+                .content("내용")
+                .region(Region.서울)
+                .postsStatus(PostStatus.GATHERING)
+                .kinds(Kinds.PROJECT)
+                .headcount(3)
+                .meeting(Meeting.BOTH)
+                .build();
+
+
+        ResultActions results = mvc.perform(put("/api/post/{id}",id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .characterEncoding("UTF-8")
+                .param("id","게시글 id")
+        );
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_delete"));
     }
 }

@@ -5,15 +5,28 @@ Content-Type: application/json;charset=UTF-8
 {
   "nickname": "테스트1",
   "job": "학생",
-  "introduce": "test ok"
+  "introduce": "test ok",
+  "skillIds": [1, 2]
 }
 
-### 마이페이지 조회
+###
+POST {{apiUrl}}/user/update
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "nickname": "테스트",
+  "job": "학생",
+  "introduce": "test",
+  "skillIds": [1, 5]
+}
+
+###
 GET {{apiUrl}}/user/me
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
-### 회원 정보 조회
+###
 GET {{apiUrl}}/user/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8

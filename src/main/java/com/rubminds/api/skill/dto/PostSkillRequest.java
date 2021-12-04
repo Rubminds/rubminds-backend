@@ -6,12 +6,20 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PostSkillRequest {
-    private Long skill_id;
-    private Long post_id;
 
+public class PostSkillRequest {
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetSkill {
+        private Long skillId;
+    }
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetSkills {
+        private List<Long> skills;
+    }
 }

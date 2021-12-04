@@ -13,17 +13,29 @@ public class PostSkillResponse {
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor()
-    public static class addSkill {
-        private Long id;
-        private String skill;
-        private Long post;
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetPostSkill {
+        private Long postSkillId;
+        private String name;
 
-        public static addSkill build(PostSkill postSkill) {
-            return addSkill.builder()
-                    .id(postSkill.getId())
-                    .post(postSkill.getPost().getId())
-                    .skill(postSkill.getSkill().getName())
+        public static PostSkillResponse.GetPostSkill build(PostSkill postSkill){
+            return PostSkillResponse.GetPostSkill.builder()
+                    .postSkillId(postSkill.getId())
+                    .name(postSkill.getSkill().getName())
+                    .build();
+        }
+    }
+
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetPostSkills {
+        private List<PostSkillResponse.GetPostSkill> skills;
+        public static PostSkillResponse.GetPostSkills build(List<PostSkill> postSkills){
+            return PostSkillResponse.GetPostSkills.builder()
+                    .skills(postSkills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
                     .build();
         }
     }

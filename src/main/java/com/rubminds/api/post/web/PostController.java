@@ -27,7 +27,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse.Info> postInfo(@PathVariable Long postId) {
         PostResponse.Info infoResponse = postService.getPost(postId);
         return ResponseEntity.ok().body(infoResponse);
     }

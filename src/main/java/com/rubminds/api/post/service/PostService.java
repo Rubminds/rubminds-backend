@@ -30,7 +30,6 @@ public class PostService {
     private final PostSkillRepository postSkillRepository;
 
     public PostResponse.OnlyId create(PostRequest.Create request, User user) {
-
         Post post = Post.create(request,user);
         setPostSkills(request,post);
         Post savedPost = postRepository.save(post);

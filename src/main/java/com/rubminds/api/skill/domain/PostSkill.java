@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "postskill")
+@Table(name = "post_skill")
 public class PostSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

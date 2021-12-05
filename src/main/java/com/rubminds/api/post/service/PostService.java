@@ -27,6 +27,7 @@ public class PostService {
     private final PostSkillRepository postSkillRepository;
     private final SkillRepository skillRepository;
 
+    @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, User user) {
         Post post = Post.create(request, user);
         setPostSkills(request,post);

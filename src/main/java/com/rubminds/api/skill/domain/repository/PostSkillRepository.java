@@ -13,5 +13,6 @@ import java.util.Optional;
 public interface PostSkillRepository extends JpaRepository<PostSkill, Long> {
     Optional<PostSkill> findById(Long id);
     List<PostSkill> findAllByPost(Post post);
+    List<PostSkill> deleteAllByPost(Post post);
 
 }

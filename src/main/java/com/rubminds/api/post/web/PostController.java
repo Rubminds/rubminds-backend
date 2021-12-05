@@ -27,13 +27,13 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse.Info> postInfo(@PathVariable Long postId) {
         PostResponse.Info infoResponse = postService.getPost(postId);
         return ResponseEntity.ok().body(infoResponse);
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.Update request) {
+    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.Create request) {
         PostResponse.OnlyId response = postService.update(postId, request);
         return ResponseEntity.ok().body(response);
     }

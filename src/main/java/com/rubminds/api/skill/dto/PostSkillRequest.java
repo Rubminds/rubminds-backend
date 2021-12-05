@@ -1,5 +1,7 @@
 package com.rubminds.api.skill.dto;
 
+import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.skill.domain.Skill;
 import lombok.*;
 
 @Getter
@@ -7,5 +9,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostSkillRequest {
-    private String skill;
+    private Long skillId;
+    private Long postId;
 }

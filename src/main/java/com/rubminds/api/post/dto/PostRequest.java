@@ -6,6 +6,8 @@ import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
 import lombok.*;
 
+import java.util.List;
+
 public class PostRequest {
     @Getter
     @Builder
@@ -20,21 +22,7 @@ public class PostRequest {
         private Meeting meeting;
         private PostStatus postsStatus;
         private Region region;
+        private List<Long> postSkillIds;
     }
 
-    @Setter
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Update {
-        private String writer;
-        private String title;
-        private String content;
-        private int headcount;
-        private Kinds kinds;
-        private Meeting meeting;
-        private PostStatus postsStatus;
-        private Region region;
-    }
 }

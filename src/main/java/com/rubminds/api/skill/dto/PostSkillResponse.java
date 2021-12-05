@@ -1,20 +1,39 @@
 package com.rubminds.api.skill.dto;
 
+import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.skill.domain.PostSkill;
 import lombok.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PostSkillResponse {
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class addSkill {
-        private Long id;
-        private String skill;
+    public static class GetPostSkill {
+        private Long postSkillId;
+        private String name;
 
-        public static addSkill build(Long id, String skill) {
-            return addSkill.builder()
-                    .id(id)
-                    .skill(skill)
+        public static PostSkillResponse.GetPostSkill build(PostSkill postSkill){
+            return PostSkillResponse.GetPostSkill.builder()
+                    .postSkillId(postSkill.getId())
+                    .name(postSkill.getSkill().getName())
+                    .build();
+        }
+    }
+
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetPostSkills {
+        private List<PostSkillResponse.GetPostSkill> skills;
+        public static PostSkillResponse.GetPostSkills build(List<PostSkill> postSkills){
+            return PostSkillResponse.GetPostSkills.builder()
+                    .skills(postSkills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
                     .build();
         }
     }

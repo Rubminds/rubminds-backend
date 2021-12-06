@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/2
+GET {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -20,7 +20,7 @@ Content-Type: application/json;charset=UTF-8
 }
 
 ###
-PUT {{apiUrl}}/post/2
+PUT {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

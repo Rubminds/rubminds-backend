@@ -44,10 +44,10 @@ public class PostResponse {
         private Region region;
         private List<PostSkillResponse.GetPostSkill> postSkills;
 
-        public static PostResponse.Info build(Post post, User user, List<PostSkill> postSkills) {
+        public static PostResponse.Info build(Post post, List<PostSkill> postSkills) {
             return Info.builder()
                     .id(post.getId())
-                    .writer(user.getNickname())
+                    .writer(post.getWriter().getNickname())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .headcount(post.getHeadcount())

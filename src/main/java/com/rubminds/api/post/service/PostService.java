@@ -14,13 +14,14 @@ import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
@@ -38,7 +39,7 @@ public class PostService {
     public PostResponse.Info getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         List<PostSkill> skills = postSkillRepository.findAllByPost(post);
-        return PostResponse.Info.build(post,post.getWriter(),skills);
+        return PostResponse.Info.build(post,skills);
     }
 
     @Transactional

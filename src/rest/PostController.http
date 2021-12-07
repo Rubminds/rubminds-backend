@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/4
+GET {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -15,7 +15,8 @@ Content-Type: application/json;charset=UTF-8
   "kinds" : "PROJECT",
   "meeting": "BOTH",
   "postsStatus" : "GATHERING",
-  "region" : "서울"
+  "region" : "서울",
+  "postSkillIds": [3, 2]
 }
 
 ###
@@ -30,7 +31,8 @@ Content-Type: application/json;charset=UTF-8
   "kinds" : "PROJECT",
   "meeting": "BOTH",
   "postsStatus" : "GATHERING",
-  "region" : "서울"
+  "region" : "서울",
+  "postSkillIds": [3, 2]
 
 }
 

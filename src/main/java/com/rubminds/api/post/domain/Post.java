@@ -8,10 +8,13 @@ import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
 import com.rubminds.api.post.dto.PostRequest;
+import com.rubminds.api.skill.domain.PostSkill;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -27,6 +30,10 @@ public class Post extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User writer;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<PostSkill> postSkills = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;
@@ -53,7 +60,7 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private Region region;
 
-    public void update(PostRequest.Update request) {
+    public void update(PostRequest.Create request) {
         this.title = request.getTitle();
         this.content = request.getContent();
         this.headcount = request.getHeadcount();

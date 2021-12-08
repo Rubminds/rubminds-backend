@@ -28,11 +28,11 @@ public class CostomSkill {
         this.post = post;
     }
 
-    public static CostomSkill create(String name,Post Post) {
+    public static CostomSkill create(String name,Post post) {
         CostomSkill costomSkill = CostomSkill.builder()
                 .name(name)
                 .build();
-        costomSkill.setPost(Post);
+        costomSkill.setPost(post);
         return costomSkill;
     }
 

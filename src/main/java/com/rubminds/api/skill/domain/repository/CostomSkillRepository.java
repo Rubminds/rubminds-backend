@@ -11,4 +11,7 @@ public interface CostomSkillRepository extends JpaRepository<CostomSkill, Long> 
         Optional<CostomSkill> findById(Long id);
         List<CostomSkill> findAllByPost(Post post);
         List<CostomSkill> deleteAllByPost(Post post);
+        List<CostomSkill> deleteAllByPostId(Long postId);
+
+        List<CostomSkill> findAllByPostId(Long postId);
 }

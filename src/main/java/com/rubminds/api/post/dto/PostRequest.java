@@ -23,6 +23,7 @@ public class PostRequest {
         private PostStatus postsStatus;
         private Region region;
         private List<Long> postSkillIds;
+        private List<String> costomSkills;
     }
 
 }

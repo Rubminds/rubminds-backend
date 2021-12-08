@@ -37,6 +37,30 @@ include::{snippets}/post_update/request-fields.adoc[]
 include::{snippets}/post_update/http-response.adoc[]
 include::{snippets}/post_update/response-fields.adoc[]
 
+=== 게시글 수정
+`PUT /api/post/{postid}`
+
+요청 HTTP
+include::{snippets}/post_update/http-request.adoc[]
+include::{snippets}/post_update/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_update/http-response.adoc[]
+include::{snippets}/post_update/response-fields.adoc[]
+
+
+
+=== 게시글 조회(한건)
+`GET /api/post/{postid}`
+
+요청 HTTP
+include::{snippets}/post_detail/http-request.adoc[]
+include::{snippets}/post_detail/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_detail/http-response.adoc[]
+include::{snippets}/post_detail/response-fields.adoc[]
+
 
 
 

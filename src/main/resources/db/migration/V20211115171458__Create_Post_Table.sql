@@ -5,7 +5,7 @@ CREATE TABLE `post`
     `user_id`      BIGINT        NOT NULL,
     `title`        VARCHAR(50) NULL NULL,
     `content`      VARCHAR(255) NOT NULL,
-    `headcount`    INT         NOT NULL,
+    `headcount`    INT         ,
     `kinds`        VARCHAR(30)  NOT NULL,
     `meeting`      VARCHAR(30)  NOT NULL,
     `post_status`  VARCHAR(20)  NOT NULL,

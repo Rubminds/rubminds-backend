@@ -1,4 +1,4 @@
-package com.rubminds.api.skill.Exception;
+package com.rubminds.api.skill.exception;
 
 import com.rubminds.api.common.exception.EntityNotFoundException;
 

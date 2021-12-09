@@ -1,0 +1,9 @@
+POST {{apiUrl}}/file/upload
+Authorization: {{authorizationToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="white.jpeg"
+
+< ./../main/resources/dummy/image/white.jpeg
+

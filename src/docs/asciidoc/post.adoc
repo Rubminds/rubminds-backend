@@ -55,7 +55,6 @@ include::{snippets}/post_update/response-fields.adoc[]
 
 요청 HTTP
 include::{snippets}/post_detail/http-request.adoc[]
-include::{snippets}/post_detail/request-fields.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/post_detail/http-response.adoc[]

@@ -8,4 +8,5 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CostomSkillRequest {
     private Long postId;
+    private String name;
 }

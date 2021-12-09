@@ -16,4 +16,5 @@ public interface PostSkillRepository extends JpaRepository<PostSkill, Long> {
     List<PostSkill> deleteAllByPost(Post post);
     List<PostSkill> deleteAllByPostId(Long postId);
 
+
 }

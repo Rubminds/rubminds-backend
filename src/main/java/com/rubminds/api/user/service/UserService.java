@@ -1,6 +1,6 @@
 package com.rubminds.api.user.service;
 
-import com.rubminds.api.skill.Exception.SkillNotFoundException;
+import com.rubminds.api.skill.exception.SkillNotFoundException;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
@@ -44,18 +44,18 @@ public class UserService {
         return AuthResponse.Update.build(findUser);
     }
 
-    public User findUser(User user){
+    private User findUser(User user){
         User findUser = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         return findUser;
     }
 
-    public void duplicateNickname(String nickname){
+    private void duplicateNickname(String nickname){
         if(userRepository.existsByNickname(nickname)) {
             throw new DuplicateNicknameException();
         }
     }
 
-    public List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
+    private List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
         List<UserSkill> userSkills = new ArrayList<>();
         for(Long skillId : request.getSkillIds()){
             Skill findSkill = skillRepository.findById(skillId).orElseThrow(SkillNotFoundException::new);

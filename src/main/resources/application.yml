@@ -52,3 +52,7 @@ jwt:
     secret: 'ZlLHyRf4Ru3CnpVVl6hk9InHkAcHG07x82PufcFR4S4pKnLn0WJgtu4VQERoJauKi2hNIgWCuQF9aFQM7VJGlw=='
     expiration-time-milli-sec: 864000000
 
+aws:
+  s3:
+    bucket: rubminds
+    publicUrl: https://rubminds.s3.ap-northeast-2.amazonaws.com

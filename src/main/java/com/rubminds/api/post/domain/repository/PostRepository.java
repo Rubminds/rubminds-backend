@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-   // Optional<Post> findByStatus(String status);
-
     Optional<Post> findByRegion(String region);
 
 

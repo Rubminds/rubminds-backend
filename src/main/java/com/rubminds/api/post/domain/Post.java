@@ -8,6 +8,7 @@ import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
 import com.rubminds.api.post.dto.PostRequest;
+import com.rubminds.api.skill.domain.CostomSkill;
 import com.rubminds.api.skill.domain.PostSkill;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
@@ -34,6 +35,10 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Builder.Default
     private List<PostSkill> postSkills = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<CostomSkill> costomSkills = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;

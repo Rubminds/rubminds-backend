@@ -5,7 +5,9 @@ import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
+import com.rubminds.api.skill.domain.CostomSkill;
 import com.rubminds.api.skill.domain.PostSkill;
+import com.rubminds.api.skill.dto.CostomSkillResponse;
 import com.rubminds.api.skill.dto.PostSkillResponse;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
@@ -43,8 +45,9 @@ public class PostResponse {
         private PostStatus postsStatus;
         private Region region;
         private List<PostSkillResponse.GetPostSkill> postSkills;
+        private List<CostomSkillResponse.GetCostomSkill> costomSkills;
 
-        public static PostResponse.Info build(Post post, List<PostSkill> postSkills) {
+        public static PostResponse.Info build(Post post, List<PostSkill> postSkills, List<CostomSkill> costomSkills) {
             return Info.builder()
                     .id(post.getId())
                     .writer(post.getWriter().getNickname())
@@ -56,6 +59,7 @@ public class PostResponse {
                     .postsStatus(post.getPostStatus())
                     .region(post.getRegion())
                     .postSkills(postSkills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
+                    .costomSkills(costomSkills.stream().map(CostomSkillResponse.GetCostomSkill::build).collect(Collectors.toList()))
                     .build();
         }
 

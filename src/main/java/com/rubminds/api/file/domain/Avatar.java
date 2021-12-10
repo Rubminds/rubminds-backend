@@ -2,6 +2,7 @@ package com.rubminds.api.file.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.file.dto.FileRequest;
+import com.rubminds.api.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Avatar extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "avatar_id")
     private Long id;
 
     private String name;
@@ -24,6 +26,9 @@ public class Avatar extends BaseEntity {
     private Long size;
     private Integer width;
     private Integer height;
+
+    @OneToOne(mappedBy = "avatar")
+    private User user;
 
     public static Avatar create(FileRequest.Upload request){
         return Avatar.builder()
@@ -35,5 +40,4 @@ public class Avatar extends BaseEntity {
                 .height(request.getHeight())
                 .build();
     }
-
 }

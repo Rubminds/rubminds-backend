@@ -2,8 +2,6 @@ package com.rubminds.api.user.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 public class AuthRequest {
     @Getter
     @Builder
@@ -21,6 +19,7 @@ public class AuthRequest {
         private String nickname;
         private String job;
         private String introduce;
-        private List<Long> skillIds;
+        private String skillIds;
+        private String isAvatarChanged;
     }
 }

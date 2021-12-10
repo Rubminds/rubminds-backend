@@ -1,6 +1,7 @@
 package com.rubminds.api.user.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
+import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.user.dto.AuthRequest;
 
@@ -27,6 +28,10 @@ public class User extends BaseEntity {
 
     private String oauthId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "avatar_id")
+    private Avatar avatar;
+
     private String nickname;
 
     private String job;
@@ -51,6 +56,10 @@ public class User extends BaseEntity {
         this.job = request.getJob();
         this.introduce = request.getIntroduce();
         this.userSkills.addAll(userSkills);
+    }
+
+    public void updateAvatar(Avatar updateAvatar){
+        this.avatar = updateAvatar;
     }
 
 }

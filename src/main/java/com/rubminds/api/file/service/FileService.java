@@ -19,4 +19,8 @@ public class FileService {
         return avatarRepository.save(Avatar.create(s3Service.uploadFile(file)));
     }
 
+    @Transactional
+    public void deleteByAvatarId(Long avatarId){
+        avatarRepository.deleteById(avatarId);
+    }
 }

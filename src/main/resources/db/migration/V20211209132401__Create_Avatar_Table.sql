@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `avatar`;
 CREATE TABLE `avatar`
 (
-    `id`           BIGINT        NOT NULL AUTO_INCREMENT,
+    `avatar_id`           BIGINT        NOT NULL AUTO_INCREMENT,
     `name`         VARCHAR(255)  NOT NULL,
     `extension`    VARCHAR(255)  NOT NULL,
     `url`          VARCHAR(2083) NOT NULL,
@@ -13,5 +13,5 @@ CREATE TABLE `avatar`
     `deleted_at`   DATETIME  DEFAULT NULL,
     `created_by`   BIGINT    DEFAULT NULL,
     `updated_by`   BIGINT    DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`avatar_id`)
 );

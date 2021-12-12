@@ -21,9 +21,10 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final PostRepository postRepository;
 
-    public TeamResponse.GetTeam getTeamInfo(Long postid){
+    public TeamResponse.GetTeam getTeamInfoByPost(Long postid){
         Post post = postRepository.findById(postid).orElseThrow(PostNotFoundException::new);;
         Team team = teamRepository.findByPost(post).orElseThrow(TeamNotFoundException::new);
         return TeamResponse.GetTeam.build(team);
     }
+
 }

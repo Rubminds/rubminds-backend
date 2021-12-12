@@ -41,9 +41,6 @@ public class Post extends BaseEntity {
     @Builder.Default
     private List<CostomSkill> costomSkills = new ArrayList<>();
 
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-    private Team team;
-
     @Column(nullable = false)
     private String title;
 

@@ -18,8 +18,6 @@ public class TeamResponse {
         public static TeamResponse.GetTeam build(Team team){
             return GetTeam.builder()
                     .teamId(team.getId())
-                    .postTitle(team.getPost().getTitle())
-                    .adminNickname(team.getAdmin().getNickname())
                     .build();
         }
     }

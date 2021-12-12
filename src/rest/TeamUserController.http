@@ -1,0 +1,20 @@
+###
+POST {{apiUrl}}/teamUser
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "team_id" : 2,
+  "user_id" : 3
+}
+
+###
+PUT {{apiUrl}}/teamUser/2
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+
+###
+DELETE {{apiUrl}}/teamUser/4
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8

@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
     Optional<Team> findByPost(Post post);
+    Optional<Team> deleteAllByPost(Post post);
 }

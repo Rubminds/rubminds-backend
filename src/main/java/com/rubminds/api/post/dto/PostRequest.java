@@ -25,7 +25,6 @@ public class PostRequest {
         private Region region;
         private List<Long> postSkillIds;
         private List<String> costomSkills;
-        private Team teamId;
     }
 
 }

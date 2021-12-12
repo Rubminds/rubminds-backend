@@ -13,9 +13,11 @@ import com.rubminds.api.skill.domain.repository.CostomSkillRepository;
 import com.rubminds.api.skill.domain.repository.PostSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
+import com.rubminds.api.team.domain.repository.TeamUserRepository;
+import com.rubminds.api.team.exception.TeamNotFoundException;
 import com.rubminds.api.user.domain.User;
-import com.rubminds.api.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class PostService {
     private final SkillRepository skillRepository;
     private final CostomSkillRepository costomSkillRepository;
     private final TeamRepository teamRepository;
+    private final TeamUserRepository teamUserRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, User user) {
@@ -44,6 +47,9 @@ public class PostService {
 
         Team team = Team.create(user,savedPost);
         teamRepository.save(team);
+
+        TeamUser teamUser = TeamUser.create(team,user,"팀장");
+        teamUserRepository.save(teamUser);
 
         return PostResponse.OnlyId.build(savedPost);
     }
@@ -90,7 +96,11 @@ public class PostService {
 
     @Transactional
     public Long delete(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+
+        teamRepository.deleteAllByPost(post).orElseThrow(TeamNotFoundException::new);
         postRepository.deleteById(postId);
+
         return postId;
     }
 

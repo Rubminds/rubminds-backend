@@ -4,6 +4,7 @@ import com.rubminds.api.post.domain.PostEnumClass.Kinds;
 import com.rubminds.api.post.domain.PostEnumClass.Meeting;
 import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
 import com.rubminds.api.post.domain.PostEnumClass.Region;
+import com.rubminds.api.team.domain.Team;
 import lombok.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class PostRequest {
         private Region region;
         private List<Long> postSkillIds;
         private List<String> costomSkills;
+        private Team teamId;
     }
 
 }

@@ -10,6 +10,7 @@ import com.rubminds.api.post.domain.PostEnumClass.Region;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.skill.domain.CostomSkill;
 import com.rubminds.api.skill.domain.PostSkill;
+import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 

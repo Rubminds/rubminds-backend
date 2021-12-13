@@ -12,6 +12,8 @@ import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.repository.CostomSkillRepository;
 import com.rubminds.api.skill.domain.repository.PostSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
+import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +32,19 @@ public class PostService {
     private final PostSkillRepository postSkillRepository;
     private final SkillRepository skillRepository;
     private final CostomSkillRepository costomSkillRepository;
+    private final TeamRepository teamRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, User user) {
         Post post = Post.create(request, user);
+
         setPostSkills(request,post);
         setCostomSkills(request,post);
         Post savedPost = postRepository.save(post);
+
+        Team team = Team.create(user,savedPost);
+        teamRepository.save(team);
+
         return PostResponse.OnlyId.build(savedPost);
     }
 
@@ -50,7 +58,7 @@ public class PostService {
     @Transactional
     public PostResponse.OnlyId update(Long postId, PostRequest.Create request) {
 
-        Post post = postRepository.findById(postId).orElseThrow(UserNotFoundException::new);
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         post.update(request);
 
         postSkillRepository.deleteAllByPost(post);

@@ -48,7 +48,7 @@ public class PostService {
         Team team = Team.create(user,savedPost);
         teamRepository.save(team);
 
-        TeamUser teamUser = TeamUser.create(team,user,"팀장");
+        TeamUser teamUser = TeamUser.create(team,user);
         teamUserRepository.save(teamUser);
 
         return PostResponse.OnlyId.build(savedPost);

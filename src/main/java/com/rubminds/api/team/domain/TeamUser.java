@@ -26,15 +26,11 @@ public class TeamUser {
     @Column(nullable = false)
     private boolean finish;
 
-    @Column(nullable = false)
-    private String grade;
-
-    public static TeamUser create(Team team, User user, String grade) {
+    public static TeamUser create(Team team, User user) {
         TeamUser teamUser = TeamUser.builder()
                 .team(team)
                 .user(user)
                 .finish(false)
-                .grade(grade)
                 .build();
 
         return teamUser;
@@ -43,7 +39,6 @@ public class TeamUser {
     public void update(TeamUser teamUser) {
         this.team = teamUser.getTeam();
         this.user = teamUser.getUser();
-        this.grade = teamUser.getGrade();
         this.finish = true;
     }
 

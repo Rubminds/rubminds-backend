@@ -21,7 +21,7 @@ public class TeamUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<TeamUserResponse.OnlyId> saveTeamUser(@RequestBody TeamUserRequest.Create request) {
-        TeamUserResponse.OnlyId response = teamUserService.create(request,"팀원");
+        TeamUserResponse.OnlyId response = teamUserService.create(request);
 
         return ResponseEntity.created(URI.create("/api/teamUser/" + response.getId())).body(response);
     }

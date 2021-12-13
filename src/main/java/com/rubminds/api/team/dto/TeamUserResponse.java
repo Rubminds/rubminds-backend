@@ -26,18 +26,16 @@ public class TeamUserResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetTeamUser {
         private Long teamUserId;
-        private Long userid;
+        private Long userId;
         private String userNickname;
         private boolean finish;
-        private String status;
 
         public static TeamUserResponse.GetTeamUser build(TeamUser teamUser){
             return GetTeamUser.builder()
                     .teamUserId(teamUser.getId())
-                    .userid(teamUser.getUser().getId())
+                    .userId(teamUser.getUser().getId())
                     .userNickname(teamUser.getUser().getNickname())
                     .finish(teamUser.isFinish())
-                    .status(teamUser.getGrade())
                     .build();
         }
     }

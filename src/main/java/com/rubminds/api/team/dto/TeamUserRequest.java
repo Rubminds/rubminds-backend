@@ -8,6 +8,5 @@ public class TeamUserRequest {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Create {
        private Long team_id;
-       private Long user_id;
     }
 }

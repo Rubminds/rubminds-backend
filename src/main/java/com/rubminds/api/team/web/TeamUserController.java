@@ -13,15 +13,15 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/teamUser")
+@RequestMapping(path = "/api/team-user")
 public class TeamUserController {
 
     private final TeamUserService teamUserService;
 
-    @PostMapping
+    @PostMapping("/{userid}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TeamUserResponse.OnlyId> saveTeamUser(@RequestBody TeamUserRequest.Create request) {
-        TeamUserResponse.OnlyId response = teamUserService.create(request);
+    public ResponseEntity<TeamUserResponse.OnlyId> saveTeamUser(@PathVariable Long userid, @RequestBody TeamUserRequest.Create request) {
+        TeamUserResponse.OnlyId response = teamUserService.create(userid,request);
 
         return ResponseEntity.created(URI.create("/api/teamUser/" + response.getId())).body(response);
     }

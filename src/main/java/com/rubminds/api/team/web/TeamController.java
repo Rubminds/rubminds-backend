@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class TeamController {
     private final TeamService teamService;
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<TeamResponse.GetTeam> TeamInfo(@PathVariable Long postId) {
-        TeamResponse.GetTeam infoResponse = teamService.getTeamInfo(postId);
+    @GetMapping("/{teamid}")
+    public ResponseEntity<TeamResponse.GetTeam> TeamInfo(@PathVariable Long teamid) {
+        TeamResponse.GetTeam infoResponse = teamService.getTeamInfo(teamid);
         return ResponseEntity.ok().body(infoResponse);
     }
 

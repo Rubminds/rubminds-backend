@@ -23,8 +23,8 @@ public class TeamUserService {
     private final UserRepository userRepository;
     private final TeamUserRepository teamUserRepository;
 
-    public TeamUserResponse.OnlyId create(TeamUserRequest.Create request) {
-        User user = userRepository.findById(request.getUser_id()).orElseThrow(UserNotFoundException::new);
+    public TeamUserResponse.OnlyId create(Long userid, TeamUserRequest.Create request) {
+        User user = userRepository.findById(userid).orElseThrow(UserNotFoundException::new);
         Team team = teamRepository.findById(request.getTeam_id()).orElseThrow(TeamNotFoundException::new);
         TeamUser teamUser = TeamUser.create(team,user);
 

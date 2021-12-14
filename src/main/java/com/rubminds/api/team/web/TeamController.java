@@ -7,10 +7,7 @@ import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.dto.TeamResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,10 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
     private final TeamService teamService;
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<TeamResponse.GetTeam> TeamInfo(@PathVariable Long postId) {
-        TeamResponse.GetTeam infoResponse = teamService.getTeamInfo(postId);
+    @GetMapping("/{teamid}")
+    public ResponseEntity<TeamResponse.GetTeam> TeamInfo(@PathVariable Long teamid) {
+        TeamResponse.GetTeam infoResponse = teamService.getTeamInfo(teamid);
         return ResponseEntity.ok().body(infoResponse);
     }
+
+
+
 }
 

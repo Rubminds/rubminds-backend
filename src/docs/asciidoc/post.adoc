@@ -22,10 +22,6 @@ include::{snippets}/post_create/request-fields.adoc[]
 include::{snippets}/post_create/http-response.adoc[]
 include::{snippets}/post_create/response-fields.adoc[]
 
-
-
-
-
 === 게시글 수정
 `PUT /api/post/{postid}`
 
@@ -48,19 +44,16 @@ include::{snippets}/post_update/request-fields.adoc[]
 include::{snippets}/post_update/http-response.adoc[]
 include::{snippets}/post_update/response-fields.adoc[]
 
-
-
-=== 게시글 조회(한건)
+=== 게시글 상세 조회
 `GET /api/post/{postid}`
 
 요청 HTTP
 include::{snippets}/post_detail/http-request.adoc[]
+include::{snippets}/post_detail/path-parameters.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/post_detail/http-response.adoc[]
 include::{snippets}/post_detail/response-fields.adoc[]
-
-
 
 
 === 게시글 삭제
@@ -68,6 +61,7 @@ include::{snippets}/post_detail/response-fields.adoc[]
 
 요청 HTTP
 include::{snippets}/post_delete/http-request.adoc[]
+include::{snippets}/post_delete/path-parameters.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/post_delete/http-response.adoc[]

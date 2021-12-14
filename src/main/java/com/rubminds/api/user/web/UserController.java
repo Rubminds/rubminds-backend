@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 
 @RestController
@@ -20,18 +19,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse.Update> signup(MultipartHttpServletRequest multipartHttpServletRequest, @CurrentUser CustomUserDetails customUserDetails) {
-        AuthRequest.Update request = userService.insertUpdate(multipartHttpServletRequest);
-        MultipartFile avatar = multipartHttpServletRequest.getFile("avatar");
-        AuthResponse.Update response = userService.signup(request, avatar, customUserDetails.getUser());
+    public ResponseEntity<AuthResponse.Update> signup(@RequestPart(value = "userInfo") AuthRequest.Update request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
+        AuthResponse.Update response = userService.signup(request, file, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<AuthResponse.Update> update(MultipartHttpServletRequest multipartHttpServletRequest, @CurrentUser CustomUserDetails customUserDetails) {
-        AuthRequest.Update request = userService.insertUpdate(multipartHttpServletRequest);
-        MultipartFile avatar = multipartHttpServletRequest.getFile("avatar");
-        AuthResponse.Update response = userService.update(request, avatar, customUserDetails.getUser());
+    public ResponseEntity<AuthResponse.Update> update(@RequestPart(value = "userInfo") AuthRequest.Update request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
+        AuthResponse.Update response = userService.update(request, file, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 

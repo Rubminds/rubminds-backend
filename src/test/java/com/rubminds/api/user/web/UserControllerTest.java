@@ -2,9 +2,10 @@ package com.rubminds.api.user.web;
 
 import com.rubminds.MvcTest;
 import com.rubminds.api.file.domain.Avatar;
-import com.rubminds.api.file.dto.FileRequest;
+import com.rubminds.api.file.dto.FileDTO;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
+import com.rubminds.api.user.dto.AuthRequest;
 import com.rubminds.api.user.dto.AuthResponse;
 import com.rubminds.api.user.dto.UserRequest;
 import com.rubminds.api.user.dto.UserResponse;
@@ -21,6 +22,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -54,7 +57,7 @@ class UserControllerTest extends MvcTest {
                 .signupCheck(true)
                 .build();
 
-        avatar = Avatar.create(FileRequest.Upload.builder()
+        avatar = Avatar.create(FileDTO.Upload.builder()
                 .originalFileName("white.jpeg")
                 .name("cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
                 .extension(".jpeg")
@@ -70,36 +73,28 @@ class UserControllerTest extends MvcTest {
     public void createInfo() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
-        AuthResponse.Update response = AuthResponse.Update.build(user);
+        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(2L, 6L),true));
+        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
 
+        AuthResponse.Update response = AuthResponse.Update.build(user);
 
         given(userService.signup(any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(
                 multipart("/api/user/signup")
+                        .file(mockUserInfo)
                         .file(mockAvatar)
-                        .param("nickname", "동그라미")
-                        .param("introduce","안녕하세요!")
-                        .param("job", "학생")
-                        .param("skillIds","2,6")
-                        .param("isAvatarChanged", "true")
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .contentType(MediaType.MULTIPART_MIXED)
+                        .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-
         );
 
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("user-signup",
                         requestParts(
-                                partWithName("avatar").description("프로필이미지 - 없으면 null")
-                        ),
-                        requestParameters(
-                                parameterWithName("nickname").description("닉네임"),
-                                parameterWithName("introduce").description("소개"),
-                                parameterWithName("job").description("직업"),
-                                parameterWithName("skillIds").description("관심기술 - id1,id2,id3"),
-                                parameterWithName("isAvatarChanged").description("프로필이미지변경여부 - 변경하면 true")
+                                partWithName("avatar").description("프로필이미지 - 없으면 null"),
+                                partWithName("userInfo").description("유저 정보 - JSON")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),
@@ -115,6 +110,8 @@ class UserControllerTest extends MvcTest {
     public void updateInfo() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
+        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(1L, 3L),true));
+        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
 
         AuthResponse.Update response = AuthResponse.Update.build(user);
 
@@ -122,13 +119,10 @@ class UserControllerTest extends MvcTest {
 
         ResultActions results = mvc.perform(
                 multipart("/api/user/update")
+                        .file(mockUserInfo)
                         .file(mockAvatar)
-                        .param("nickname", "동그라미")
-                        .param("introduce","안녕하세요!")
-                        .param("job", "학생")
-                        .param("skillIds","1,3")
-                        .param("isAvatarChanged", "true")
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .contentType(MediaType.MULTIPART_MIXED)
+                        .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
         );
 
@@ -136,14 +130,8 @@ class UserControllerTest extends MvcTest {
                 .andDo(print())
                 .andDo(document("user-update",
                         requestParts(
-                                partWithName("avatar").description("프로필이미지 - 없으면 null")
-                        ),
-                        requestParameters(
-                                parameterWithName("nickname").description("닉네임"),
-                                parameterWithName("introduce").description("소개"),
-                                parameterWithName("job").description("직업"),
-                                parameterWithName("skillIds").description("관심기술 - id1,id2,id3"),
-                                parameterWithName("isAvatarChanged").description("프로필이미지변경여부 - 변경하면 true")
+                                partWithName("avatar").description("프로필이미지 - 없으면 null"),
+                                partWithName("userInfo").description("유저 정보 - JSON")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),

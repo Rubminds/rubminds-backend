@@ -1,7 +1,8 @@
 package com.rubminds.api.user.service;
 
 import com.rubminds.api.file.domain.Avatar;
-import com.rubminds.api.file.service.FileService;
+import com.rubminds.api.file.domain.repository.AvatarRepository;
+import com.rubminds.api.file.service.S3Service;
 import com.rubminds.api.skill.exception.SkillNotFoundException;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
@@ -18,12 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,30 +30,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final UserSkillRepository userSkillRepository;
-    private final FileService fileService;
-
-    public AuthRequest.Update insertUpdate(MultipartHttpServletRequest multipartHttpServletRequest){
-        return AuthRequest.Update.builder()
-                .nickname(multipartHttpServletRequest.getParameter("nickname"))
-                .introduce(multipartHttpServletRequest.getParameter("introduce"))
-                .job(multipartHttpServletRequest.getParameter("job"))
-                .skillIds(multipartHttpServletRequest.getParameter("skillIds"))
-                .isAvatarChanged(multipartHttpServletRequest.getParameter("isAvatarChanged"))
-                .build();
-    }
+    private final AvatarRepository avatarRepository;
+    private final S3Service s3Service;
 
     @Transactional
     public AuthResponse.Update signup(AuthRequest.Update request, MultipartFile file, User user){
         User findUser = findUser(user);
         duplicateNickname(request.getNickname());
-        boolean isAvatarChanged = Boolean.valueOf(request.getIsAvatarChanged());
-        Avatar avatar = null;
-        if(isAvatarChanged) {
-            if (file != null) {
-                avatar = fileService.uploadAvatar(file);
-            }
-            findUser.updateAvatar(avatar);
-        }
+        updateAvatar(request, file, findUser);
         findUser.update(request, setUserSkills(request, findUser));
         return AuthResponse.Update.build(findUser);
     }
@@ -65,17 +47,7 @@ public class UserService {
         User findUser = findUser(user);
         duplicateNickname(request.getNickname());
         userSkillRepository.deleteAllByUser(findUser);
-        boolean isAvatarChanged = Boolean.valueOf(request.getIsAvatarChanged());
-        if(isAvatarChanged){
-            Avatar avatar = null;
-            if(user.getAvatar() != null){
-                fileService.deleteByAvatarId(findUser.getAvatar().getId());
-            }
-            if(file != null){
-                avatar = fileService.uploadAvatar(file);
-            }
-            findUser.updateAvatar(avatar);
-        }
+        updateAvatar(request, file, findUser);
         findUser.update(request, setUserSkills(request, findUser));
         return AuthResponse.Update.build(findUser);
     }
@@ -91,14 +63,29 @@ public class UserService {
     }
 
     private List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
-        List<Long> skillIds = Arrays.stream(request.getSkillIds().split(",")).map(Long::parseLong).collect(Collectors.toList());
+//        List<Long> skillIds = Arrays.stream(request.getSkillIds().split(",")).map(Long::parseLong).collect(Collectors.toList());
         List<UserSkill> userSkills = new ArrayList<>();
-        for(Long skillId : skillIds){
+        for(Long skillId : request.getSkillIds()){
             Skill findSkill = skillRepository.findById(skillId).orElseThrow(SkillNotFoundException::new);
             UserSkill userSkill = UserSkill.create(user, findSkill);
             userSkills.add(userSkill);
         }
         return userSkills;
+    }
+    private Avatar uploadAvatar(MultipartFile file){
+        if(file == null){
+            return null;
+        }
+        return avatarRepository.save(Avatar.create(s3Service.uploadFile(file)));
+    }
+    private void updateAvatar(AuthRequest.Update request, MultipartFile file, User findUser){
+        if(request.isAvatarChanged()){
+            if(findUser.getAvatar() != null){
+                avatarRepository.deleteById(findUser.getAvatar().getId());
+            }
+            Avatar avatar = uploadAvatar(file);
+            findUser.updateAvatar(avatar);
+        }
     }
 
     public UserResponse.Info getMe(User user) {

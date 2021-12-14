@@ -18,7 +18,6 @@
 요청 HTTP
 include::{snippets}/user-signup/http-request.adoc[]
 include::{snippets}/user-signup/request-parts.adoc[]
-include::{snippets}/user-signup/request-parameters.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/user-signup/http-response.adoc[]
@@ -31,7 +30,6 @@ include::{snippets}/user-signup/response-fields.adoc[]
 요청 HTTP
 include::{snippets}/user-update/http-request.adoc[]
 include::{snippets}/user-update/request-parts.adoc[]
-include::{snippets}/user-update/request-parameters.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/user-update/http-response.adoc[]

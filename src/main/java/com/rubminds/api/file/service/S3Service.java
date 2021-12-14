@@ -1,6 +1,6 @@
 package com.rubminds.api.file.service;
 
-import com.rubminds.api.file.dto.FileRequest;
+import com.rubminds.api.file.dto.FileDTO;
 import com.rubminds.api.file.dto.S3Component;
 import com.rubminds.api.file.exception.FileExtensionException;
 import com.rubminds.api.file.exception.FileUploadException;
@@ -23,7 +23,7 @@ public class S3Service {
     private final S3Client s3Client;
     private final S3Component component;
 
-    public FileRequest.Upload uploadFile(MultipartFile file){
+    public FileDTO.Upload uploadFile(MultipartFile file){
         String originalFileName = file.getOriginalFilename();
         String extension = getFileExtension(originalFileName);
         String fileName = createFileName(extension);
@@ -43,7 +43,7 @@ public class S3Service {
         } catch (IOException e) {
             throw new FileUploadException();
         }
-        return FileRequest.Upload.builder()
+        return FileDTO.Upload.builder()
                     .originalFileName(originalFileName)
                     .name(fileName)
                     .extension(extension)
@@ -63,7 +63,7 @@ public class S3Service {
         try {
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
-            throw new FileExtensionException(fileName);
+            throw new FileExtensionException();
         }
     }
 }

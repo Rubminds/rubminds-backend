@@ -2,7 +2,7 @@ package com.rubminds.api.file.dto;
 
 import lombok.*;
 
-public class FileRequest {
+public class FileDTO {
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -20,9 +20,10 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
 
-    public TeamResponse.GetTeam getTeamInfo(Long teamId){
+
+    public TeamResponse.GetTeam getTeamInfo(Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         List<TeamUser> teamUsers = teamUserRepository.findAllByTeam(team);
-        return TeamResponse.GetTeam.build(team,teamUsers);
+        return TeamResponse.GetTeam.build(team, teamUsers);
     }
 }

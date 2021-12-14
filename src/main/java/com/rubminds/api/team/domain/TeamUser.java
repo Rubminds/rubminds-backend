@@ -1,4 +1,5 @@
 package com.rubminds.api.team.domain;
+
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 

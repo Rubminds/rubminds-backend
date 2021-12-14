@@ -1,17 +1,14 @@
 package com.rubminds.api.post.domain.repository;
 
 import com.rubminds.api.post.domain.Post;
-
-import com.rubminds.api.post.dto.PostResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    Optional<Post> findByRegion(String region);
-
-
+    @Query("select p from Post p left join fetch p.customSkills join fetch p.writer where p.id=:postId")
+    Optional<Post> findByIdWithCustomSkillAndUser(Long postId);
 
 }
 

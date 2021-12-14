@@ -1,9 +1,6 @@
 package com.rubminds.api.team.web;
 
-import com.rubminds.api.post.dto.PostResponse;
-import com.rubminds.api.skill.dto.SkillResponse;
 import com.rubminds.api.team.Service.TeamService;
-import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.dto.TeamResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

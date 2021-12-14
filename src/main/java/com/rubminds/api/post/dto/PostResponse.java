@@ -1,15 +1,14 @@
 package com.rubminds.api.post.dto;
 
 import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.PostEnumClass.Kinds;
-import com.rubminds.api.post.domain.PostEnumClass.Meeting;
-import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
-import com.rubminds.api.post.domain.PostEnumClass.Region;
-import com.rubminds.api.skill.domain.CostomSkill;
-import com.rubminds.api.skill.domain.PostSkill;
-import com.rubminds.api.skill.dto.CostomSkillResponse;
+import com.rubminds.api.post.domain.Kinds;
+import com.rubminds.api.post.domain.Meeting;
+import com.rubminds.api.post.domain.PostStatus;
+import com.rubminds.api.skill.domain.CustomSkill;
+import com.rubminds.api.post.domain.PostSkill;
+import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.dto.CustomSkillResponse;
 import com.rubminds.api.skill.dto.PostSkillResponse;
-import com.rubminds.api.user.domain.User;
 import lombok.*;
 
 import java.util.List;
@@ -43,11 +42,11 @@ public class PostResponse {
         private Kinds kinds;
         private Meeting meeting;
         private PostStatus postsStatus;
-        private Region region;
+        private String region;
         private List<PostSkillResponse.GetPostSkill> postSkills;
-        private List<CostomSkillResponse.GetCostomSkill> costomSkills;
+        private List<CustomSkillResponse.GetCustomSkill> customSkills;
 
-        public static PostResponse.Info build(Post post, List<PostSkill> postSkills, List<CostomSkill> costomSkills) {
+        public static PostResponse.Info build(Post post, List<Skill> skills) {
             return Info.builder()
                     .id(post.getId())
                     .writer(post.getWriter().getNickname())
@@ -58,8 +57,8 @@ public class PostResponse {
                     .meeting(post.getMeeting())
                     .postsStatus(post.getPostStatus())
                     .region(post.getRegion())
-                    .postSkills(postSkills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
-                    .costomSkills(costomSkills.stream().map(CostomSkillResponse.GetCostomSkill::build).collect(Collectors.toList()))
+                    .postSkills(skills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
+                    .customSkills(post.getCustomSkills().stream().map(CustomSkillResponse.GetCustomSkill::build).collect(Collectors.toList()))
                     .build();
         }
 

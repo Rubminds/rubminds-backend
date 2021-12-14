@@ -1,7 +1,5 @@
 package com.rubminds.api.team.dto;
 
-import com.rubminds.api.skill.domain.PostSkill;
-import com.rubminds.api.skill.dto.PostSkillResponse;
 import com.rubminds.api.team.domain.Team;
 import lombok.*;
 

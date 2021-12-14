@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/5
+GET {{apiUrl}}/post/3
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -9,15 +9,20 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "title" : "2요",
-  "content" : "스터디 모집합니다",
-  "headcount" : 3,
-  "kinds" : "PROJECT",
-  "meeting": "BOTH",
-  "postsStatus" : "GATHERING",
-  "region" : "서울",
-  "postSkillIds": [3, 2],
-  "costomSkills" : ["firebase","reduct"]
+  "title": "2요",
+  "content": "스터디 모집합니다",
+  "headcount": 3,
+  "kinds": "PROJECT",
+  "meeting": "ONLINE",
+  "region": "서울",
+  "skillIds": [
+    2,
+    3
+  ],
+  "customSkillName": [
+    "firebase",
+    "spring"
+  ]
 }
 
 ###
@@ -26,16 +31,21 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "title" : "123",
-  "content" : "수정완료",
-  "headcount" : 1,
-  "kinds" : "PROJECT",
+  "title": "123",
+  "content": "수정완료",
+  "headcount": 1,
+  "kinds": "PROJECT",
   "meeting": "BOTH",
-  "postsStatus" : "GATHERING",
-  "region" : "서울",
-  "postSkillIds": [3, 2],
-  "costomSkills" : ["firebase","mysql"]
-
+  "postsStatus": "GATHERING",
+  "region": "서울",
+  "postSkillIds": [
+    3,
+    2
+  ],
+  "customSkills": [
+    "firebase",
+    "mysql"
+  ]
 }
 
 ###

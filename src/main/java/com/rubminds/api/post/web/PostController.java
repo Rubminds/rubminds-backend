@@ -20,20 +20,20 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PostResponse.OnlyId> savePost(@RequestBody PostRequest.Create request, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.OnlyId response = postService.create(request, customUserDetails.getUser());
+    public ResponseEntity<PostResponse.OnlyId> create(@RequestBody PostRequest.CreateOrUpdate request, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.OnlyId response = postService.createRecruit(request, customUserDetails.getUser());
 
         return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse.Info> getInfo(@PathVariable Long postId) {
         PostResponse.Info infoResponse = postService.getPost(postId);
         return ResponseEntity.ok().body(infoResponse);
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.Create request) {
+    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.CreateOrUpdate request) {
         PostResponse.OnlyId response = postService.update(postId, request);
         return ResponseEntity.ok().body(response);
     }
@@ -41,8 +41,5 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public Long delete(@PathVariable("postId") Long postId) {
         return postService.delete(postId);
-
     }
-
-
 }

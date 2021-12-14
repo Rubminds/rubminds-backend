@@ -1,10 +1,6 @@
 package com.rubminds.api.post.dto;
 
-import com.rubminds.api.post.domain.PostEnumClass.Kinds;
-import com.rubminds.api.post.domain.PostEnumClass.Meeting;
-import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
-import com.rubminds.api.post.domain.PostEnumClass.Region;
-import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.post.domain.Meeting;
 import lombok.*;
 
 import java.util.List;
@@ -14,17 +10,13 @@ public class PostRequest {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Create {
-        private String writer;
+    public static class CreateOrUpdate {
         private String title;
         private String content;
         private int headcount;
-        private Kinds kinds;
         private Meeting meeting;
-        private PostStatus postsStatus;
-        private Region region;
-        private List<Long> postSkillIds;
-        private List<String> costomSkills;
+        private String region;
+        private List<Long> skillIds;
+        private List<String> customSkillName;
     }
-
 }

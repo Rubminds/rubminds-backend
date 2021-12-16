@@ -73,7 +73,7 @@ class UserControllerTest extends MvcTest {
     public void createInfo() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
-        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(2L, 6L),true));
+        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(2L, 6L)));
         MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
 
         AuthResponse.Update response = AuthResponse.Update.build(user);
@@ -110,7 +110,7 @@ class UserControllerTest extends MvcTest {
     public void updateInfo() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
-        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(1L, 3L),true));
+        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(1L, 3L)));
         MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
 
         AuthResponse.Update response = AuthResponse.Update.build(user);
@@ -155,8 +155,7 @@ class UserControllerTest extends MvcTest {
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
                 .build();
-
-        UserResponse.Info response = UserResponse.Info.build(user);
+        UserResponse.Info response = UserResponse.Info.build(user, user.getAvatar().getUrl());
 
         given(userService.getMe(any())).willReturn(response);
 
@@ -199,7 +198,7 @@ class UserControllerTest extends MvcTest {
                 .id(1L)
                 .build();
 
-        UserResponse.Info response = UserResponse.Info.build(user);
+        UserResponse.Info response = UserResponse.Info.build(user, user.getAvatar().getUrl());
 
         given(userService.getUserInfo(any())).willReturn(response);
 

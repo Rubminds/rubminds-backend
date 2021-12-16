@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserService{
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final UserSkillRepository userSkillRepository;
@@ -37,7 +37,8 @@ public class UserService {
     public AuthResponse.Update signup(AuthRequest.Update request, MultipartFile file, User user){
         User findUser = findUser(user);
         duplicateNickname(request.getNickname());
-        updateAvatar(request, file, findUser);
+        Avatar avatar = uploadAvatar(file);
+        findUser.updateAvatar(avatar);
         findUser.update(request, setUserSkills(request, findUser));
         return AuthResponse.Update.build(findUser);
     }
@@ -47,7 +48,11 @@ public class UserService {
         User findUser = findUser(user);
         duplicateNickname(request.getNickname());
         userSkillRepository.deleteAllByUser(findUser);
-        updateAvatar(request, file, findUser);
+        if(findUser.getAvatar()!=null){
+            avatarRepository.deleteById(findUser.getAvatar().getId());
+        }
+        Avatar avatar = uploadAvatar(file);
+        findUser.updateAvatar(avatar);
         findUser.update(request, setUserSkills(request, findUser));
         return AuthResponse.Update.build(findUser);
     }
@@ -62,9 +67,8 @@ public class UserService {
         }
     }
 
-    private List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
-//        List<Long> skillIds = Arrays.stream(request.getSkillIds().split(",")).map(Long::parseLong).collect(Collectors.toList());
-        List<UserSkill> userSkills = new ArrayList<>();
+    private List<UserSkill>setUserSkills(AuthRequest.Update request, User user){
+        List<UserSkill>userSkills = new ArrayList<>();
         for(Long skillId : request.getSkillIds()){
             Skill findSkill = skillRepository.findById(skillId).orElseThrow(SkillNotFoundException::new);
             UserSkill userSkill = UserSkill.create(user, findSkill);
@@ -72,28 +76,29 @@ public class UserService {
         }
         return userSkills;
     }
+
     private Avatar uploadAvatar(MultipartFile file){
         if(file == null){
             return null;
         }
         return avatarRepository.save(Avatar.create(s3Service.uploadFile(file)));
     }
-    private void updateAvatar(AuthRequest.Update request, MultipartFile file, User findUser){
-        if(request.isAvatarChanged()){
-            if(findUser.getAvatar() != null){
-                avatarRepository.deleteById(findUser.getAvatar().getId());
-            }
-            Avatar avatar = uploadAvatar(file);
-            findUser.updateAvatar(avatar);
-        }
-    }
 
     public UserResponse.Info getMe(User user) {
-        return UserResponse.Info.build(findUser(user));
+        User findUser = findUser(user);
+        return UserResponse.Info.build(findUser, getAvatarUrl(findUser));
     }
 
     public UserResponse.Info getUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        return UserResponse.Info.build(user);
+        return UserResponse.Info.build(user, getAvatarUrl(user));
+    }
+
+    private String getAvatarUrl(User user){
+        String avatarUrl = null;
+        if(user.getAvatar()!=null){
+            avatarUrl = user.getAvatar().getUrl();
+        }
+        return avatarUrl;
     }
 }

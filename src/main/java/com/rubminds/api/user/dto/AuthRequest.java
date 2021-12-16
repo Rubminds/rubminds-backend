@@ -22,6 +22,5 @@ public class AuthRequest {
         private String job;
         private String introduce;
         private List<Long> skillIds;
-        private boolean isAvatarChanged;
     }
 }

@@ -64,6 +64,13 @@ public class PostService {
         postSkillRepository.deleteAllByPost(post);
         customSkillRepository.deleteAllByPost(post);
 
+        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
+        List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
+        List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
+
+        postSkillRepository.saveAll(postSkills);
+        customSkillRepository.saveAll(customSkills);
+
         return PostResponse.OnlyId.build(post);
     }
 
@@ -71,6 +78,7 @@ public class PostService {
     @Transactional
     public Long delete(Long postId) {
         postRepository.deleteById(postId);
+        teamRepository.deleteAllByPostId(postId);
         return postId;
     }
 }

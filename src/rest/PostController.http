@@ -26,7 +26,7 @@ Content-Type: application/json;charset=UTF-8
 }
 
 ###
-PUT {{apiUrl}}/post/5
+PUT {{apiUrl}}/post/6
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -39,7 +39,7 @@ Content-Type: application/json;charset=UTF-8
   "postsStatus": "GATHERING",
   "region": "서울",
   "postSkillIds": [
-    3,
+    1,
     2
   ],
   "customSkills": [
@@ -49,7 +49,7 @@ Content-Type: application/json;charset=UTF-8
 }
 
 ###
-DELETE {{apiUrl}}/post/4
+DELETE {{apiUrl}}/post/6
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

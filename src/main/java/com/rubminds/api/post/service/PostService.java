@@ -63,7 +63,8 @@ public class PostService {
     public PostResponse.Info getPost(Long postId) {
         Post post = postRepository.findByIdWithCustomSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
         List<Skill> skills = skillRepository.findAllByPost(postId);
-        return PostResponse.Info.build(post, skills);
+        Team team = teamRepository.findByPostId(postId);
+        return PostResponse.Info.build(post, skills,team);
     }
 
 

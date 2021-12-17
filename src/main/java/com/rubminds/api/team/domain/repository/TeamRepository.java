@@ -11,6 +11,9 @@ import java.util.Optional;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
+    @Query("select t from Team t join t.post p where p.id=:postId")
+    Team findByPostId(Long postId);
+
     Optional<Team> deleteAllByPost(Post post);
 
 

@@ -9,6 +9,7 @@ import com.rubminds.api.post.domain.PostSkill;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.dto.CustomSkillResponse;
 import com.rubminds.api.skill.dto.PostSkillResponse;
+import com.rubminds.api.team.domain.Team;
 import lombok.*;
 
 import java.util.List;
@@ -45,8 +46,9 @@ public class PostResponse {
         private String region;
         private List<PostSkillResponse.GetPostSkill> postSkills;
         private List<CustomSkillResponse.GetCustomSkill> customSkills;
+        private Long teamId;
 
-        public static PostResponse.Info build(Post post, List<Skill> skills) {
+        public static PostResponse.Info build(Post post, List<Skill> skills, Team team) {
             return Info.builder()
                     .id(post.getId())
                     .writer(post.getWriter().getNickname())
@@ -59,6 +61,7 @@ public class PostResponse {
                     .region(post.getRegion())
                     .postSkills(skills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
                     .customSkills(post.getCustomSkills().stream().map(CustomSkillResponse.GetCustomSkill::build).collect(Collectors.toList()))
+                    .teamId(team.getId())
                     .build();
         }
 

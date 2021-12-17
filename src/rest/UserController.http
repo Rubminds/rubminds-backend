@@ -1,26 +1,66 @@
 POST {{apiUrl}}/user/signup
 Authorization: {{authorizationToken}}
+Content-Type: multipart/form-data; boundary=boundary
+Accept: application/json, image/*
+
+--boundary
+Content-Disposition: form-data; name="userInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
   "nickname": "테스트1",
   "job": "학생",
-  "introduce": "test ok",
-  "skillIds": [1, 2]
+  "introduce": "test",
+  "skillIds": [2, 6],
+  "isAvatarChanged": true
 }
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="white.jpeg"
+Content-Type: image/jpeg
 
+< ./../main/resources/dummy/image/white.jpeg
+--boundary--
 ###
 POST {{apiUrl}}/user/update
 Authorization: {{authorizationToken}}
+Content-Type: multipart/form-data; boundary=boundary
+Accept: application/json, image/*
+
+--boundary
+Content-Disposition: form-data; name="userInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
-  "nickname": "테스트",
+  "nickname": "테스트2",
   "job": "학생",
-  "introduce": "test",
-  "skillIds": [1, 5]
+  "introduce": "update테스트",
+  "skillIds": [1, 3],
+  "isAvatarChanged": true
 }
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="white.jpeg"
+Content-Type: image/jpeg
 
+< ./../main/resources/dummy/image/white.jpeg
+--boundary--
+###
+POST {{apiUrl}}/user/update
+Authorization: {{authorizationToken}}
+Content-Type: multipart/form-data; boundary=boundary
+Accept: application/json, image/*
+
+--boundary
+Content-Disposition: form-data; name="userInfo";
+Content-Type: application/json;charset=UTF-8
+
+{
+  "nickname": "이미지없이테스트",
+  "job": "학생",
+  "introduce": "update테스트",
+  "skillIds": [1, 3],
+  "isAvatarChanged": true
+}
+--boundary--
 ###
 GET {{apiUrl}}/user/me
 Authorization: {{authorizationToken}}
@@ -30,5 +70,4 @@ Content-Type: application/json;charset=UTF-8
 GET {{apiUrl}}/user/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
-
 

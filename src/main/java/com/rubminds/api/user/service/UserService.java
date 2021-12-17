@@ -1,6 +1,9 @@
 package com.rubminds.api.user.service;
 
-import com.rubminds.api.skill.Exception.SkillNotFoundException;
+import com.rubminds.api.file.domain.Avatar;
+import com.rubminds.api.file.domain.repository.AvatarRepository;
+import com.rubminds.api.file.service.S3Service;
+import com.rubminds.api.skill.exception.SkillNotFoundException;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
@@ -15,6 +18,7 @@ import com.rubminds.api.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,41 +26,49 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserService{
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final UserSkillRepository userSkillRepository;
+    private final AvatarRepository avatarRepository;
+    private final S3Service s3Service;
 
     @Transactional
-    public AuthResponse.Update signup(AuthRequest.Update request, User user){
+    public AuthResponse.Update signup(AuthRequest.Update request, MultipartFile file, User user){
         User findUser = findUser(user);
         duplicateNickname(request.getNickname());
+        Avatar avatar = uploadAvatar(file);
+        findUser.updateAvatar(avatar);
         findUser.update(request, setUserSkills(request, findUser));
         return AuthResponse.Update.build(findUser);
     }
 
     @Transactional
-    public AuthResponse.Update update(AuthRequest.Update request, User user){
+    public AuthResponse.Update update(AuthRequest.Update request, MultipartFile file, User user){
         User findUser = findUser(user);
         duplicateNickname(request.getNickname());
         userSkillRepository.deleteAllByUser(findUser);
+        if(findUser.getAvatar()!=null){
+            avatarRepository.deleteById(findUser.getAvatar().getId());
+        }
+        Avatar avatar = uploadAvatar(file);
+        findUser.updateAvatar(avatar);
         findUser.update(request, setUserSkills(request, findUser));
         return AuthResponse.Update.build(findUser);
     }
 
-    public User findUser(User user){
-        User findUser = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
-        return findUser;
+    private User findUser(User user){
+        return userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
     }
 
-    public void duplicateNickname(String nickname){
+    private void duplicateNickname(String nickname){
         if(userRepository.existsByNickname(nickname)) {
             throw new DuplicateNicknameException();
         }
     }
 
-    public List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
-        List<UserSkill> userSkills = new ArrayList<>();
+    private List<UserSkill>setUserSkills(AuthRequest.Update request, User user){
+        List<UserSkill>userSkills = new ArrayList<>();
         for(Long skillId : request.getSkillIds()){
             Skill findSkill = skillRepository.findById(skillId).orElseThrow(SkillNotFoundException::new);
             UserSkill userSkill = UserSkill.create(user, findSkill);
@@ -65,12 +77,28 @@ public class UserService {
         return userSkills;
     }
 
+    private Avatar uploadAvatar(MultipartFile file){
+        if(file == null){
+            return null;
+        }
+        return avatarRepository.save(Avatar.create(s3Service.uploadFile(file)));
+    }
+
     public UserResponse.Info getMe(User user) {
-        return UserResponse.Info.build(findUser(user));
+        User findUser = findUser(user);
+        return UserResponse.Info.build(findUser, getAvatarUrl(findUser));
     }
 
     public UserResponse.Info getUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        return UserResponse.Info.build(user);
+        return UserResponse.Info.build(user, getAvatarUrl(user));
+    }
+
+    private String getAvatarUrl(User user){
+        String avatarUrl = null;
+        if(user.getAvatar()!=null){
+            avatarUrl = user.getAvatar().getUrl();
+        }
+        return avatarUrl;
     }
 }

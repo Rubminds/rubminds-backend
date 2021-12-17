@@ -3,6 +3,7 @@ CREATE TABLE `user`
 (
     `id`           BIGINT      NOT NULL AUTO_INCREMENT,
     `oauth_id`     VARCHAR(50) NOT NULL,
+    `avatar_id`    BIGINT      DEFAULT NULL,
     `nickname`     VARCHAR(50),
     `job`          VARCHAR(50),
     `introduce`    VARCHAR(255),

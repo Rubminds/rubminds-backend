@@ -3,6 +3,8 @@ spring:
     group:
       local:
         - local
+    include:
+      - aws
   jpa:
     hibernate:
       ddl-auto: validate

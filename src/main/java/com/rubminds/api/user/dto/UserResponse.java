@@ -20,8 +20,9 @@ public class UserResponse {
         private List<UserSkillResponse.GetUserSkill> userSkills;
         private double attendLevel;
         private double workLevel;
+        private String avatar;
 
-        public static UserResponse.Info build(User user) {
+        public static UserResponse.Info build(User user, String avatarUrl) {
             return UserResponse.Info.builder()
                     .id(user.getId())
                     .nickname(user.getNickname())
@@ -30,6 +31,7 @@ public class UserResponse {
                     .userSkills(user.getUserSkills().stream().map(UserSkillResponse.GetUserSkill::build).collect(Collectors.toList()))
                     .attendLevel(user.getAttendLevel())
                     .workLevel(user.getWorkLevel())
+                    .avatar(avatarUrl)
                     .build();
         }
     }

@@ -5,7 +5,7 @@ import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.exception.PostNotFoundException;
-import com.rubminds.api.skill.Exception.SkillNotFoundException;
+import com.rubminds.api.skill.exception.SkillNotFoundException;
 import com.rubminds.api.skill.domain.CostomSkill;
 import com.rubminds.api.skill.domain.PostSkill;
 import com.rubminds.api.skill.domain.Skill;

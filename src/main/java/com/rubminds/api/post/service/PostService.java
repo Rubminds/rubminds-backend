@@ -32,11 +32,22 @@ public class PostService {
     private final TeamRepository teamRepository;
 
     @Transactional
-    public PostResponse.OnlyId createRecruit(PostRequest.CreateOrUpdate request, User user) {
+    public PostResponse.OnlyId createRecruitProjectOrStudy(PostRequest.CreateOrUpdate request, User user) {
         List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
+        Post post = Post.createRecruitProjectOrStudy(request, user);
+        Post savedPost = createPost(request, user, skills, post);
+        return PostResponse.OnlyId.build(savedPost);
+    }
 
-        Post post = Post.createRecruit(request, user);
+    @Transactional
+    public PostResponse.OnlyId createRecruitScout(PostRequest.CreateOrUpdate request, User user) {
+        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
+        Post post = Post.createRecruitScout(request, user);
+        Post savedPost = createPost(request, user, skills, post);
+        return PostResponse.OnlyId.build(savedPost);
+    }
 
+    private Post createPost(PostRequest.CreateOrUpdate request, User user, List<Skill> skills, Post post) {
         List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
         List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
 
@@ -46,8 +57,7 @@ public class PostService {
 
         Team team = Team.create(user, savedPost);
         teamRepository.save(team);
-
-        return PostResponse.OnlyId.build(savedPost);
+        return savedPost;
     }
 
     public PostResponse.Info getPost(Long postId) {

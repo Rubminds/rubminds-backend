@@ -64,12 +64,25 @@ public class Post extends BaseEntity {
         this.meeting = request.getMeeting();
     }
 
-    public static Post createRecruit(PostRequest.CreateOrUpdate request, User user) {
+    public static Post createRecruitProjectOrStudy(PostRequest.CreateOrUpdate request, User user) {
         Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .headcount(request.getHeadcount())
-                .kinds(Kinds.PROJECT)
+                .kinds(request.getKinds())
+                .meeting(request.getMeeting())
+                .postStatus(PostStatus.RECRUIT)
+                .region(request.getRegion())
+                .writer(user)
+                .build();
+        return post;
+    }
+
+    public static Post createRecruitScout(PostRequest.CreateOrUpdate request, User user) {
+        Post post = Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .kinds(Kinds.SCOUT)
                 .meeting(request.getMeeting())
                 .postStatus(PostStatus.RECRUIT)
                 .region(request.getRegion())

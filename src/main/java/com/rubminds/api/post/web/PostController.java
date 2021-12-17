@@ -1,5 +1,6 @@
 package com.rubminds.api.post.web;
 
+import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.service.PostService;
@@ -20,8 +21,21 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PostResponse.OnlyId> create(@RequestBody PostRequest.CreateOrUpdate request, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.OnlyId response = postService.createRecruit(request, customUserDetails.getUser());
+    public ResponseEntity<PostResponse.OnlyId> createProjectOrStudy(@RequestBody PostRequest.CreateOrUpdate request, @CurrentUser CustomUserDetails customUserDetails) {
+        if(request.getKinds() == Kinds.SCOUT){
+            PostResponse.OnlyId response = postService.createRecruitScout(request, customUserDetails.getUser());
+            return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
+        }
+        else {
+            PostResponse.OnlyId response = postService.createRecruitProjectOrStudy(request, customUserDetails.getUser());
+            return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
+        }
+    }
+
+    @PostMapping("/scout")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<PostResponse.OnlyId> createScout(@RequestBody PostRequest.CreateOrUpdate request, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.OnlyId response = postService.createRecruitScout(request, customUserDetails.getUser());
 
         return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
     }

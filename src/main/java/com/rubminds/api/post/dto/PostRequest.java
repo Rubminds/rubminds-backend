@@ -1,8 +1,10 @@
 package com.rubminds.api.post.dto;
 
+import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Meeting;
 import lombok.*;
 
+import java.nio.file.WatchEvent.Kind;
 import java.util.List;
 
 public class PostRequest {
@@ -14,6 +16,7 @@ public class PostRequest {
         private String title;
         private String content;
         private int headcount;
+        private Kinds kinds;
         private Meeting meeting;
         private String region;
         private List<Long> skillIds;

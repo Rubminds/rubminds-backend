@@ -1,4 +1,4 @@
-package com.rubminds.api.skill.domain.repository;
+package com.rubminds.api.post.domain.repository;
 
 
 import com.rubminds.api.post.domain.Post;

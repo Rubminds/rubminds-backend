@@ -9,7 +9,7 @@ import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
-import com.rubminds.api.skill.domain.repository.PostSkillRepository;
+import com.rubminds.api.post.domain.repository.PostSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.repository.TeamRepository;
@@ -56,6 +56,7 @@ public class PostService {
         return PostResponse.Info.build(post, skills);
     }
 
+
     @Transactional
     public PostResponse.OnlyId update(Long postId, PostRequest.CreateOrUpdate request) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
@@ -78,7 +79,8 @@ public class PostService {
     @Transactional
     public Long delete(Long postId) {
         postRepository.deleteById(postId);
-        teamRepository.deleteAllByPostId(postId);
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        teamRepository.deleteAllByPost(post);
         return postId;
     }
 }

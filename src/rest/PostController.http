@@ -26,7 +26,7 @@ Content-Type: application/json;charset=UTF-8
 }
 
 ###
-PUT {{apiUrl}}/post/6
+PUT {{apiUrl}}/post/11
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -38,11 +38,11 @@ Content-Type: application/json;charset=UTF-8
   "meeting": "BOTH",
   "postsStatus": "GATHERING",
   "region": "서울",
-  "postSkillIds": [
+  "skillIds": [
     1,
     2
   ],
-  "customSkills": [
+  "customSkillName": [
     "firebase",
     "mysql"
   ]

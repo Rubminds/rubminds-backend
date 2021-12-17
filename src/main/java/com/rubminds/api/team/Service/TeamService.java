@@ -19,11 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TeamService {
     private final TeamRepository teamRepository;
-    private final PostRepository postRepository;
 
-    public TeamResponse.GetTeam getTeamInfo(Long postid){
-        Post post = postRepository.findById(postid).orElseThrow(PostNotFoundException::new);;
-        Team team = teamRepository.findByPostId(postid).orElseThrow(TeamNotFoundException::new);
+    public TeamResponse.GetTeam getTeamInfo(Long teamId){
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         return TeamResponse.GetTeam.build(team);
     }
 

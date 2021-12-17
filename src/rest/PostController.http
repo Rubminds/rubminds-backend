@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/1
+GET {{apiUrl}}/post/5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -16,11 +16,12 @@ Content-Type: application/json;charset=UTF-8
   "meeting": "BOTH",
   "postsStatus" : "GATHERING",
   "region" : "서울",
-  "postSkillIds": [3, 2]
+  "postSkillIds": [3, 2],
+  "costomSkills" : ["firebase","reduct"]
 }
 
 ###
-PUT {{apiUrl}}/post/1
+PUT {{apiUrl}}/post/5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -32,12 +33,13 @@ Content-Type: application/json;charset=UTF-8
   "meeting": "BOTH",
   "postsStatus" : "GATHERING",
   "region" : "서울",
-  "postSkillIds": [3, 2]
+  "postSkillIds": [3, 2],
+  "costomSkills" : ["firebase","mysql"]
 
 }
 
 ###
-DELETE {{apiUrl}}/post/1
+DELETE {{apiUrl}}/post/2
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

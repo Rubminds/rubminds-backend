@@ -1,0 +1,8 @@
+GET {{apiUrl}}/team/2
+
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+
+
+

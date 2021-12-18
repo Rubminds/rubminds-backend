@@ -1,7 +1,10 @@
 package com.rubminds.api.post.service;
 
+import com.rubminds.api.post.domain.PostLike;
+import com.rubminds.api.post.domain.repository.PostLikeRepository;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.repository.PostRepository;
+import com.rubminds.api.post.dto.PostLikeRequest;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.exception.PostNotFoundException;
@@ -36,6 +39,7 @@ public class PostService {
     private final CostomSkillRepository costomSkillRepository;
     private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, User user) {
@@ -54,11 +58,35 @@ public class PostService {
         return PostResponse.OnlyId.build(savedPost);
     }
 
-    public PostResponse.Info getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+    public PostResponse.Info getPost(User user, Long postId) {
+        Post post = findPost(postId);
         List<PostSkill> postskills = postSkillRepository.findAllByPost(post);
-        List<CostomSkill> costomSkills = costomSkillRepository.findAllByPost(post);
-        return PostResponse.Info.build(post,postskills,costomSkills);
+        List<CostomSkill> customSkills = costomSkillRepository.findAllByPost(post);
+        boolean postLike = getPostLikeStatus(user, post);
+        return PostResponse.Info.build(post,postskills,customSkills,postLike);
+    }
+
+    public PostResponse.GetPosts getPosts(User user) {
+        List<Post> postList = postRepository.findAll();
+        return createPosts(postList, user);
+    }
+
+    public PostResponse.GetPosts getLikePosts(User user) {
+        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
+        List<Post> postList = new ArrayList<>();
+        for (PostLike postLike : postLikes) {
+            Post post = postLike.getPost();
+            postList.add(post);
+        }
+        return createPosts(postList, user);
+    }
+
+    private PostResponse.GetPosts createPosts(List<Post> postList, User user) {
+        List<PostResponse.GetPost> posts = new ArrayList<>();
+        for (Post post : postList) {
+            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
+        }
+        return PostResponse.GetPosts.build(posts);
     }
 
     @Transactional
@@ -104,5 +132,23 @@ public class PostService {
         return postId;
     }
 
+    @Transactional
+    public PostResponse.GetPostLike updatePostLike(User user, PostLikeRequest.Update request){
+        Post post = findPost(request.getPostId());
+        if(getPostLikeStatus(user, post)){
+            postLikeRepository.deleteByUserAndPost(user, post);
+            return PostResponse.GetPostLike.build(false);
+        }else{
+            postLikeRepository.save(PostLike.create(user, post));
+            return PostResponse.GetPostLike.build(true);
+        }
+    }
 
+    private Post findPost(Long postId){
+        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+    }
+
+    private boolean getPostLikeStatus(User user, Post post){
+        return postLikeRepository.existsByUserAndPost(user, post);
+    }
 }

@@ -53,3 +53,21 @@ DELETE {{apiUrl}}/post/6
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
+###
+GET {{apiUrl}}/post/getPosts
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+###
+GET {{apiUrl}}/post/getLikePosts
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+###
+POST {{apiUrl}}/post/postLike
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "postId": 1
+}

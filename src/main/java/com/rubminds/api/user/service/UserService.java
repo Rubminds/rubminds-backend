@@ -67,7 +67,7 @@ public class UserService{
         }
     }
 
-    private List<UserSkill>setUserSkills(AuthRequest.Update request, User user){
+    private List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
         List<UserSkill>userSkills = new ArrayList<>();
         for(Long skillId : request.getSkillIds()){
             Skill findSkill = skillRepository.findById(skillId).orElseThrow(SkillNotFoundException::new);

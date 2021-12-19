@@ -54,7 +54,7 @@ Content-Disposition: form-data; name="userInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
-  "nickname": "이미지없이테스트",
+  "nickname": "테스트1",
   "job": "학생",
   "introduce": "update테스트",
   "skillIds": [1, 3],

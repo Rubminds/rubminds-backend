@@ -3,6 +3,8 @@ package com.rubminds.api.user.web;
 import com.rubminds.MvcTest;
 import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.file.dto.FileDTO;
+import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.dto.AuthRequest;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -76,7 +79,7 @@ class UserControllerTest extends MvcTest {
         String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(2L, 6L)));
         MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
 
-        AuthResponse.Update response = AuthResponse.Update.build(user);
+        AuthResponse.Signup response = AuthResponse.Signup.build(user, avatar.getUrl());
 
         given(userService.signup(any(), any(), any())).willReturn(response);
 
@@ -99,8 +102,7 @@ class UserControllerTest extends MvcTest {
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
-                                fieldWithPath("job").type(JsonFieldType.STRING).description("직업"),
-                                fieldWithPath("introduce").type(JsonFieldType.STRING).description("소개")
+                                fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url")
                         )
                 ));
     }
@@ -112,10 +114,6 @@ class UserControllerTest extends MvcTest {
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
         String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(1L, 3L)));
         MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
-
-        AuthResponse.Update response = AuthResponse.Update.build(user);
-
-        given(userService.update(any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(
                 multipart("/api/user/update")
@@ -132,12 +130,6 @@ class UserControllerTest extends MvcTest {
                         requestParts(
                                 partWithName("avatar").description("프로필이미지 - 없으면 null"),
                                 partWithName("userInfo").description("유저 정보 - JSON")
-                        ),
-                        responseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
-                                fieldWithPath("job").type(JsonFieldType.STRING).description("직업"),
-                                fieldWithPath("introduce").type(JsonFieldType.STRING).description("소개")
                         )
                 ));
     }
@@ -155,6 +147,14 @@ class UserControllerTest extends MvcTest {
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
                 .build();
+
+        List<UserSkill> userSkills = new ArrayList<>();
+        UserSkill userSkill1 = UserSkill.builder().id(1L).user(user).skill(Skill.builder().id(1L).name("Spring").build()).build();
+        UserSkill userSkill2 = UserSkill.builder().id(2L).user(user).skill(Skill.builder().id(2L).name("JavaScript").build()).build();
+        userSkills.add(userSkill1);
+        userSkills.add(userSkill2);
+        user.getUserSkills().addAll(userSkills);
+
         UserResponse.Info response = UserResponse.Info.build(user, user.getAvatar().getUrl());
 
         given(userService.getMe(any())).willReturn(response);
@@ -172,7 +172,9 @@ class UserControllerTest extends MvcTest {
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
                                 fieldWithPath("job").type(JsonFieldType.STRING).description("직업"),
                                 fieldWithPath("introduce").type(JsonFieldType.STRING).description("소개"),
-                                fieldWithPath("userSkills").type(JsonFieldType.ARRAY).description("관심기술 - [{\"userSkillId\": id,\"name\": name}]"),
+                                fieldWithPath("userSkills").type(JsonFieldType.ARRAY).description("관심기술"),
+                                fieldWithPath("userSkills[].userSkillId").type(JsonFieldType.NUMBER).description("유저스킬 식별자"),
+                                fieldWithPath("userSkills[].name").type(JsonFieldType.STRING).description("유저스킬 이름"),
                                 fieldWithPath("attendLevel").type(JsonFieldType.NUMBER).description("참여도"),
                                 fieldWithPath("workLevel").type(JsonFieldType.NUMBER).description("숙련도"),
                                 fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url")
@@ -193,6 +195,13 @@ class UserControllerTest extends MvcTest {
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
                 .build();
+
+        List<UserSkill> userSkills = new ArrayList<>();
+        UserSkill userSkill1 = UserSkill.builder().id(1L).user(user).skill(Skill.builder().id(1L).name("Spring").build()).build();
+        UserSkill userSkill2 = UserSkill.builder().id(2L).user(user).skill(Skill.builder().id(2L).name("JavaScript").build()).build();
+        userSkills.add(userSkill1);
+        userSkills.add(userSkill2);
+        user.getUserSkills().addAll(userSkills);
 
         UserRequest.Info request = UserRequest.Info.builder()
                 .id(1L)
@@ -219,7 +228,9 @@ class UserControllerTest extends MvcTest {
                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
                                 fieldWithPath("job").type(JsonFieldType.STRING).description("직업"),
                                 fieldWithPath("introduce").type(JsonFieldType.STRING).description("소개"),
-                                fieldWithPath("userSkills").type(JsonFieldType.ARRAY).description("관심기술 - [{\"userSkillId\": id,\"name\": name}]"),
+                                fieldWithPath("userSkills").type(JsonFieldType.ARRAY).description("관심기술"),
+                                fieldWithPath("userSkills[].userSkillId").type(JsonFieldType.NUMBER).description("유저스킬 식별자"),
+                                fieldWithPath("userSkills[].name").type(JsonFieldType.STRING).description("유저스킬 이름"),
                                 fieldWithPath("attendLevel").type(JsonFieldType.NUMBER).description("참여도"),
                                 fieldWithPath("workLevel").type(JsonFieldType.NUMBER).description("숙련도"),
                                 fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url")

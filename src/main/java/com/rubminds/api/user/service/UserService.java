@@ -34,19 +34,19 @@ public class UserService{
     private final S3Service s3Service;
 
     @Transactional
-    public AuthResponse.Update signup(AuthRequest.Update request, MultipartFile file, User user){
+    public AuthResponse.Signup signup(AuthRequest.Update request, MultipartFile file, User user){
         User findUser = findUser(user);
-        duplicateNickname(request.getNickname());
+        duplicateNickname(findUser, request.getNickname());
         Avatar avatar = uploadAvatar(file);
         findUser.updateAvatar(avatar);
         findUser.update(request, setUserSkills(request, findUser));
-        return AuthResponse.Update.build(findUser);
+        return AuthResponse.Signup.build(findUser, getAvatarUrl(findUser));
     }
 
     @Transactional
-    public AuthResponse.Update update(AuthRequest.Update request, MultipartFile file, User user){
+    public void update(AuthRequest.Update request, MultipartFile file, User user){
         User findUser = findUser(user);
-        duplicateNickname(request.getNickname());
+        duplicateNickname(findUser, request.getNickname());
         userSkillRepository.deleteAllByUser(findUser);
         if(findUser.getAvatar()!=null){
             avatarRepository.deleteById(findUser.getAvatar().getId());
@@ -54,16 +54,17 @@ public class UserService{
         Avatar avatar = uploadAvatar(file);
         findUser.updateAvatar(avatar);
         findUser.update(request, setUserSkills(request, findUser));
-        return AuthResponse.Update.build(findUser);
     }
 
     private User findUser(User user){
         return userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
     }
 
-    private void duplicateNickname(String nickname){
+    private void duplicateNickname(User user, String nickname){
         if(userRepository.existsByNickname(nickname)) {
-            throw new DuplicateNicknameException();
+            if(!user.getNickname().equals(nickname)){
+                throw new DuplicateNicknameException();
+            }
         }
     }
 

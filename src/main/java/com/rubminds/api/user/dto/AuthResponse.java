@@ -15,13 +15,21 @@ public class AuthResponse {
         private String avatar;
         private String accessToken;
 
-        public static Login build(Long id, String nickname, String avatar, Token accessToken) {
+        public static Login build(User user, Token accessToken) {
             return Login.builder()
-                    .id(id)
-                    .nickname(nickname)
-                    .avatar(avatar)
+                    .id(user.getId())
+                    .nickname(user.getNickname())
+                    .avatar(getAvatar(user))
                     .accessToken(accessToken.getToken())
                     .build();
+        }
+
+        private static String getAvatar(User user) {
+            if(user.getAvatar()!=null){
+                return user.getAvatar().getUrl();
+            }else {
+                return null;
+            }
         }
     }
 

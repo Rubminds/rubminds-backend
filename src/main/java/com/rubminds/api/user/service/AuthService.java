@@ -20,8 +20,15 @@ public class AuthService {
     //테스트용
     public AuthResponse.Login login(AuthRequest.Login request) {
         User user = userRepository.findByOauthId(request.getId()).orElseThrow(UserNotFoundException::new);
+        return AuthResponse.Login.build(user.getId(), user.getNickname(), getAvatar(user), tokenProvider.generateAccessToken(user));
+    }
 
-        return AuthResponse.Login.build(user.getId(), user.getNickname(), tokenProvider.generateAccessToken(user));
+    private String getAvatar(User user){
+        if(user.getAvatar()!=null){
+            return user.getAvatar().getUrl();
+        }else {
+            return null;
+        }
     }
 }
 

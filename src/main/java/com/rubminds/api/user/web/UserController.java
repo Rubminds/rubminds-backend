@@ -19,15 +19,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse.Update> signup(@RequestPart(value = "userInfo") AuthRequest.Update request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
-        AuthResponse.Update response = userService.signup(request, file, customUserDetails.getUser());
+    public ResponseEntity<AuthResponse.Signup> signup(@RequestPart(value = "userInfo") AuthRequest.Update request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
+        AuthResponse.Signup response = userService.signup(request, file, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<AuthResponse.Update> update(@RequestPart(value = "userInfo") AuthRequest.Update request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
-        AuthResponse.Update response = userService.update(request, file, customUserDetails.getUser());
-        return ResponseEntity.ok().body(response);
+    public void update(@RequestPart(value = "userInfo") AuthRequest.Update request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
+        userService.update(request, file, customUserDetails.getUser());
     }
 
     @GetMapping("/me")

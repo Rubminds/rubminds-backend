@@ -1,10 +1,5 @@
 package com.rubminds.api.team.Service;
 
-import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.repository.PostRepository;
-import com.rubminds.api.post.exception.PostNotFoundException;
-import com.rubminds.api.skill.domain.Skill;
-import com.rubminds.api.skill.dto.SkillResponse;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
@@ -31,4 +26,4 @@ public class TeamService {
         List<TeamUser> teamUsers = teamUserRepository.findAllByTeam(team);
         return TeamResponse.GetTeam.build(team, teamUsers);
     }
-}
+

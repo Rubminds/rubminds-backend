@@ -17,4 +17,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     Optional<Team> deleteAllByPost(Post post);
 
 
+
 }

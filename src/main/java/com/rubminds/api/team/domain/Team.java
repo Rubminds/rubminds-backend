@@ -6,6 +6,8 @@ import com.rubminds.api.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -25,6 +27,9 @@ public class Team extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private List<TeamUser> teamUsers = new ArrayList<>();
 
     public static Team create(User user, Post post) {
         Team team = Team.builder()

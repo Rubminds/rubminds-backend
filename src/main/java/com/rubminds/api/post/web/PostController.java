@@ -1,5 +1,6 @@
 package com.rubminds.api.post.web;
 
+
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.dto.PostLikeRequest;
 import com.rubminds.api.post.dto.PostRequest;
@@ -34,8 +35,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId) {
-        PostResponse.Info infoResponse = postService.getPost(postId);
+    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.Info infoResponse = postService.getPost(customUserDetails.getUser(), postId);
         return ResponseEntity.ok().body(infoResponse);
     }
 
@@ -68,6 +69,4 @@ public class PostController {
         return postService.delete(postId);
 
     }
-
-
 }

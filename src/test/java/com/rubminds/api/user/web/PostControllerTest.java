@@ -232,7 +232,7 @@ public class PostControllerTest extends MvcTest {
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
                 .get("/api/post/{postId}", 1L));
-
+  
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("post_detail",
@@ -259,4 +259,6 @@ public class PostControllerTest extends MvcTest {
                 ));
 
     }
+
 }
+

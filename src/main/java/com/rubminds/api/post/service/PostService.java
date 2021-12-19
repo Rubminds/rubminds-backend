@@ -1,7 +1,5 @@
 package com.rubminds.api.post.service;
 
-import com.rubminds.api.post.domain.PostLike;
-import com.rubminds.api.post.domain.repository.PostLikeRepository;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.PostLike;
 import com.rubminds.api.post.domain.PostSkill;
@@ -14,14 +12,11 @@ import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
-
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
-import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.team.domain.repository.TeamUserRepository;
-
 import com.rubminds.api.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -69,26 +64,18 @@ public class PostService {
 
         Team team = Team.create(user, savedPost);
         teamRepository.save(team);
-      
+
         TeamUser teamUser = TeamUser.create(team,user);
         teamUserRepository.save(teamUser);
 
         return savedPost;
     }
 
-    public PostResponse.Info getPost(Long postId, User user) {
+    public PostResponse.Info getPost(Long postId) {
         Post post = postRepository.findByIdWithCustomSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
         List<Skill> skills = skillRepository.findAllByPost(postId);
         Team team = teamRepository.findByPostId(postId);
         return PostResponse.Info.build(post, skills,team);
-    }
-
-    public PostResponse.Info getPost(User user, Long postId) {
-        Post post = findPost(postId);
-        List<PostSkill> postskills = postSkillRepository.findAllByPost(post);
-        List<CostomSkill> customSkills = costomSkillRepository.findAllByPost(post);
-        boolean postLike = getPostLikeStatus(user, post);
-        return PostResponse.Info.build(post,postskills,customSkills,postLike);
     }
 
 
@@ -117,8 +104,6 @@ public class PostService {
 
         teamRepository.deleteAllByPost(post).orElseThrow(TeamNotFoundException::new);
         postRepository.deleteById(postId);
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        teamRepository.deleteAllByPost(post);
 
         return postId;
     }
@@ -138,7 +123,6 @@ public class PostService {
     private Post findPost(Long postId){
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
-
 
     private boolean getPostLikeStatus(User user, Post post){
         return postLikeRepository.existsByUserAndPost(user, post);
@@ -167,8 +151,4 @@ public class PostService {
         return PostResponse.GetPosts.build(posts);
     }
 
-
-    private boolean getPostLikeStatus(User user, Post post){
-        return postLikeRepository.existsByUserAndPost(user, post);
-    }
 }

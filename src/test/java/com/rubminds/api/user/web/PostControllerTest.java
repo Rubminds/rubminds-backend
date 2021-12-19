@@ -14,16 +14,14 @@ import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
-
-import com.rubminds.api.user.dto.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
@@ -38,7 +36,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("게시물 정보입력(생성) 문서화")
@@ -72,6 +69,7 @@ public class PostControllerTest extends MvcTest {
                 .headcount(3)
                 .meeting(Meeting.BOTH)
                 .writer(user)
+                .customSkills(Collections.singletonList(CustomSkill.builder().id(1L).name("java").build()))
                 .build();
     }
 
@@ -192,7 +190,6 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
                                 fieldWithPath("region").type(JsonFieldType.STRING).description("지역"),
-                                fieldWithPath("postsStatus").type(JsonFieldType.STRING).description("진행상태"),
                                 fieldWithPath("kinds").type(JsonFieldType.STRING).description("글종류"),
                                 fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
                                 fieldWithPath("meeting").type(JsonFieldType.STRING).description("미팅방법"),
@@ -257,6 +254,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("customSkills.[].id").type(JsonFieldType.NUMBER).description("게시물지정스킬목록 식별자"),
                                 fieldWithPath("customSkills.[].name").type(JsonFieldType.STRING).description("게시물지정스킬 이름"),
                                 fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("게시물지정스킬 이름")
+
                         )
                 ));
 

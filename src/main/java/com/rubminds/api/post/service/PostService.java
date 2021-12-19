@@ -1,30 +1,30 @@
 package com.rubminds.api.post.service;
 
 import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.post.domain.PostLike;
+import com.rubminds.api.post.domain.PostSkill;
+import com.rubminds.api.post.domain.repository.PostLikeRepository;
 import com.rubminds.api.post.domain.repository.PostRepository;
+import com.rubminds.api.post.domain.repository.PostSkillRepository;
+import com.rubminds.api.post.dto.PostLikeRequest;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.exception.PostNotFoundException;
-import com.rubminds.api.skill.exception.SkillNotFoundException;
-import com.rubminds.api.skill.domain.CostomSkill;
-import com.rubminds.api.skill.domain.PostSkill;
+import com.rubminds.api.skill.domain.CustomSkill;
+import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
 import com.rubminds.api.skill.domain.Skill;
-import com.rubminds.api.skill.domain.repository.CostomSkillRepository;
-import com.rubminds.api.skill.domain.repository.PostSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
-import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.team.domain.repository.TeamUserRepository;
-import com.rubminds.api.team.exception.TeamNotFoundException;
 import com.rubminds.api.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -67,12 +67,11 @@ public class PostService {
         return savedPost;
     }
 
-    public PostResponse.Info getPost(User user,Long postId) {
+    public PostResponse.Info getPost(Long postId) {
         Post post = postRepository.findByIdWithCustomSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
         List<Skill> skills = skillRepository.findAllByPost(postId);
         Team team = teamRepository.findByPostId(postId);
-        boolean postLike = getPostLikeStatus(user, post);
-        return PostResponse.Info.build(post, skills,team,postLike);
+        return PostResponse.Info.build(post, skills,team);
     }
 
 
@@ -122,4 +121,28 @@ public class PostService {
     private boolean getPostLikeStatus(User user, Post post){
         return postLikeRepository.existsByUserAndPost(user, post);
     }
+
+    public PostResponse.GetPosts getPosts(User user) {
+        List<Post> postList = postRepository.findAll();
+        return createPosts(postList, user);
+    }
+
+    public PostResponse.GetPosts getLikePosts(User user) {
+        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
+        List<Post> postList = new ArrayList<>();
+        for (PostLike postLike : postLikes) {
+            Post post = postLike.getPost();
+            postList.add(post);
+        }
+        return createPosts(postList, user);
+    }
+
+    private PostResponse.GetPosts createPosts(List<Post> postList, User user) {
+        List<PostResponse.GetPost> posts = new ArrayList<>();
+        for (Post post : postList) {
+            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
+        }
+        return PostResponse.GetPosts.build(posts);
+    }
+
 }

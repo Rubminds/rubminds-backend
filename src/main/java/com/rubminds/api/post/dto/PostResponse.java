@@ -1,15 +1,14 @@
 package com.rubminds.api.post.dto;
 
+import com.rubminds.api.post.domain.Kinds;
+import com.rubminds.api.post.domain.Meeting;
 import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.PostEnumClass.Kinds;
-import com.rubminds.api.post.domain.PostEnumClass.Meeting;
-import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
-import com.rubminds.api.post.domain.PostEnumClass.Region;
-import com.rubminds.api.skill.domain.CostomSkill;
-import com.rubminds.api.skill.domain.PostSkill;
-import com.rubminds.api.skill.dto.CostomSkillResponse;
+
+import com.rubminds.api.post.domain.PostStatus;
+import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.dto.CustomSkillResponse;
 import com.rubminds.api.skill.dto.PostSkillResponse;
-import com.rubminds.api.user.domain.User;
+import com.rubminds.api.team.domain.Team;
 import lombok.*;
 
 import java.util.List;
@@ -47,9 +46,8 @@ public class PostResponse {
         private List<PostSkillResponse.GetPostSkill> postSkills;
         private List<CustomSkillResponse.GetCustomSkill> customSkills;
         private Long teamId;
-        private boolean postLikeStatus;
 
-        public static PostResponse.Info build(Post post, List<Skill> skills, Team team, boolean postLikeStatus) {
+        public static PostResponse.Info build(Post post, List<Skill> skills, Team team) {
             return Info.builder()
                     .id(post.getId())
                     .writer(post.getWriter().getNickname())
@@ -63,7 +61,6 @@ public class PostResponse {
                     .postSkills(skills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
                     .customSkills(post.getCustomSkills().stream().map(CustomSkillResponse.GetCustomSkill::build).collect(Collectors.toList()))
                     .teamId(team.getId())
-                    .postLikeStatus(postLikeStatus)
                     .build();
         }
 
@@ -81,6 +78,7 @@ public class PostResponse {
                     .postLikeStatus(postLikeStatus)
                     .build();
         }
+
     }
 
     @Getter
@@ -94,9 +92,9 @@ public class PostResponse {
         private Kinds kinds;
         private Meeting meeting;
         private PostStatus postStatus;
-        private Region region;
+        private String region;
         private List<PostSkillResponse.GetPostSkill> postSkills;
-        private List<CostomSkillResponse.GetCostomSkill> customSkills;
+        private List<CustomSkillResponse.GetCustomSkill> customSkills;
         private boolean postLikeStatus;
 
         public static PostResponse.GetPost build(Post post, boolean postLikeStatus) {
@@ -108,13 +106,13 @@ public class PostResponse {
                     .meeting(post.getMeeting())
                     .postStatus(post.getPostStatus())
                     .region(post.getRegion())
-                    .postSkills(post.getPostSkills().stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
-                    .customSkills(post.getCostomSkills().stream().map(CostomSkillResponse.GetCostomSkill::build).collect(Collectors.toList()))
+                    .postSkills(post.getPostSkills().stream().map(PostSkillResponse.GetPostSkillByPost::build).collect(Collectors.toList()))
+                    .customSkills(post.getCustomSkills().stream().map(CustomSkillResponse.GetCustomSkill::build).collect(Collectors.toList()))
                     .postLikeStatus(postLikeStatus)
                     .build();
         }
-
     }
+
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -130,4 +128,4 @@ public class PostResponse {
     }
 
 }
-}
+

@@ -1,5 +1,6 @@
 package com.rubminds.api.post.web;
 
+import com.rubminds.api.post.dto.PostLikeRequest;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.service.PostService;
@@ -27,9 +28,27 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId) {
-        PostResponse.Info infoResponse = postService.getPost(postId);
+    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.Info infoResponse = postService.getPost(customUserDetails.getUser(), postId);
         return ResponseEntity.ok().body(infoResponse);
+    }
+
+    @GetMapping("/getPosts")
+    public ResponseEntity<PostResponse.GetPosts> getPosts(@CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.GetPosts listResponse = postService.getPosts(customUserDetails.getUser());
+        return ResponseEntity.ok().body(listResponse);
+    }
+
+    @GetMapping("/getLikePosts")
+    public ResponseEntity<PostResponse.GetPosts> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.GetPosts listResponse = postService.getLikePosts(customUserDetails.getUser());
+        return ResponseEntity.ok().body(listResponse);
+    }
+
+    @PostMapping("/postLike")
+    public ResponseEntity<PostResponse.GetPostLike> updatePostLike(@RequestBody PostLikeRequest.Update request, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.GetPostLike postLikeResponse = postService.updatePostLike(customUserDetails.getUser(), request);
+        return ResponseEntity.ok().body(postLikeResponse);
     }
 
     @PutMapping("/{postId}")
@@ -43,6 +62,4 @@ public class PostController {
         return postService.delete(postId);
 
     }
-
-
 }

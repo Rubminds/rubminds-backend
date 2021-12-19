@@ -12,12 +12,14 @@ public class AuthResponse {
     public static class Login {
         private Long id;
         private String nickname;
+        private String avatar;
         private String accessToken;
 
-        public static Login build(Long id, String nickname, Token accessToken) {
+        public static Login build(Long id, String nickname, String avatar, Token accessToken) {
             return Login.builder()
                     .id(id)
                     .nickname(nickname)
+                    .avatar(avatar)
                     .accessToken(accessToken.getToken())
                     .build();
         }
@@ -27,18 +29,16 @@ public class AuthResponse {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Update {
+    public static class Signup {
         private Long id;
         private String nickname;
-        private String job;
-        private String introduce;
+        private String avatar;
 
-        public static Update build(User user) {
-            return Update.builder()
+        public static Signup build(User user, String avatar) {
+            return Signup.builder()
                     .id(user.getId())
                     .nickname(user.getNickname())
-                    .job(user.getJob())
-                    .introduce(user.getIntroduce())
+                    .avatar(avatar)
                     .build();
         }
     }

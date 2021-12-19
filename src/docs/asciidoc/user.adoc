@@ -33,7 +33,6 @@ include::{snippets}/user-update/request-parts.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/user-update/http-response.adoc[]
-include::{snippets}/user-update/response-fields.adoc[]
 
 === *현재 회원정보*
 

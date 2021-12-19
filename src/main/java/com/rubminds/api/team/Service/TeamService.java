@@ -26,4 +26,4 @@ public class TeamService {
         List<TeamUser> teamUsers = teamUserRepository.findAllByTeam(team);
         return TeamResponse.GetTeam.build(team, teamUsers);
     }
-}
+

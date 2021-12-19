@@ -2,9 +2,6 @@ package com.rubminds.api.team.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.skill.domain.CostomSkill;
-import com.rubminds.api.skill.domain.PostSkill;
-import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 

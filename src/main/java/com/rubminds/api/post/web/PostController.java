@@ -1,5 +1,7 @@
 package com.rubminds.api.post.web;
 
+
+import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.dto.PostLikeRequest;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
@@ -21,10 +23,15 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PostResponse.OnlyId> savePost(@RequestBody PostRequest.Create request, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.OnlyId response = postService.create(request, customUserDetails.getUser());
-
-        return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
+    public ResponseEntity<PostResponse.OnlyId> createProjectOrStudy(@RequestBody PostRequest.CreateOrUpdate request, @CurrentUser CustomUserDetails customUserDetails) {
+        if(request.getKinds() == Kinds.SCOUT){
+            PostResponse.OnlyId response = postService.createRecruitScout(request, customUserDetails.getUser());
+            return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
+        }
+        else {
+            PostResponse.OnlyId response = postService.createRecruitProjectOrStudy(request, customUserDetails.getUser());
+            return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
+        }
     }
 
     @GetMapping("/{postId}")
@@ -52,7 +59,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.Create request) {
+    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.CreateOrUpdate request) {
         PostResponse.OnlyId response = postService.update(postId, request);
         return ResponseEntity.ok().body(response);
     }

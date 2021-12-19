@@ -1,8 +1,6 @@
-package com.rubminds.api.skill.domain;
+package com.rubminds.api.post.domain;
 
-import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.skill.dto.PostSkillRequest;
-import com.rubminds.api.user.domain.User;
+import com.rubminds.api.skill.domain.Skill;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,19 +24,16 @@ public class PostSkill {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private void setPost(Post post){
-        post.getPostSkills().add(this);
+    private void setPost(Post post) {
         this.post = post;
+        post.getPostSkills().add(this);
     }
 
-    public static PostSkill create(Skill skill,Post Post) {
+    public static PostSkill create(Skill skill, Post post) {
         PostSkill postSkill = PostSkill.builder()
                 .skill(skill)
                 .build();
-        postSkill.setPost(Post);
+        postSkill.setPost(post);
         return postSkill;
     }
-
-
-
 }

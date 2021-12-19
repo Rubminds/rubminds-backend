@@ -1,16 +1,8 @@
 package com.rubminds.api.post.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rubminds.api.common.domain.BaseEntity;
-import com.rubminds.api.post.domain.PostEnumClass.Kinds;
-import com.rubminds.api.post.domain.PostEnumClass.Meeting;
-import com.rubminds.api.post.domain.PostEnumClass.PostStatus;
-import com.rubminds.api.post.domain.PostEnumClass.Region;
 import com.rubminds.api.post.dto.PostRequest;
-import com.rubminds.api.skill.domain.CostomSkill;
-import com.rubminds.api.skill.domain.PostSkill;
-import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
@@ -33,14 +25,6 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User writer;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<PostSkill> postSkills = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<CostomSkill> costomSkills = new ArrayList<>();
-
     @Column(nullable = false)
     private String title;
 
@@ -62,30 +46,48 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private PostStatus postStatus;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Region region;
+    private String region;
 
-    public void update(PostRequest.Create request) {
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private List<PostSkill> postSkills = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private List<CustomSkill> customSkills = new ArrayList<>();
+
+    public void update(PostRequest.CreateOrUpdate request) {
         this.title = request.getTitle();
         this.content = request.getContent();
         this.headcount = request.getHeadcount();
-        this.kinds = request.getKinds();
         this.meeting = request.getMeeting();
-        this.postStatus = request.getPostsStatus();
-        this.region = request.getRegion();
     }
 
-    public static Post create(PostRequest.Create request, User user) {
-        return Post.builder()
+    public static Post createRecruitProjectOrStudy(PostRequest.CreateOrUpdate request, User user) {
+        Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .headcount(request.getHeadcount())
                 .kinds(request.getKinds())
                 .meeting(request.getMeeting())
-                .postStatus(request.getPostsStatus())
+                .postStatus(PostStatus.RECRUIT)
                 .region(request.getRegion())
                 .writer(user)
                 .build();
+        return post;
+    }
+
+    public static Post createRecruitScout(PostRequest.CreateOrUpdate request, User user) {
+        Post post = Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .kinds(Kinds.SCOUT)
+                .meeting(request.getMeeting())
+                .postStatus(PostStatus.RECRUIT)
+                .region(request.getRegion())
+                .writer(user)
+                .build();
+        return post;
     }
 }

@@ -1,5 +1,4 @@
 package com.rubminds.api.common.domain;
-
 import com.rubminds.api.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

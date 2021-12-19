@@ -10,8 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "costom_skill")
-public class CostomSkill {
+@Table(name = "custom_skill")
+public class CustomSkill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,17 +23,17 @@ public class CostomSkill {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private void setPost(Post post){
-        post.getCostomSkills().add(this);
+    private void setPost(Post post) {
         this.post = post;
+        post.getCustomSkills().add(this);
     }
 
-    public static CostomSkill create(String name,Post post) {
-        CostomSkill costomSkill = CostomSkill.builder()
+    public static CustomSkill create(String name, Post post) {
+        CustomSkill customSkill = CustomSkill.builder()
                 .name(name)
                 .build();
-        costomSkill.setPost(post);
-        return costomSkill;
+        customSkill.setPost(post);
+        return customSkill;
     }
 
 }

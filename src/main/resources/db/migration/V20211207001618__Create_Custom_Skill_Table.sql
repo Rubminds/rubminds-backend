@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `costom_skill`;
-CREATE TABLE `costom_skill`
+DROP TABLE IF EXISTS `custom_skill`;
+CREATE TABLE `custom_skill`
 (
     `id`   BIGINT      NOT NULL AUTO_INCREMENT,
     `post_id` BIGINT NOT NULL,

@@ -81,19 +81,6 @@ public class PostResponse {
 
     }
 
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class GetPostLike {
-        private boolean postLikeStatus;
-
-        public static PostResponse.GetPostLike build(boolean postLikeStatus) {
-            return PostResponse.GetPostLike.builder()
-                    .postLikeStatus(postLikeStatus)
-                    .build();
-        }
-    }
 
 
     @Getter

@@ -2,7 +2,6 @@ package com.rubminds.api.post.web;
 
 
 import com.rubminds.api.post.domain.Kinds;
-import com.rubminds.api.post.dto.PostLikeRequest;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.service.PostService;
@@ -17,56 +16,54 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/post")
+@RequestMapping(path = "/api")
 public class PostController {
     private final PostService postService;
 
-    @PostMapping
+    @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PostResponse.OnlyId> createProjectOrStudy(@RequestBody PostRequest.CreateOrUpdate request, @CurrentUser CustomUserDetails customUserDetails) {
-        if(request.getKinds() == Kinds.SCOUT){
+        if (request.getKinds() == Kinds.SCOUT) {
             PostResponse.OnlyId response = postService.createRecruitScout(request, customUserDetails.getUser());
             return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
-        }
-        else {
+        } else {
             PostResponse.OnlyId response = postService.createRecruitProjectOrStudy(request, customUserDetails.getUser());
             return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
         }
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/post/{postId}")
     public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.Info infoResponse = postService.getPost(customUserDetails.getUser(), postId);
+        PostResponse.Info infoResponse = postService.getPost(postId, customUserDetails.getUser());
         return ResponseEntity.ok().body(infoResponse);
     }
 
-    @GetMapping("/getPosts")
+    @GetMapping("/posts")
     public ResponseEntity<PostResponse.GetPosts> getPosts(@CurrentUser CustomUserDetails customUserDetails) {
         PostResponse.GetPosts listResponse = postService.getPosts(customUserDetails.getUser());
         return ResponseEntity.ok().body(listResponse);
     }
 
-    @GetMapping("/getLikePosts")
+    @GetMapping("/posts/like")
     public ResponseEntity<PostResponse.GetPosts> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
         PostResponse.GetPosts listResponse = postService.getLikePosts(customUserDetails.getUser());
         return ResponseEntity.ok().body(listResponse);
     }
 
-    @PostMapping("/postLike")
-    public ResponseEntity<PostResponse.GetPostLike> updatePostLike(@RequestBody PostLikeRequest.Update request, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPostLike postLikeResponse = postService.updatePostLike(customUserDetails.getUser(), request);
+    @PostMapping("/post/{postId}/like")
+    public ResponseEntity<PostResponse.GetPostLike> updatePostLike(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.GetPostLike postLikeResponse = postService.updatePostLike(postId, customUserDetails.getUser());
         return ResponseEntity.ok().body(postLikeResponse);
     }
 
-    @PutMapping("/{postId}")
+    @PutMapping("/post/{postId}")
     public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.CreateOrUpdate request) {
         PostResponse.OnlyId response = postService.update(postId, request);
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/post/{postId}")
     public Long delete(@PathVariable("postId") Long postId) {
         return postService.delete(postId);
-
     }
 }

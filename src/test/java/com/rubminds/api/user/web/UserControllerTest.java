@@ -20,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -203,25 +204,18 @@ class UserControllerTest extends MvcTest {
         userSkills.add(userSkill2);
         user.getUserSkills().addAll(userSkills);
 
-        UserRequest.Info request = UserRequest.Info.builder()
-                .id(1L)
-                .build();
-
         UserResponse.Info response = UserResponse.Info.build(user, user.getAvatar().getUrl());
 
         given(userService.getUserInfo(any())).willReturn(response);
 
-        ResultActions results = mvc.perform(get("/api/user/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                .characterEncoding("UTF-8")
-        );
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .get("/api/user/{userId}",1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("user-info",
-                        requestFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자")
+                        pathParameters(
+                                parameterWithName("userId").description("유저 식별자")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),

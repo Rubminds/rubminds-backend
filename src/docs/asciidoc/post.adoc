@@ -44,17 +44,6 @@ include::{snippets}/post_list/request-parameters.adoc[]
 include::{snippets}/post_list/http-response.adoc[]
 include::{snippets}/post_list/response-fields.adoc[]
 
-=== 게시글 찜목록 조회
-`GET /api/posts/like`
-
-요청 HTTP
-include::{snippets}/post_likePosts/http-request.adoc[]
-
-성공 응답 HTTP
-include::{snippets}/post_likePosts/http-response.adoc[]
-include::{snippets}/post_likePosts/response-fields.adoc[]
-
-
 === 게시글 찜 생성 및 삭제
 `POST /api/post/{postId}/like`
 

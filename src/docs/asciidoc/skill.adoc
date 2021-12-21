@@ -1,0 +1,24 @@
+= Rubminds API 문서 (SKILL)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+= SKILL
+---
+== *기본* API
+
+=== SKILL 목록 조회
+
+`GET /api/skills`
+
+요청 HTTP
+include::{snippets}/skill_list/http-request.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/skill_list/http-response.adoc[]
+include::{snippets}/skill_list/response-fields.adoc[]
+

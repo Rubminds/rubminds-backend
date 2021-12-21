@@ -15,7 +15,9 @@ import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
+import com.rubminds.api.team.domain.repository.TeamUserRepository;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +41,13 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final S3Service s3Service;
     private final PostFileRepository postFileRepository;
+    private final TeamUserRepository teamUserRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.CreateOrUpdate request, List<MultipartFile> files, User user) {
         Team team = Team.create(user);
         teamRepository.save(team);
+        teamUserRepository.save(TeamUser.create(user, team));
 
         Post post = Post.create(request, team, user);
         Post savedPost = postRepository.save(post);

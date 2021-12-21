@@ -1,7 +1,6 @@
 package com.rubminds.api.team.dto;
 import lombok.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class TeamUserRequest {
@@ -20,6 +19,16 @@ public class TeamUserRequest {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Evaluate {
         private Long teamUserId;
-        private HashMap<Long, List<Integer>> evaluation;
+        private List<EvaluateData> evaluation;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class EvaluateData {
+        private Long teamUserId;
+        private Integer attendLevel;
+        private Integer workLevel;
     }
 }

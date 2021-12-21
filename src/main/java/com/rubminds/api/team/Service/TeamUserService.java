@@ -16,11 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -42,11 +37,10 @@ public class TeamUserService {
 
     public TeamUserResponse.OnlyId evaluate(TeamUserRequest.Evaluate request) {
         TeamUser evaluator = teamUserRepository.findById(request.getTeamUserId()).orElseThrow(TeamUserNotFoundException::new);
-        HashMap<Long, List<Integer>> evaluation = request.getEvaluation();
-        for(Map.Entry<Long, List<Integer>> e : evaluation.entrySet()){
-            TeamUser target = teamUserRepository.findById(e.getKey()).orElseThrow(TeamUserNotFoundException::new);
-            double attendLevel = e.getValue().get(1);
-            double workLevel = e.getValue().get(2);
+        for(int i = 0 ; i<request.getEvaluation().size(); i++){
+            TeamUser target = teamUserRepository.findById(request.getEvaluation().get(i).getTeamUserId()).orElseThrow(TeamUserNotFoundException::new);
+            double attendLevel = request.getEvaluation().get(i).getAttendLevel();
+            double workLevel = request.getEvaluation().get(i).getWorkLevel();
             target.updateLevel(attendLevel, workLevel);
         }
         evaluator.updateFinish();

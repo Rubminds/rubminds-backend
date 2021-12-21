@@ -15,7 +15,7 @@ import java.util.List;
 public class SkillService {
     private final SkillRepository skillRepository;
 
-    public SkillResponse.GetSkills getSkillList(){
+    public SkillResponse.GetSkills getList(){
         List<Skill> skillList = skillRepository.findAll();
         return SkillResponse.GetSkills.build(skillList);
     }

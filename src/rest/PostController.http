@@ -1,16 +1,25 @@
-GET {{apiUrl}}/post/2
+GET {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
+###
+GET {{apiUrl}}/posts?kind=PROJECT&status=RECRUIT&page=1&size=5
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
 
 ###
 POST {{apiUrl}}/post
 Authorization: {{authorizationToken}}
+Content-Type: multipart/form-data; boundary=boundary
+Accept: application/json, image/*
+
+--boundary
+Content-Disposition: form-data; name="postInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
-  "title": "2요",
-  "content": "스터디 모집합니다",
+  "title": "테스트",
+  "content": "테스트내용",
   "headcount": 3,
   "kinds": "PROJECT",
   "meeting": "ONLINE",
@@ -24,6 +33,12 @@ Content-Type: application/json;charset=UTF-8
     "spring"
   ]
 }
+###
+#--boundary
+#Content-Disposition: form-data; name="files"; filename="white.jpeg"
+
+#< ./../main/resources/dummy/image/white.jpeg
+
 
 ###
 PUT {{apiUrl}}/post/1
@@ -59,15 +74,11 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-GET {{apiUrl}}/post/getLikePosts
+GET {{apiUrl}}/posts/like
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-POST {{apiUrl}}/post/postLike
+POST {{apiUrl}}/post/1/like
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
-
-{
-  "postId": 1
-}

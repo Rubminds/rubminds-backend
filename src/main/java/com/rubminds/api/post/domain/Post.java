@@ -3,12 +3,16 @@ package com.rubminds.api.post.domain;
 import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.skill.domain.CustomSkill;
+import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.user.domain.User;
+import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -57,6 +61,22 @@ public class Post extends BaseEntity {
     @Builder.Default
     private List<CustomSkill> customSkills = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private Set<PostLike> postLikeList = new LinkedHashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private Set<PostFile> postFileList = new LinkedHashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    public boolean isLike(CustomUserDetails customUserDetails) {
+        return customUserDetails != null && this.postLikeList.stream().anyMatch(postLike -> postLike.getUser().getId().equals(customUserDetails.getUser().getId()));
+    }
+
     public void update(PostRequest.CreateOrUpdate request) {
         this.title = request.getTitle();
         this.content = request.getContent();
@@ -64,30 +84,18 @@ public class Post extends BaseEntity {
         this.meeting = request.getMeeting();
     }
 
-    public static Post createRecruitProjectOrStudy(PostRequest.CreateOrUpdate request, User user) {
-        Post post = Post.builder()
+    public static Post create(PostRequest.CreateOrUpdate request, Team team, User user) {
+        return Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .headcount(request.getHeadcount())
                 .kinds(request.getKinds())
+                .kinds(Kinds.PROJECT)
                 .meeting(request.getMeeting())
                 .postStatus(PostStatus.RECRUIT)
                 .region(request.getRegion())
                 .writer(user)
+                .team(team)
                 .build();
-        return post;
-    }
-
-    public static Post createRecruitScout(PostRequest.CreateOrUpdate request, User user) {
-        Post post = Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .kinds(Kinds.SCOUT)
-                .meeting(request.getMeeting())
-                .postStatus(PostStatus.RECRUIT)
-                .region(request.getRegion())
-                .writer(user)
-                .build();
-        return post;
     }
 }

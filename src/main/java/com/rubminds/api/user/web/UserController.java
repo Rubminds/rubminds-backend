@@ -19,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse.Signup> signup(@RequestPart(value = "userInfo") AuthRequest.Update request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
+    public ResponseEntity<AuthResponse.Signup> signup(@RequestPart(value = "userInfo") AuthRequest.Signup request, @RequestPart(value = "avatar", required = false) MultipartFile file, @CurrentUser CustomUserDetails customUserDetails) {
         AuthResponse.Signup response = userService.signup(request, file, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }

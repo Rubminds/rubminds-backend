@@ -1,3 +1,5 @@
 = Rubminds API 문서
 
 - link:/docs/user.html[사용자(User) API]
+- link:/docs/post.html[게시물(Post) API]
+- link:/docs/skill.html[기술(SKILL) API]

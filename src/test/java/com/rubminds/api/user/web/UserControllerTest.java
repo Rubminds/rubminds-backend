@@ -2,14 +2,13 @@ package com.rubminds.api.user.web;
 
 import com.rubminds.MvcTest;
 import com.rubminds.api.file.domain.Avatar;
-import com.rubminds.api.file.dto.FileDTO;
+import com.rubminds.api.file.dto.SavedFile;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.dto.AuthRequest;
 import com.rubminds.api.user.dto.AuthResponse;
-import com.rubminds.api.user.dto.UserRequest;
 import com.rubminds.api.user.dto.UserResponse;
 import com.rubminds.api.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -31,9 +31,11 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,8 +62,8 @@ class UserControllerTest extends MvcTest {
                 .signupCheck(true)
                 .build();
 
-        avatar = Avatar.create(FileDTO.Upload.builder()
-                .originalFileName("white.jpeg")
+        avatar = Avatar.create(SavedFile.builder()
+                .originalName("white.jpeg")
                 .name("cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
                 .extension(".jpeg")
                 .size(7695L)
@@ -72,14 +74,14 @@ class UserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("게시물 정보입력(생성) 문서화")
-    public void createInfo() throws Exception {
+    @DisplayName("회원가입 문서화")
+    public void signup() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
-        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(2L, 6L)));
-        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
+        String content = objectMapper.writeValueAsString(new AuthRequest.Signup("동그라미", "학생", "안녕하세요!", List.of(2L, 6L)));
+        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
-        AuthResponse.Signup response = AuthResponse.Signup.build(user, avatar.getUrl());
+        AuthResponse.Signup response = AuthResponse.Signup.build(user, avatar);
 
         given(userService.signup(any(), any(), any())).willReturn(response);
 
@@ -108,12 +110,12 @@ class UserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("게시물 정보입력(수정) 문서화")
-    public void updateInfo() throws Exception {
+    @DisplayName("내 정보 수정 문서화")
+    public void update() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
-        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(1L, 3L)));
-        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
+        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", false, false, List.of(1L, 3L)));
+        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
         ResultActions results = mvc.perform(
                 multipart("/api/user/update")
@@ -135,7 +137,7 @@ class UserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("게시물 정보조회(내정보) 문서화")
+    @DisplayName("내 정보 조회 문서화")
     public void readMyInfo() throws Exception {
         User user = User.builder()
                 .id(1L)
@@ -203,25 +205,18 @@ class UserControllerTest extends MvcTest {
         userSkills.add(userSkill2);
         user.getUserSkills().addAll(userSkills);
 
-        UserRequest.Info request = UserRequest.Info.builder()
-                .id(1L)
-                .build();
-
         UserResponse.Info response = UserResponse.Info.build(user, user.getAvatar().getUrl());
 
         given(userService.getUserInfo(any())).willReturn(response);
 
-        ResultActions results = mvc.perform(get("/api/user/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                .characterEncoding("UTF-8")
-        );
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .get("/api/user/{userId}", 1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("user-info",
-                        requestFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자")
+                        pathParameters(
+                                parameterWithName("userId").description("유저 식별자")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),

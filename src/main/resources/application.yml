@@ -3,14 +3,14 @@ spring:
     group:
       local:
         - local
-    include:
-      - aws
+        - aws
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 100
   servlet:
     multipart:
       max-file-size: 10MB
@@ -45,6 +45,10 @@ spring:
     url: 'jdbc:mysql://127.0.0.1:3306/rubminds?serverTimezone=Asia/Seoul&charset=UTF-8'
     username: root
     password: pass
+
+tmp:
+  file:
+    prefix:
 
 jwt:
   access-token-props:

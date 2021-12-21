@@ -26,7 +26,6 @@ public class PostLike {
     private Post post;
 
     public static PostLike create(User user, Post post){
-        PostLike postLike = PostLike.builder().user(user).post(post).build();
-        return postLike;
+        return PostLike.builder().user(user).post(post).build();
     }
 }

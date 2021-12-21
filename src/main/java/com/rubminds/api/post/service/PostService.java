@@ -1,33 +1,29 @@
 package com.rubminds.api.post.service;
 
-import com.rubminds.api.post.domain.PostLike;
-import com.rubminds.api.post.domain.repository.PostLikeRepository;
-import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.PostLike;
-import com.rubminds.api.post.domain.PostSkill;
+import com.rubminds.api.common.dto.PageDto;
+import com.rubminds.api.file.service.S3Service;
+import com.rubminds.api.post.domain.*;
+import com.rubminds.api.post.domain.repository.PostFileRepository;
 import com.rubminds.api.post.domain.repository.PostLikeRepository;
 import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.domain.repository.PostSkillRepository;
-import com.rubminds.api.post.dto.PostLikeRequest;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.skill.domain.CustomSkill;
-import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
-
 import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
-import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
-import com.rubminds.api.team.domain.repository.TeamUserRepository;
-
 import com.rubminds.api.user.domain.User;
+import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,57 +36,37 @@ public class PostService {
     private final SkillRepository skillRepository;
     private final CustomSkillRepository customSkillRepository;
     private final TeamRepository teamRepository;
-    private final TeamUserRepository teamUserRepository;
     private final PostLikeRepository postLikeRepository;
+    private final S3Service s3Service;
+    private final PostFileRepository postFileRepository;
 
     @Transactional
-    public PostResponse.OnlyId createRecruitProjectOrStudy(PostRequest.CreateOrUpdate request, User user) {
-        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-        Post post = Post.createRecruitProjectOrStudy(request, user);
-        Post savedPost = createPost(request, user, skills, post);
-        return PostResponse.OnlyId.build(savedPost);
-    }
+    public PostResponse.OnlyId create(PostRequest.CreateOrUpdate request, List<MultipartFile> files, User user) {
+        Team team = Team.create(user);
+        teamRepository.save(team);
 
-    @Transactional
-    public PostResponse.OnlyId createRecruitScout(PostRequest.CreateOrUpdate request, User user) {
-        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-        Post post = Post.createRecruitScout(request, user);
-        Post savedPost = createPost(request, user, skills, post);
-        return PostResponse.OnlyId.build(savedPost);
-    }
+        Post post = Post.create(request, team, user);
+        Post savedPost = postRepository.save(post);
 
-    private Post createPost(PostRequest.CreateOrUpdate request, User user, List<Skill> skills, Post post) {
+        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
         List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
         List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
 
-        Post savedPost = postRepository.save(post);
         postSkillRepository.saveAll(postSkills);
         customSkillRepository.saveAll(customSkills);
 
-        Team team = Team.create(user, savedPost);
-        teamRepository.save(team);
-      
-        TeamUser teamUser = TeamUser.create(team,user);
-        teamUserRepository.save(teamUser);
+        if (files != null) {
+            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(savedPost, savedFile)).collect(Collectors.toList());
+            postFileRepository.saveAll(postFiles);
+        }
 
-        return savedPost;
+        return PostResponse.OnlyId.build(savedPost);
     }
 
-    public PostResponse.Info getPost(Long postId, User user) {
-        Post post = postRepository.findByIdWithCustomSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
-        List<Skill> skills = skillRepository.findAllByPost(postId);
-        Team team = teamRepository.findByPostId(postId);
-        return PostResponse.Info.build(post, skills,team);
+    public PostResponse.Info getOne(Long postId, CustomUserDetails customUserDetails) {
+        Post post = postRepository.findByIdWithSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
+        return PostResponse.Info.build(post, customUserDetails);
     }
-
-    public PostResponse.Info getPost(User user, Long postId) {
-        Post post = findPost(postId);
-        List<PostSkill> postskills = postSkillRepository.findAllByPost(post);
-        List<CostomSkill> customSkills = costomSkillRepository.findAllByPost(post);
-        boolean postLike = getPostLikeStatus(user, post);
-        return PostResponse.Info.build(post,postskills,customSkills,postLike);
-    }
-
 
     @Transactional
     public PostResponse.OnlyId update(Long postId, PostRequest.CreateOrUpdate request) {
@@ -110,65 +86,54 @@ public class PostService {
         return PostResponse.OnlyId.build(post);
     }
 
-
     @Transactional
-    public Long delete(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-
-        teamRepository.deleteAllByPost(post).orElseThrow(TeamNotFoundException::new);
-        postRepository.deleteById(postId);
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        teamRepository.deleteAllByPost(post);
-
-        return postId;
-    }
-
-    @Transactional
-    public PostResponse.GetPostLike updatePostLike(User user, PostLikeRequest.Update request){
-        Post post = findPost(request.getPostId());
-        if(getPostLikeStatus(user, post)){
+    public void updatePostLike(Long postId, User user) {
+        Post post = findPost(postId);
+        if (getPostLikeStatus(user, post)) {
             postLikeRepository.deleteByUserAndPost(user, post);
-            return PostResponse.GetPostLike.build(false);
-        }else{
+        } else {
             postLikeRepository.save(PostLike.create(user, post));
-            return PostResponse.GetPostLike.build(true);
         }
     }
 
-    private Post findPost(Long postId){
+    public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, PageDto pageDto, CustomUserDetails customUserDetails) {
+        Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, pageDto.of());
+        return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
+    }
+
+//    @Transactional
+//    public Long delete(Long postId) {
+//        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+//
+//        teamRepository.deleteAllByPost(post).orElseThrow(TeamNotFoundException::new);
+//        postRepository.deleteById(postId);
+//
+//        return postId;
+//    }
+
+//    public PostResponse.GetList getLikePosts(User user) {
+//        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
+//        List<Post> postList = new ArrayList<>();
+//        for (PostLike postLike : postLikes) {
+//            Post post = postLike.getPost();
+//            postList.add(post);
+//        }
+//        return createPosts(postList, user);
+//    }
+
+    //    private PostResponse.GetList createPosts(List<Post> postList, User user) {
+//        List<PostResponse.GetPost> posts = new ArrayList<>();
+//        for (Post post : postList) {
+//            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
+//        }
+//        return PostResponse.GetList.build(posts);
+//    }
+    private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
-
-    private boolean getPostLikeStatus(User user, Post post){
+    private boolean getPostLikeStatus(User user, Post post) {
         return postLikeRepository.existsByUserAndPost(user, post);
     }
 
-    public PostResponse.GetPosts getPosts(User user) {
-        List<Post> postList = postRepository.findAll();
-        return createPosts(postList, user);
-    }
-
-    public PostResponse.GetPosts getLikePosts(User user) {
-        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
-        List<Post> postList = new ArrayList<>();
-        for (PostLike postLike : postLikes) {
-            Post post = postLike.getPost();
-            postList.add(post);
-        }
-        return createPosts(postList, user);
-    }
-
-    private PostResponse.GetPosts createPosts(List<Post> postList, User user) {
-        List<PostResponse.GetPost> posts = new ArrayList<>();
-        for (Post post : postList) {
-            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
-        }
-        return PostResponse.GetPosts.build(posts);
-    }
-
-
-    private boolean getPostLikeStatus(User user, Post post){
-        return postLikeRepository.existsByUserAndPost(user, post);
-    }
 }

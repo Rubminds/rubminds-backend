@@ -11,15 +11,14 @@ Content-Type: application/json;charset=UTF-8
   "nickname": "테스트1",
   "job": "학생",
   "introduce": "test",
-  "skillIds": [2, 6],
-  "isAvatarChanged": true
+  "skillIds": [1,2]
 }
 --boundary
 Content-Disposition: form-data; name="avatar"; filename="white.jpeg"
 Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg
---boundary--
+
 ###
 POST {{apiUrl}}/user/update
 Authorization: {{authorizationToken}}
@@ -34,15 +33,12 @@ Content-Type: application/json;charset=UTF-8
   "nickname": "테스트2",
   "job": "학생",
   "introduce": "update테스트",
-  "skillIds": [1, 3],
-  "isAvatarChanged": true
+  "skillIds": [2, 3],
+  "nicknameChanged": false,
+  "avatarChanged": true
 }
---boundary
-Content-Disposition: form-data; name="avatar"; filename="white.jpeg"
-Content-Type: image/jpeg
 
-< ./../main/resources/dummy/image/white.jpeg
---boundary--
+
 ###
 POST {{apiUrl}}/user/update
 Authorization: {{authorizationToken}}
@@ -61,6 +57,7 @@ Content-Type: application/json;charset=UTF-8
   "isAvatarChanged": true
 }
 --boundary--
+
 ###
 GET {{apiUrl}}/user/me
 Authorization: {{authorizationToken}}

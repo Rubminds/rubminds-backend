@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/skill")
+@RequestMapping(path = "/api")
 public class SkillController {
     private final SkillService skillService;
 
-    @GetMapping("/list")
+    @GetMapping("/skills")
     public ResponseEntity<SkillResponse.GetSkills> getSkillList(){
-        SkillResponse.GetSkills response = skillService.getSkillList();
+        SkillResponse.GetSkills response = skillService.getList();
         return ResponseEntity.ok().body(response);
     }
 

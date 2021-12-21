@@ -1,72 +1,74 @@
 package com.rubminds.api.post.web;
 
 
+import com.rubminds.api.common.dto.PageDto;
 import com.rubminds.api.post.domain.Kinds;
-import com.rubminds.api.post.dto.PostLikeRequest;
+import com.rubminds.api.post.domain.PostStatus;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.service.PostService;
 import com.rubminds.api.user.security.userdetails.CurrentUser;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/post")
+@RequestMapping(path = "/api")
 public class PostController {
     private final PostService postService;
 
-    @PostMapping
+    @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PostResponse.OnlyId> createProjectOrStudy(@RequestBody PostRequest.CreateOrUpdate request, @CurrentUser CustomUserDetails customUserDetails) {
-        if(request.getKinds() == Kinds.SCOUT){
-            PostResponse.OnlyId response = postService.createRecruitScout(request, customUserDetails.getUser());
-            return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
-        }
-        else {
-            PostResponse.OnlyId response = postService.createRecruitProjectOrStudy(request, customUserDetails.getUser());
-            return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
-        }
+    public ResponseEntity<PostResponse.OnlyId> create(@RequestPart(value = "postInfo") PostRequest.CreateOrUpdate request, @RequestPart(value = "files", required = false) List<MultipartFile> files, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.OnlyId response = postService.create(request, files, customUserDetails.getUser());
+        return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
     }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.Info infoResponse = postService.getPost(customUserDetails.getUser(), postId);
-        return ResponseEntity.ok().body(infoResponse);
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<PostResponse.Info> getOne(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.Info response = postService.getOne(postId, customUserDetails);
+        return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/getPosts")
-    public ResponseEntity<PostResponse.GetPosts> getPosts(@CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPosts listResponse = postService.getPosts(customUserDetails.getUser());
-        return ResponseEntity.ok().body(listResponse);
+    @GetMapping("/posts")
+    public ResponseEntity<Page<PostResponse.GetList>> getList(@RequestParam(name = "kinds", required = false) Kinds kinds,
+                                                              @RequestParam(name = "status", required = false) PostStatus postStatus,
+//                                                         @RequestParam(name = "skill", required = false) String skill,
+                                                              PageDto pageDto,
+                                                              @CurrentUser CustomUserDetails customUserDetails) {
+        Page<PostResponse.GetList> response = postService.getList(kinds, postStatus, pageDto, customUserDetails);
+        return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/getLikePosts")
-    public ResponseEntity<PostResponse.GetPosts> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPosts listResponse = postService.getLikePosts(customUserDetails.getUser());
-        return ResponseEntity.ok().body(listResponse);
+//    @GetMapping("/posts/like")
+//    public ResponseEntity<PostResponse.GetList> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
+//        PostResponse.GetList response = postService.getLikePosts(customUserDetails.getUser());
+//        return ResponseEntity.ok().body(response);
+//    }
+
+    @PostMapping("/post/{postId}/like")
+    public ResponseEntity<Void> updatePostLike(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        postService.updatePostLike(postId, customUserDetails.getUser());
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/postLike")
-    public ResponseEntity<PostResponse.GetPostLike> updatePostLike(@RequestBody PostLikeRequest.Update request, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPostLike postLikeResponse = postService.updatePostLike(customUserDetails.getUser(), request);
-        return ResponseEntity.ok().body(postLikeResponse);
-    }
-
-    @PutMapping("/{postId}")
+    @PutMapping("/post/{postId}")
     public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.CreateOrUpdate request) {
         PostResponse.OnlyId response = postService.update(postId, request);
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/{postId}")
-    public Long delete(@PathVariable("postId") Long postId) {
-        return postService.delete(postId);
-
-    }
+//    @DeleteMapping("/post/{postId}")
+//    public ResponseEntity<Void> delete(@PathVariable("postId") Long postId) {
+//        postService.delete(postId);
+//        return ResponseEntity.ok().build();
+//    }
 }

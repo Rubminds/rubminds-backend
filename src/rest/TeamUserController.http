@@ -4,7 +4,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "team_id" : 2
+  "team_id" : 1
 }
 
 ###

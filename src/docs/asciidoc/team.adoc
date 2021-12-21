@@ -1,0 +1,25 @@
+= Rubminds API 문서 (SKILL)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+= SKILL
+---
+== *기본* API
+
+=== Team 목록(단건) 조회
+
+`GET /api/team/{teamId}`
+
+요청 HTTP
+include::{snippets}/team_info/http-request.adoc[]
+include::{snippets}/team_info/path-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/team_info/http-response.adoc[]
+include::{snippets}/team_info/response-fields.adoc[]
+

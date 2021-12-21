@@ -31,9 +31,11 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,14 +74,14 @@ class UserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("게시물 정보입력(생성) 문서화")
-    public void createInfo() throws Exception {
+    @DisplayName("회원가입 문서화")
+    public void signup() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
-        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(2L, 6L)));
-        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
+        String content = objectMapper.writeValueAsString(new AuthRequest.Signup("동그라미", "학생", "안녕하세요!", List.of(2L, 6L)));
+        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
-        AuthResponse.Signup response = AuthResponse.Signup.build(user, avatar.getUrl());
+        AuthResponse.Signup response = AuthResponse.Signup.build(user, avatar);
 
         given(userService.signup(any(), any(), any())).willReturn(response);
 
@@ -108,12 +110,12 @@ class UserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("게시물 정보입력(수정) 문서화")
-    public void updateInfo() throws Exception {
+    @DisplayName("내 정보 수정 문서화")
+    public void update() throws Exception {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
-        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", List.of(1L, 3L)));
-        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata","application/json",content.getBytes(StandardCharsets.UTF_8));
+        String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", false, false, List.of(1L, 3L)));
+        MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
         ResultActions results = mvc.perform(
                 multipart("/api/user/update")
@@ -135,7 +137,7 @@ class UserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("게시물 정보조회(내정보) 문서화")
+    @DisplayName("내 정보 조회 문서화")
     public void readMyInfo() throws Exception {
         User user = User.builder()
                 .id(1L)
@@ -208,7 +210,7 @@ class UserControllerTest extends MvcTest {
         given(userService.getUserInfo(any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .get("/api/user/{userId}",1L));
+                .get("/api/user/{userId}", 1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())

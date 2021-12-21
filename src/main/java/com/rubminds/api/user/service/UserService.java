@@ -3,7 +3,6 @@ package com.rubminds.api.user.service;
 import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.file.domain.repository.AvatarRepository;
 import com.rubminds.api.file.service.S3Service;
-import com.rubminds.api.skill.exception.SkillNotFoundException;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
@@ -20,13 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService{
+public class UserService {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final UserSkillRepository userSkillRepository;
@@ -34,59 +33,36 @@ public class UserService{
     private final S3Service s3Service;
 
     @Transactional
-    public AuthResponse.Signup signup(AuthRequest.Update request, MultipartFile file, User user){
-        User findUser = findUser(user);
-        duplicateNickname(findUser, request.getNickname());
+    public AuthResponse.Signup signup(AuthRequest.Signup request, MultipartFile file, User user) {
+        User findUser = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        duplicateNickname(request.getNickname());
+        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
+        List<UserSkill> userSkills = skills.stream().map(skill -> UserSkill.create(findUser, skill)).collect(Collectors.toList());
         Avatar avatar = uploadAvatar(file);
-        findUser.updateAvatar(avatar);
-        findUser.update(request, setUserSkills(request, findUser));
-        return AuthResponse.Signup.build(findUser, getAvatarUrl(findUser));
+        findUser.signup(request, avatar, userSkills);
+        return AuthResponse.Signup.build(findUser, avatar);
     }
 
     @Transactional
-    public void update(AuthRequest.Update request, MultipartFile file, User user){
-        User findUser = findUser(user);
-        duplicateNickname(findUser, request.getNickname());
+    public void update(AuthRequest.Update request, MultipartFile file, User user) {
+        User findUser = userRepository.findByIdWithAvatar(user.getId()).orElseThrow(UserNotFoundException::new);
+        if (request.isNicknameChanged()) {
+            duplicateNickname(request.getNickname());
+        }
+        if (request.isAvatarChanged()) {
+            updateAvatar(file, findUser);
+        }
+
         userSkillRepository.deleteAllByUser(findUser);
-        if(findUser.getAvatar()!=null){
-            avatarRepository.deleteById(findUser.getAvatar().getId());
-        }
-        Avatar avatar = uploadAvatar(file);
-        findUser.updateAvatar(avatar);
-        findUser.update(request, setUserSkills(request, findUser));
+        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
+        List<UserSkill> userSkills = skills.stream().map(skill -> UserSkill.create(findUser, skill)).collect(Collectors.toList());
+
+        findUser.update(request, userSkills);
     }
 
-    private User findUser(User user){
-        return userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
-    }
-
-    private void duplicateNickname(User user, String nickname){
-        if(userRepository.existsByNickname(nickname)) {
-            if(!user.getNickname().equals(nickname)){
-                throw new DuplicateNicknameException();
-            }
-        }
-    }
-
-    private List<UserSkill> setUserSkills(AuthRequest.Update request, User user){
-        List<UserSkill>userSkills = new ArrayList<>();
-        for(Long skillId : request.getSkillIds()){
-            Skill findSkill = skillRepository.findById(skillId).orElseThrow(SkillNotFoundException::new);
-            UserSkill userSkill = UserSkill.create(user, findSkill);
-            userSkills.add(userSkill);
-        }
-        return userSkills;
-    }
-
-    private Avatar uploadAvatar(MultipartFile file){
-        if(file == null){
-            return null;
-        }
-        return avatarRepository.save(Avatar.create(s3Service.upload(file)));
-    }
 
     public UserResponse.Info getMe(User user) {
-        User findUser = findUser(user);
+        User findUser = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         return UserResponse.Info.build(findUser, getAvatarUrl(findUser));
     }
 
@@ -95,9 +71,28 @@ public class UserService{
         return UserResponse.Info.build(user, getAvatarUrl(user));
     }
 
-    private String getAvatarUrl(User user){
+    private void duplicateNickname(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new DuplicateNicknameException();
+        }
+    }
+
+    private void updateAvatar(MultipartFile file, User findUser) {
+        avatarRepository.deleteById(findUser.getAvatar().getId());
+        Avatar avatar = uploadAvatar(file);
+        findUser.updateAvatar(avatar);
+    }
+
+    private Avatar uploadAvatar(MultipartFile file) {
+        if (file == null) {
+            return null;
+        }
+        return avatarRepository.save(Avatar.create(s3Service.upload(file)));
+    }
+
+    private String getAvatarUrl(User user) {
         String avatarUrl = null;
-        if(user.getAvatar()!=null){
+        if (user.getAvatar() != null) {
             avatarUrl = user.getAvatar().getUrl();
         }
         return avatarUrl;

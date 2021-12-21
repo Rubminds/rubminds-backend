@@ -1,5 +1,6 @@
 package com.rubminds.api.user.dto;
 
+import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.token.Token;
 import lombok.*;
@@ -25,9 +26,9 @@ public class AuthResponse {
         }
 
         private static String getAvatar(User user) {
-            if(user.getAvatar()!=null){
+            if (user.getAvatar() != null) {
                 return user.getAvatar().getUrl();
-            }else {
+            } else {
                 return null;
             }
         }
@@ -42,12 +43,14 @@ public class AuthResponse {
         private String nickname;
         private String avatar;
 
-        public static Signup build(User user, String avatar) {
-            return Signup.builder()
+        public static Signup build(User user, Avatar avatar) {
+            SignupBuilder builder = Signup.builder()
                     .id(user.getId())
-                    .nickname(user.getNickname())
-                    .avatar(avatar)
-                    .build();
+                    .nickname(user.getNickname());
+            if (avatar != null) {
+                builder.avatar(avatar.getUrl());
+            }
+            return builder.build();
         }
     }
 }

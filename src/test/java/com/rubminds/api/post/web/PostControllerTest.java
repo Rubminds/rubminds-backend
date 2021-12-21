@@ -188,22 +188,6 @@ public class PostControllerTest extends MvcTest {
                 ));
     }
 
-//    @Test
-//    @DisplayName("게시물 삭제 문서화")
-//    public void deletePost() throws Exception {
-//        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.
-//                delete("/api/post/{postId}", 1));
-//
-//        results.andExpect(status().isOk())
-//                .andDo(print())
-//                .andDo(document("post_delete",
-//                        pathParameters(
-//                                parameterWithName("postId").description("게시물 식별자")
-//                        )
-//                ));
-//    }
-
-
     @Test
     @DisplayName("게시물 디테일 조회 문서화")
     public void detailPost() throws Exception {
@@ -278,6 +262,20 @@ public class PostControllerTest extends MvcTest {
                         )
                 ));
     }
+    //    @Test
+//    @DisplayName("게시물 삭제 문서화")
+//    public void deletePost() throws Exception {
+//        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.
+//                delete("/api/post/{postId}", 1));
+//
+//        results.andExpect(status().isOk())
+//                .andDo(print())
+//                .andDo(document("post_delete",
+//                        pathParameters(
+//                                parameterWithName("postId").description("게시물 식별자")
+//                        )
+//                ));
+//    }
 
 //    @Test
 //    @DisplayName("게시물 찜목록 조회 문서화")
@@ -321,11 +319,6 @@ public class PostControllerTest extends MvcTest {
     @Test
     @DisplayName("게시물 찜 생성및삭제 문서화")
     public void updatePostLike() throws Exception {
-        boolean postLikeStatus = true;
-        PostResponse.GetPostLike response = PostResponse.GetPostLike.build(postLikeStatus);
-
-        given(postService.updatePostLike(any(), any())).willReturn(response);
-
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
                 .post("/api/post/{postId}/like", 1L));
 
@@ -334,9 +327,6 @@ public class PostControllerTest extends MvcTest {
                 .andDo(document("post_postLike",
                         pathParameters(
                                 parameterWithName("postId").description("게시물 식별자")
-                        ),
-                        responseFields(
-                                fieldWithPath("postLikeStatus").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true")
                         )
                 ));
 

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,6 +86,20 @@ public class PostService {
         return PostResponse.OnlyId.build(post);
     }
 
+    @Transactional
+    public void updatePostLike(Long postId, User user) {
+        Post post = findPost(postId);
+        if (getPostLikeStatus(user, post)) {
+            postLikeRepository.deleteByUserAndPost(user, post);
+        } else {
+            postLikeRepository.save(PostLike.create(user, post));
+        }
+    }
+
+    public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, PageDto pageDto, CustomUserDetails customUserDetails) {
+        Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, pageDto.of());
+        return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
+    }
 
 //    @Transactional
 //    public Long delete(Long postId) {
@@ -98,31 +111,6 @@ public class PostService {
 //        return postId;
 //    }
 
-    @Transactional
-    public PostResponse.GetPostLike updatePostLike(Long postId, User user) {
-        Post post = findPost(postId);
-        if (getPostLikeStatus(user, post)) {
-            postLikeRepository.deleteByUserAndPost(user, post);
-            return PostResponse.GetPostLike.build(false);
-        } else {
-            postLikeRepository.save(PostLike.create(user, post));
-            return PostResponse.GetPostLike.build(true);
-        }
-    }
-
-    private Post findPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-    }
-
-    private boolean getPostLikeStatus(User user, Post post) {
-        return postLikeRepository.existsByUserAndPost(user, post);
-    }
-
-    public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, PageDto pageDto, CustomUserDetails customUserDetails) {
-        Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, pageDto.of());
-        return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
-    }
-
 //    public PostResponse.GetList getLikePosts(User user) {
 //        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
 //        List<Post> postList = new ArrayList<>();
@@ -133,12 +121,19 @@ public class PostService {
 //        return createPosts(postList, user);
 //    }
 
-//    private PostResponse.GetList createPosts(List<Post> postList, User user) {
+    //    private PostResponse.GetList createPosts(List<Post> postList, User user) {
 //        List<PostResponse.GetPost> posts = new ArrayList<>();
 //        for (Post post : postList) {
 //            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
 //        }
 //        return PostResponse.GetList.build(posts);
 //    }
+    private Post findPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+    }
+
+    private boolean getPostLikeStatus(User user, Post post) {
+        return postLikeRepository.existsByUserAndPost(user, post);
+    }
 
 }

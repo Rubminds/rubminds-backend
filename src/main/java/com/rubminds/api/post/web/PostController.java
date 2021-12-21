@@ -55,9 +55,9 @@ public class PostController {
 //    }
 
     @PostMapping("/post/{postId}/like")
-    public ResponseEntity<PostResponse.GetPostLike> updatePostLike(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPostLike response = postService.updatePostLike(postId, customUserDetails.getUser());
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Void> updatePostLike(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        postService.updatePostLike(postId, customUserDetails.getUser());
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/post/{postId}")
@@ -67,7 +67,8 @@ public class PostController {
     }
 
 //    @DeleteMapping("/post/{postId}")
-//    public Long delete(@PathVariable("postId") Long postId) {
-//        return postService.delete(postId);
+//    public ResponseEntity<Void> delete(@PathVariable("postId") Long postId) {
+//        postService.delete(postId);
+//        return ResponseEntity.ok().build();
 //    }
 }

@@ -1,12 +1,16 @@
 package com.rubminds.api.post.web;
 
 
+import com.rubminds.api.common.dto.PageDto;
+import com.rubminds.api.post.domain.Kinds;
+import com.rubminds.api.post.domain.PostStatus;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.service.PostService;
 import com.rubminds.api.user.security.userdetails.CurrentUser;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,16 +39,20 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<PostResponse.GetPosts> getPosts(@CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPosts response = postService.getPosts(customUserDetails.getUser());
+    public ResponseEntity<Page<PostResponse.GetList>> getList(@RequestParam(name = "kinds", required = false) Kinds kinds,
+                                                              @RequestParam(name = "status", required = false) PostStatus postStatus,
+//                                                         @RequestParam(name = "skill", required = false) String skill,
+                                                              PageDto pageDto,
+                                                              @CurrentUser CustomUserDetails customUserDetails) {
+        Page<PostResponse.GetList> response = postService.getList(kinds, postStatus, pageDto, customUserDetails);
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/posts/like")
-    public ResponseEntity<PostResponse.GetPosts> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPosts response = postService.getLikePosts(customUserDetails.getUser());
-        return ResponseEntity.ok().body(response);
-    }
+//    @GetMapping("/posts/like")
+//    public ResponseEntity<PostResponse.GetList> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
+//        PostResponse.GetList response = postService.getLikePosts(customUserDetails.getUser());
+//        return ResponseEntity.ok().body(response);
+//    }
 
     @PostMapping("/post/{postId}/like")
     public ResponseEntity<PostResponse.GetPostLike> updatePostLike(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {

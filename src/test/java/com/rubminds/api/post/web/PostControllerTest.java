@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -46,7 +49,9 @@ public class PostControllerTest extends MvcTest {
     @MockBean
     private PostService postService;
     private User user;
-    private Post post;
+    private Post post1;
+    private Post post2;
+    private List<Post> postList = new ArrayList<>();
 
     @BeforeEach
     public void setup() {
@@ -60,7 +65,7 @@ public class PostControllerTest extends MvcTest {
                 .signupCheck(true)
                 .build();
 
-        post = Post.builder()
+        post1 = Post.builder()
                 .id(1L)
                 .title("테스트")
                 .content("내용")
@@ -73,7 +78,26 @@ public class PostControllerTest extends MvcTest {
                 .postSkills(Collections.singletonList(PostSkill.builder().id(1L).skill(Skill.builder().id(1L).name("JAVA").build()).build()))
                 .customSkills(Collections.singletonList(CustomSkill.builder().id(1L).name("java").build()))
                 .team(Team.builder().id(1L).admin(user).build())
+                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").build()))
                 .build();
+
+        post2 = Post.builder()
+                .id(2L)
+                .title("테스트2")
+                .content("내용2")
+                .region("서울")
+                .postStatus(PostStatus.RECRUIT)
+                .kinds(Kinds.PROJECT)
+                .headcount(3)
+                .meeting(Meeting.BOTH)
+                .writer(user)
+                .postSkills(Collections.singletonList(PostSkill.builder().id(1L).skill(Skill.builder().id(1L).name("JAVA").build()).build()))
+                .customSkills(Collections.singletonList(CustomSkill.builder().id(1L).name("react").build()))
+                .team(Team.builder().id(1L).admin(user).build())
+                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").build()))
+                .build();
+        postList.add(post1);
+        postList.add(post2);
     }
 
     @Test
@@ -94,7 +118,7 @@ public class PostControllerTest extends MvcTest {
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
         MockMultipartFile files = new MockMultipartFile("files", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
 
-        PostResponse.OnlyId response = PostResponse.OnlyId.build(post);
+        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.create(any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(multipart("/api/post")
@@ -132,7 +156,7 @@ public class PostControllerTest extends MvcTest {
                 .customSkillName(List.of("firebase", "unity"))
                 .build();
 
-        PostResponse.OnlyId response = PostResponse.OnlyId.build(post);
+        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.update(any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
@@ -164,20 +188,20 @@ public class PostControllerTest extends MvcTest {
                 ));
     }
 
-    @Test
-    @DisplayName("게시물 삭제 문서화")
-    public void deletePost() throws Exception {
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.
-                delete("/api/post/{postId}", 1));
-
-        results.andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("post_delete",
-                        pathParameters(
-                                parameterWithName("postId").description("게시물 식별자")
-                        )
-                ));
-    }
+//    @Test
+//    @DisplayName("게시물 삭제 문서화")
+//    public void deletePost() throws Exception {
+//        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.
+//                delete("/api/post/{postId}", 1));
+//
+//        results.andExpect(status().isOk())
+//                .andDo(print())
+//                .andDo(document("post_delete",
+//                        pathParameters(
+//                                parameterWithName("postId").description("게시물 식별자")
+//                        )
+//                ));
+//    }
 
 
     @Test
@@ -185,7 +209,7 @@ public class PostControllerTest extends MvcTest {
     public void detailPost() throws Exception {
         CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
-        PostResponse.Info response = PostResponse.Info.build(post, customUserDetails);
+        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails);
 
         given(postService.getOne(any(), any())).willReturn(response);
 
@@ -207,6 +231,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
                                 fieldWithPath("meeting").type(JsonFieldType.STRING).description("미팅방법"),
                                 fieldWithPath("writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                                fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
@@ -219,80 +244,79 @@ public class PostControllerTest extends MvcTest {
     @Test
     @DisplayName("게시물 목록 조회 문서화")
     public void getPosts() throws Exception {
-        List<PostResponse.GetPost> posts = new ArrayList<>();
-        PostResponse.GetPost post1 = PostResponse.GetPost.build(post, true);
-        PostResponse.GetPost post2 = PostResponse.GetPost.build(post, false);
-        posts.add(post1);
-        posts.add(post2);
+        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
+        Page<Post> postPage = new PageImpl<>(postList, PageRequest.of(1, 5), postList.size());
+        Page<PostResponse.GetList> response = postPage.map(post1 -> PostResponse.GetList.build(post1, customUserDetails));
 
-        PostResponse.GetPosts response = PostResponse.GetPosts.build(posts);
+        given(postService.getList(any(), any(), any(), any())).willReturn(response);
 
-        given(postService.getPosts(any())).willReturn(response);
-
-        ResultActions results = mvc.perform(get("/api/posts", user)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
+        ResultActions results = mvc.perform(get("/api/posts")
+                .param("page", "1")
+                .param("size", "10")
+                .param("kinds", "PROJECT")
+                .param("status", "RECRUIT")
         );
 
         results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("post_posts",
-                        responseFields(
-                                fieldWithPath("posts").type(JsonFieldType.ARRAY).description("게시글 목록"),
-                                fieldWithPath("posts[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
-                                fieldWithPath("posts[].title").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("posts[].region").type(JsonFieldType.STRING).description("지역"),
-                                fieldWithPath("posts[].postStatus").type(JsonFieldType.STRING).description("진행상태"),
-                                fieldWithPath("posts[].kinds").type(JsonFieldType.STRING).description("글종류"),
-                                fieldWithPath("posts[].meeting").type(JsonFieldType.STRING).description("미팅방법"),
-                                fieldWithPath("posts[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
-                                fieldWithPath("posts[].postSkills").type(JsonFieldType.ARRAY).description("게시물지정스킬목록"),
-                                fieldWithPath("posts[].customSkills[].id").type(JsonFieldType.NUMBER).description("커스텀 스킬 식별자"),
-                                fieldWithPath("posts[].customSkills[].name").type(JsonFieldType.STRING).description("커스텀 스킬 이름"),
-                                fieldWithPath("posts[].postLikeStatus").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true")
+                .andDo(document("post_list",
+                        requestParameters(
+                                parameterWithName("page").description("조회할 페이지"),
+                                parameterWithName("size").description("조회할 사이즈"),
+                                parameterWithName("kinds").description("게시물 종류 (PROJECT,SCOUT,STUDY)"),
+                                parameterWithName("status").description("게시물상태 (RECRUIT,FINISHED)")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
+                                fieldWithPath("content[].title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content[].kinds").type(JsonFieldType.STRING).description("글종류"),
+                                fieldWithPath("content[].skill[]").type(JsonFieldType.ARRAY).description("커스텀 스킬 식별자"),
+                                fieldWithPath("content[].isLike").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true"),
+                                fieldWithPath("totalElements").description("전체 개수"),
+                                fieldWithPath("last").description("마지막 페이지인지 식별"),
+                                fieldWithPath("totalPages").description("전체 페이지")
                         )
                 ));
-
     }
 
-    @Test
-    @DisplayName("게시물 찜목록 조회 문서화")
-    public void getLikePosts() throws Exception {
-        List<PostResponse.GetPost> posts = new ArrayList<>();
-        PostResponse.GetPost post1 = PostResponse.GetPost.build(post, true);
-        PostResponse.GetPost post2 = PostResponse.GetPost.build(post, true);
-        posts.add(post1);
-        posts.add(post2);
-
-        PostResponse.GetPosts response = PostResponse.GetPosts.build(posts);
-
-        given(postService.getLikePosts(any())).willReturn(response);
-
-        ResultActions results = mvc.perform(get("/api/posts/like", user)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-        );
-
-        results.andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("post_likePosts",
-                        responseFields(
-                                fieldWithPath("posts").type(JsonFieldType.ARRAY).description("찜 목록"),
-                                fieldWithPath("posts[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
-                                fieldWithPath("posts[].title").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("posts[].region").type(JsonFieldType.STRING).description("지역"),
-                                fieldWithPath("posts[].postStatus").type(JsonFieldType.STRING).description("진행상태"),
-                                fieldWithPath("posts[].kinds").type(JsonFieldType.STRING).description("글종류"),
-                                fieldWithPath("posts[].meeting").type(JsonFieldType.STRING).description("미팅방법"),
-                                fieldWithPath("posts[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
-                                fieldWithPath("posts[].postSkills").type(JsonFieldType.ARRAY).description("게시물지정스킬목록"),
-                                fieldWithPath("posts[].customSkills[].id").type(JsonFieldType.NUMBER).description("커스텀 스킬 식별자"),
-                                fieldWithPath("posts[].customSkills[].name").type(JsonFieldType.STRING).description("커스텀 스킬 이름"),
-                                fieldWithPath("posts[].postLikeStatus").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true")
-                        )
-                ));
-
-    }
+//    @Test
+//    @DisplayName("게시물 찜목록 조회 문서화")
+//    public void getLikePosts() throws Exception {
+//        List<PostResponse.GetPost> posts = new ArrayList<>();
+//        PostResponse.GetPost post1 = PostResponse.GetPost.build(this.post1, true);
+//        PostResponse.GetPost post2 = PostResponse.GetPost.build(this.post1, true);
+//        posts.add(post1);
+//        posts.add(post2);
+//
+//        PostResponse.GetList response = PostResponse.GetList.build(posts);
+//
+//        given(postService.getLikePosts(any())).willReturn(response);
+//
+//        ResultActions results = mvc.perform(get("/api/posts/like", user)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .characterEncoding("UTF-8")
+//        );
+//
+//        results.andExpect(status().isOk())
+//                .andDo(print())
+//                .andDo(document("post_likePosts",
+//                        responseFields(
+//                                fieldWithPath("posts").type(JsonFieldType.ARRAY).description("찜 목록"),
+//                                fieldWithPath("posts[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
+//                                fieldWithPath("posts[].title").type(JsonFieldType.STRING).description("제목"),
+//                                fieldWithPath("posts[].region").type(JsonFieldType.STRING).description("지역"),
+//                                fieldWithPath("posts[].postStatus").type(JsonFieldType.STRING).description("진행상태"),
+//                                fieldWithPath("posts[].kinds").type(JsonFieldType.STRING).description("글종류"),
+//                                fieldWithPath("posts[].meeting").type(JsonFieldType.STRING).description("미팅방법"),
+//                                fieldWithPath("posts[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
+//                                fieldWithPath("posts[].postSkills").type(JsonFieldType.ARRAY).description("게시물지정스킬목록"),
+//                                fieldWithPath("posts[].customSkills[].id").type(JsonFieldType.NUMBER).description("커스텀 스킬 식별자"),
+//                                fieldWithPath("posts[].customSkills[].name").type(JsonFieldType.STRING).description("커스텀 스킬 이름"),
+//                                fieldWithPath("posts[].postLikeStatus").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true")
+//                        )
+//                ));
+//
+//    }
 
     @Test
     @DisplayName("게시물 찜 생성및삭제 문서화")

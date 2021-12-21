@@ -3,6 +3,11 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
+GET {{apiUrl}}/posts?kind=PROJECT&status=RECRUIT&page=1&size=5
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+###
 POST {{apiUrl}}/post
 Authorization: {{authorizationToken}}
 Content-Type: multipart/form-data; boundary=boundary
@@ -28,10 +33,11 @@ Content-Type: application/json;charset=UTF-8
     "spring"
   ]
 }
---boundary
-Content-Disposition: form-data; name="files"; filename="white.jpeg"
+###
+#--boundary
+#Content-Disposition: form-data; name="files"; filename="white.jpeg"
 
-< ./../main/resources/dummy/image/white.jpeg
+#< ./../main/resources/dummy/image/white.jpeg
 
 
 ###

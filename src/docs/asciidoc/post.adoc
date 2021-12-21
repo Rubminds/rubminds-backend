@@ -45,6 +45,18 @@ include::{snippets}/post_detail/path-parameters.adoc[]
 include::{snippets}/post_detail/http-response.adoc[]
 include::{snippets}/post_detail/response-fields.adoc[]
 
+
+=== 게시글 목록 조회
+`GET /api/posts`
+
+요청 HTTP
+include::{snippets}/post_list/http-request.adoc[]
+include::{snippets}/post_list/request-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_list/http-response.adoc[]
+include::{snippets}/post_list/response-fields.adoc[]
+
 === 게시글 삭제
 
 `DELETE /api/post/{postid}`

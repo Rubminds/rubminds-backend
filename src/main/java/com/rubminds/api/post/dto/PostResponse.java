@@ -46,6 +46,7 @@ public class PostResponse {
         private List<String> customSkills;
         private Boolean isLike;
         private Long teamId;
+        private List<PostDto.File> files;
 
         public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails) {
             return Info.builder()
@@ -61,9 +62,9 @@ public class PostResponse {
                     .customSkills(post.getCustomSkills().stream().map(CustomSkill::getName).collect(Collectors.toList()))
                     .isLike(post.isLike(customUserDetails))
                     .teamId(post.getTeam().getId())
+                    .files(post.getPostFileList().stream().map(PostDto.File::build).collect(Collectors.toList()))
                     .build();
         }
-
     }
 
     @Getter
@@ -118,15 +119,22 @@ public class PostResponse {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class GetPosts {
-        private List<PostResponse.GetPost> posts;
+    public static class GetList {
+        private Long id;
+        private String title;
+        private String kinds;
+        private Boolean isLike;
+        private List<String> skill;
 
-        public static PostResponse.GetPosts build(List<PostResponse.GetPost> posts) {
-            return PostResponse.GetPosts.builder()
-                    .posts(posts)
+        public static GetList build(Post post, CustomUserDetails customUserDetails) {
+            return GetList.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .kinds(post.getKinds().name())
+                    .skill(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
+                    .isLike(post.isLike(customUserDetails))
                     .build();
         }
     }
-
 }
 

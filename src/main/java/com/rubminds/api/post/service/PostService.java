@@ -1,10 +1,8 @@
 package com.rubminds.api.post.service;
 
+import com.rubminds.api.common.dto.PageDto;
 import com.rubminds.api.file.service.S3Service;
-import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.PostFile;
-import com.rubminds.api.post.domain.PostLike;
-import com.rubminds.api.post.domain.PostSkill;
+import com.rubminds.api.post.domain.*;
 import com.rubminds.api.post.domain.repository.PostFileRepository;
 import com.rubminds.api.post.domain.repository.PostLikeRepository;
 import com.rubminds.api.post.domain.repository.PostRepository;
@@ -21,6 +19,7 @@ import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -119,27 +118,27 @@ public class PostService {
         return postLikeRepository.existsByUserAndPost(user, post);
     }
 
-    public PostResponse.GetPosts getPosts(User user) {
-        List<Post> postList = postRepository.findAll();
-        return createPosts(postList, user);
+    public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, PageDto pageDto, CustomUserDetails customUserDetails) {
+        Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, pageDto.of());
+        return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
-    public PostResponse.GetPosts getLikePosts(User user) {
-        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
-        List<Post> postList = new ArrayList<>();
-        for (PostLike postLike : postLikes) {
-            Post post = postLike.getPost();
-            postList.add(post);
-        }
-        return createPosts(postList, user);
-    }
+//    public PostResponse.GetList getLikePosts(User user) {
+//        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
+//        List<Post> postList = new ArrayList<>();
+//        for (PostLike postLike : postLikes) {
+//            Post post = postLike.getPost();
+//            postList.add(post);
+//        }
+//        return createPosts(postList, user);
+//    }
 
-    private PostResponse.GetPosts createPosts(List<Post> postList, User user) {
-        List<PostResponse.GetPost> posts = new ArrayList<>();
-        for (Post post : postList) {
-            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
-        }
-        return PostResponse.GetPosts.build(posts);
-    }
+//    private PostResponse.GetList createPosts(List<Post> postList, User user) {
+//        List<PostResponse.GetPost> posts = new ArrayList<>();
+//        for (Post post : postList) {
+//            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
+//        }
+//        return PostResponse.GetList.build(posts);
+//    }
 
 }

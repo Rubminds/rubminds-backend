@@ -30,16 +30,22 @@ public class PostFile extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    private void setPost(Post post) {
+        this.post = post;
+        post.getPostFileList().add(this);
+    }
+
     public static PostFile create(Post post, SavedFile file) {
-        return PostFile.builder()
+        PostFile postFile = PostFile.builder()
                 .name(file.getName())
                 .extension(file.getExtension())
                 .height(file.getHeight())
                 .width(file.getWidth())
                 .size(file.getSize())
                 .url(file.getPublicUrl())
-                .post(post)
                 .build();
+        postFile.setPost(post);
+        return postFile;
     }
 }
 

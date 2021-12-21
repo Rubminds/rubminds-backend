@@ -29,27 +29,27 @@ public class PostController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostResponse.Info> PostInfo(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.Info infoResponse = postService.getPost(postId, customUserDetails.getUser());
-        return ResponseEntity.ok().body(infoResponse);
+    public ResponseEntity<PostResponse.Info> getOne(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.Info response = postService.getOne(postId, customUserDetails);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/posts")
     public ResponseEntity<PostResponse.GetPosts> getPosts(@CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPosts listResponse = postService.getPosts(customUserDetails.getUser());
-        return ResponseEntity.ok().body(listResponse);
+        PostResponse.GetPosts response = postService.getPosts(customUserDetails.getUser());
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/posts/like")
     public ResponseEntity<PostResponse.GetPosts> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPosts listResponse = postService.getLikePosts(customUserDetails.getUser());
-        return ResponseEntity.ok().body(listResponse);
+        PostResponse.GetPosts response = postService.getLikePosts(customUserDetails.getUser());
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/post/{postId}/like")
     public ResponseEntity<PostResponse.GetPostLike> updatePostLike(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.GetPostLike postLikeResponse = postService.updatePostLike(postId, customUserDetails.getUser());
-        return ResponseEntity.ok().body(postLikeResponse);
+        PostResponse.GetPostLike response = postService.updatePostLike(postId, customUserDetails.getUser());
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/post/{postId}")
@@ -58,8 +58,8 @@ public class PostController {
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/post/{postId}")
-    public Long delete(@PathVariable("postId") Long postId) {
-        return postService.delete(postId);
-    }
+//    @DeleteMapping("/post/{postId}")
+//    public Long delete(@PathVariable("postId") Long postId) {
+//        return postService.delete(postId);
+//    }
 }

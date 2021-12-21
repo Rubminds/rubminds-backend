@@ -24,19 +24,12 @@ public class Team extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private User admin;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
-
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamUser> teamUsers = new ArrayList<>();
 
-    public static Team create(User user, Post post) {
-        Team team = Team.builder()
-                .post(post)
+    public static Team create(User user) {
+        return Team.builder()
                 .admin(user)
                 .build();
-        return team;
     }
-
 }

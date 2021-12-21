@@ -18,8 +18,8 @@ import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.repository.TeamRepository;
-import com.rubminds.api.team.exception.TeamNotFoundException;
 import com.rubminds.api.user.domain.User;
+import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,12 +44,16 @@ public class PostService {
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.CreateOrUpdate request, List<MultipartFile> files, User user) {
+        Team team = Team.create(user);
+        teamRepository.save(team);
+
+        Post post = Post.create(request, team, user);
+        Post savedPost = postRepository.save(post);
+
         List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-        Post post = Post.create(request, user);
         List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
         List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
 
-        Post savedPost = postRepository.save(post);
         postSkillRepository.saveAll(postSkills);
         customSkillRepository.saveAll(customSkills);
 
@@ -58,37 +62,12 @@ public class PostService {
             postFileRepository.saveAll(postFiles);
         }
 
-        Team team = Team.create(user, savedPost);
-        teamRepository.save(team);
-
         return PostResponse.OnlyId.build(savedPost);
     }
 
-//    public PostResponse.OnlyId createRecruit(PostRequest.CreateOrUpdate request, User user) {
-//        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-//
-//        Post post = Post.createRecruit(request, user);
-//
-//        List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
-//        List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
-//
-//
-//        Post savedPost = postRepository.save(post);
-//        postSkillRepository.saveAll(postSkills);
-//        customSkillRepository.saveAll(customSkills);
-//
-//        Team team = Team.create(user, savedPost);
-//        teamRepository.save(team);
-//
-//        return PostResponse.OnlyId.build(savedPost);
-//    }
-
-    public PostResponse.Info getPost(Long postId, User user) {
-//        Post post = postRepository.findByIdWithCustomSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
-//        List<Skill> skills = skillRepository.findAllByPost(postId);
-//        Team team = teamRepository.findByPostId(postId);
-//        return PostResponse.Info.build(post, skills, team);
-        return null;
+    public PostResponse.Info getOne(Long postId, CustomUserDetails customUserDetails) {
+        Post post = postRepository.findByIdWithSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
+        return PostResponse.Info.build(post, customUserDetails);
     }
 
     @Transactional
@@ -110,15 +89,15 @@ public class PostService {
     }
 
 
-    @Transactional
-    public Long delete(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-
-        teamRepository.deleteAllByPost(post).orElseThrow(TeamNotFoundException::new);
-        postRepository.deleteById(postId);
-
-        return postId;
-    }
+//    @Transactional
+//    public Long delete(Long postId) {
+//        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+//
+//        teamRepository.deleteAllByPost(post).orElseThrow(TeamNotFoundException::new);
+//        postRepository.deleteById(postId);
+//
+//        return postId;
+//    }
 
     @Transactional
     public PostResponse.GetPostLike updatePostLike(Long postId, User user) {
@@ -135,7 +114,6 @@ public class PostService {
     private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
-
 
     private boolean getPostLikeStatus(User user, Post post) {
         return postLikeRepository.existsByUserAndPost(user, post);

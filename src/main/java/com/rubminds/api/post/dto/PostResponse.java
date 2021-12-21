@@ -4,10 +4,10 @@ import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Meeting;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.PostStatus;
-import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.dto.CustomSkillResponse;
 import com.rubminds.api.skill.dto.PostSkillResponse;
-import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.*;
 
 import java.util.List;
@@ -39,30 +39,28 @@ public class PostResponse {
         private String title;
         private String content;
         private int headcount;
-        private Kinds kinds;
-        private Meeting meeting;
-        private PostStatus postsStatus;
+        private String meeting;
+        private String postsStatus;
         private String region;
-        private List<PostSkillResponse.GetPostSkill> postSkills;
-        private List<CustomSkillResponse.GetCustomSkill> customSkills;
-        private boolean postLikeStatus;
+        private List<String> postSkills;
+        private List<String> customSkills;
+        private Boolean isLike;
         private Long teamId;
 
-        public static PostResponse.Info build(Post post, List<Skill> skills, Team team, boolean postLikeStatus) {
+        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails) {
             return Info.builder()
                     .id(post.getId())
                     .writer(post.getWriter().getNickname())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .headcount(post.getHeadcount())
-                    .kinds(post.getKinds())
-                    .meeting(post.getMeeting())
-                    .postsStatus(post.getPostStatus())
+                    .meeting(post.getMeeting().name())
+                    .postsStatus(post.getPostStatus().name())
                     .region(post.getRegion())
-                    .postSkills(skills.stream().map(PostSkillResponse.GetPostSkill::build).collect(Collectors.toList()))
-                    .customSkills(post.getCustomSkills().stream().map(CustomSkillResponse.GetCustomSkill::build).collect(Collectors.toList()))
-                    .teamId(team.getId())
-                    .postLikeStatus(postLikeStatus)
+                    .postSkills(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
+                    .customSkills(post.getCustomSkills().stream().map(CustomSkill::getName).collect(Collectors.toList()))
+                    .isLike(post.isLike(customUserDetails))
+                    .teamId(post.getTeam().getId())
                     .build();
         }
 

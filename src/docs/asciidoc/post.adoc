@@ -11,7 +11,7 @@
 ---
 == 기본 API
 
-=== 프로젝트&스터디 게시글 생성
+=== 게시글 생성
 `POST /api/post`
 
 요청 HTTP
@@ -21,18 +21,6 @@ include::{snippets}/post_create_project_study/request-fields.adoc[]
 성공 응답 HTTP
 include::{snippets}/post_create_project_study/http-response.adoc[]
 include::{snippets}/post_create_project_study/response-fields.adoc[]
-
-=== 스카웃 게시글 생성
-`POST /api/post`
-
-요청 HTTP
-include::{snippets}/post_create_scout/http-request.adoc[]
-include::{snippets}/post_create_scout/request-fields.adoc[]
-
-성공 응답 HTTP
-include::{snippets}/post_create_scout/http-response.adoc[]
-include::{snippets}/post_create_scout/response-fields.adoc[]
-
 
 === 게시글 수정
 `PUT /api/post/{postId}`

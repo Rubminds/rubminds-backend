@@ -1,8 +1,11 @@
 package com.rubminds.api.post.service;
 
+import com.rubminds.api.file.service.S3Service;
 import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.post.domain.PostFile;
 import com.rubminds.api.post.domain.PostLike;
 import com.rubminds.api.post.domain.PostSkill;
+import com.rubminds.api.post.domain.repository.PostFileRepository;
 import com.rubminds.api.post.domain.repository.PostLikeRepository;
 import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.domain.repository.PostSkillRepository;
@@ -14,14 +17,13 @@ import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
-import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
-import com.rubminds.api.team.domain.repository.TeamUserRepository;
 import com.rubminds.api.team.exception.TeamNotFoundException;
 import com.rubminds.api.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,26 +38,14 @@ public class PostService {
     private final SkillRepository skillRepository;
     private final CustomSkillRepository customSkillRepository;
     private final TeamRepository teamRepository;
-    private final TeamUserRepository teamUserRepository;
     private final PostLikeRepository postLikeRepository;
+    private final S3Service s3Service;
+    private final PostFileRepository postFileRepository;
 
     @Transactional
-    public PostResponse.OnlyId createRecruitProjectOrStudy(PostRequest.CreateOrUpdate request, User user) {
+    public PostResponse.OnlyId create(PostRequest.CreateOrUpdate request, List<MultipartFile> files, User user) {
         List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-        Post post = Post.createRecruitProjectOrStudy(request, user);
-        Post savedPost = createPost(request, user, skills, post);
-        return PostResponse.OnlyId.build(savedPost);
-    }
-
-    @Transactional
-    public PostResponse.OnlyId createRecruitScout(PostRequest.CreateOrUpdate request, User user) {
-        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-        Post post = Post.createRecruitScout(request, user);
-        Post savedPost = createPost(request, user, skills, post);
-        return PostResponse.OnlyId.build(savedPost);
-    }
-
-    private Post createPost(PostRequest.CreateOrUpdate request, User user, List<Skill> skills, Post post) {
+        Post post = Post.create(request, user);
         List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
         List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
 
@@ -63,20 +53,42 @@ public class PostService {
         postSkillRepository.saveAll(postSkills);
         customSkillRepository.saveAll(customSkills);
 
+        if (files != null) {
+            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(savedPost, savedFile)).collect(Collectors.toList());
+            postFileRepository.saveAll(postFiles);
+        }
+
         Team team = Team.create(user, savedPost);
         teamRepository.save(team);
 
-        TeamUser teamUser = TeamUser.create(team, user);
-        teamUserRepository.save(teamUser);
-
-        return savedPost;
+        return PostResponse.OnlyId.build(savedPost);
     }
 
+//    public PostResponse.OnlyId createRecruit(PostRequest.CreateOrUpdate request, User user) {
+//        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
+//
+//        Post post = Post.createRecruit(request, user);
+//
+//        List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
+//        List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
+//
+//
+//        Post savedPost = postRepository.save(post);
+//        postSkillRepository.saveAll(postSkills);
+//        customSkillRepository.saveAll(customSkills);
+//
+//        Team team = Team.create(user, savedPost);
+//        teamRepository.save(team);
+//
+//        return PostResponse.OnlyId.build(savedPost);
+//    }
+
     public PostResponse.Info getPost(Long postId, User user) {
-        Post post = postRepository.findByIdWithCustomSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
-        List<Skill> skills = skillRepository.findAllByPost(postId);
-        Team team = teamRepository.findByPostId(postId);
-        return PostResponse.Info.build(post, skills, team);
+//        Post post = postRepository.findByIdWithCustomSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
+//        List<Skill> skills = skillRepository.findAllByPost(postId);
+//        Team team = teamRepository.findByPostId(postId);
+//        return PostResponse.Info.build(post, skills, team);
+        return null;
     }
 
     @Transactional

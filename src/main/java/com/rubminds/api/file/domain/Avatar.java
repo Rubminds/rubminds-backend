@@ -1,7 +1,7 @@
 package com.rubminds.api.file.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
-import com.rubminds.api.file.dto.FileDTO;
+import com.rubminds.api.file.dto.SavedFile;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
@@ -30,7 +30,7 @@ public class Avatar extends BaseEntity {
     @OneToOne(mappedBy = "avatar")
     private User user;
 
-    public static Avatar create(FileDTO.Upload request){
+    public static Avatar create(SavedFile request){
         return Avatar.builder()
                 .name(request.getName())
                 .extension(request.getExtension())

@@ -3,8 +3,7 @@ spring:
     group:
       local:
         - local
-    include:
-      - aws
+        - aws
   jpa:
     hibernate:
       ddl-auto: validate
@@ -45,6 +44,10 @@ spring:
     url: 'jdbc:mysql://127.0.0.1:3306/rubminds?serverTimezone=Asia/Seoul&charset=UTF-8'
     username: root
     password: pass
+
+tmp:
+  file:
+    prefix:
 
 jwt:
   access-token-props:

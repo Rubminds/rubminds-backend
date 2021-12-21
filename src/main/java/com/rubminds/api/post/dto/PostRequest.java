@@ -2,6 +2,7 @@ package com.rubminds.api.post.dto;
 
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Meeting;
+import com.rubminds.api.post.domain.PostStatus;
 import lombok.*;
 
 import java.nio.file.WatchEvent.Kind;

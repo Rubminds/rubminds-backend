@@ -2,14 +2,13 @@ package com.rubminds.api.user.web;
 
 import com.rubminds.MvcTest;
 import com.rubminds.api.file.domain.Avatar;
-import com.rubminds.api.file.dto.FileDTO;
+import com.rubminds.api.file.dto.SavedFile;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.UserSkill;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.dto.AuthRequest;
 import com.rubminds.api.user.dto.AuthResponse;
-import com.rubminds.api.user.dto.UserRequest;
 import com.rubminds.api.user.dto.UserResponse;
 import com.rubminds.api.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,8 +60,8 @@ class UserControllerTest extends MvcTest {
                 .signupCheck(true)
                 .build();
 
-        avatar = Avatar.create(FileDTO.Upload.builder()
-                .originalFileName("white.jpeg")
+        avatar = Avatar.create(SavedFile.builder()
+                .originalName("white.jpeg")
                 .name("cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
                 .extension(".jpeg")
                 .size(7695L)

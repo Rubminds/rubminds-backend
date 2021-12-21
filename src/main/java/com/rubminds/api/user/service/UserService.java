@@ -82,7 +82,7 @@ public class UserService{
         if(file == null){
             return null;
         }
-        return avatarRepository.save(Avatar.create(s3Service.uploadFile(file)));
+        return avatarRepository.save(Avatar.create(s3Service.upload(file)));
     }
 
     public UserResponse.Info getMe(User user) {

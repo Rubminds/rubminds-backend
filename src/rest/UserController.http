@@ -19,7 +19,6 @@ Content-Disposition: form-data; name="avatar"; filename="white.jpeg"
 Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg
---boundary--
 ###
 POST {{apiUrl}}/user/update
 Authorization: {{authorizationToken}}

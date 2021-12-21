@@ -132,7 +132,7 @@ public class PostControllerTest extends MvcTest {
                 .build();
 
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post);
-        given(postService.createRecruitScout(any(), any())).willReturn(response);
+        given(postService.create(any(), files, any())).willReturn(response);
 
         ResultActions results = mvc.perform(post("/api/post")
                 .contentType(MediaType.APPLICATION_JSON)

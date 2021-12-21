@@ -27,19 +27,25 @@ public class TeamUser {
     @Column(nullable = false)
     private boolean finish;
 
-    public static TeamUser create(Team team, User user) {
+    private double attendLevel;
+
+    private double workLevel;
+
+    public static TeamUser create(User user, Team team) {
         TeamUser teamUser = TeamUser.builder()
                 .team(team)
                 .user(user)
                 .finish(false)
                 .build();
-
         return teamUser;
     }
 
-    public void update(TeamUser teamUser) {
-        this.team = teamUser.getTeam();
-        this.user = teamUser.getUser();
+    public void updateLevel(double attendLevel, double workLevel){
+        this.attendLevel = attendLevel;
+        this.workLevel = workLevel;
+    }
+
+    public void updateFinish() {
         this.finish = true;
     }
 

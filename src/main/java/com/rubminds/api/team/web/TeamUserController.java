@@ -1,11 +1,9 @@
 package com.rubminds.api.team.web;
 
-import com.rubminds.api.team.Service.TeamService;
 import com.rubminds.api.team.Service.TeamUserService;
 import com.rubminds.api.team.dto.TeamUserRequest;
 import com.rubminds.api.team.dto.TeamUserResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,22 +11,21 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/team-user")
+@RequestMapping(path = "/api/teamUser")
 public class TeamUserController {
 
     private final TeamUserService teamUserService;
 
-    @PostMapping("/{userid}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TeamUserResponse.OnlyId> saveTeamUser(@PathVariable Long userid, @RequestBody TeamUserRequest.Create request) {
-        TeamUserResponse.OnlyId response = teamUserService.create(userid,request);
+    @PostMapping("/add")
+    public ResponseEntity<TeamUserResponse.OnlyId> addTeamUser(@RequestBody TeamUserRequest.Create request) {
+        TeamUserResponse.OnlyId response = teamUserService.add(request);
 
         return ResponseEntity.created(URI.create("/api/teamUser/" + response.getId())).body(response);
     }
 
-    @PutMapping("/{teamUserId}")
-    public ResponseEntity<TeamUserResponse.OnlyId> changeFinish(@PathVariable Long teamUserId) {
-        TeamUserResponse.OnlyId response = teamUserService.update(teamUserId);
+    @PostMapping("/evaluate")
+    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.Evaluate request) {
+        TeamUserResponse.OnlyId response = teamUserService.evaluate(request);
         return ResponseEntity.ok().body(response);
     }
 

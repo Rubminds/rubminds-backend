@@ -109,6 +109,7 @@ public class PostResponse {
         private String title;
         private String kinds;
         private Boolean isLike;
+        private String status;
         private List<String> skill;
 
         public static GetList build(Post post, CustomUserDetails customUserDetails) {
@@ -116,6 +117,7 @@ public class PostResponse {
                     .id(post.getId())
                     .title(post.getTitle())
                     .kinds(post.getKinds().name())
+                    .status(post.getPostStatus().name())
                     .skill(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
                     .isLike(post.isLike(customUserDetails))
                     .build();

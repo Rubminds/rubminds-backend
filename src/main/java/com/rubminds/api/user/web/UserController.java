@@ -29,15 +29,9 @@ public class UserController {
         userService.update(request, file, customUserDetails.getUser());
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse.Info> getMe(@CurrentUser CustomUserDetails customUserDetails) {
-        UserResponse.Info response = userService.getMe(customUserDetails.getUser());
-        return ResponseEntity.ok().body(response);
-    }
-
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse.Info> userInfo(@PathVariable Long userId) {
-        UserResponse.Info infoResponse = userService.getUserInfo(userId);
+    public ResponseEntity<UserResponse.Info> getInfo(@PathVariable Long userId, @CurrentUser CustomUserDetails customUserDetails) {
+        UserResponse.Info infoResponse = userService.getUserInfo(userId, customUserDetails.getUser());
         return ResponseEntity.ok().body(infoResponse);
     }
 }

@@ -254,6 +254,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
                                 fieldWithPath("content[].title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content[].kinds").type(JsonFieldType.STRING).description("글종류"),
+                                fieldWithPath("content[].status").type(JsonFieldType.STRING).description("글 상태"),
                                 fieldWithPath("content[].skill[]").type(JsonFieldType.ARRAY).description("커스텀 스킬 식별자"),
                                 fieldWithPath("content[].isLike").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true"),
                                 fieldWithPath("totalElements").description("전체 개수"),

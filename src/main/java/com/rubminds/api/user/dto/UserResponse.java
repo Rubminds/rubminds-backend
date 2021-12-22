@@ -21,18 +21,24 @@ public class UserResponse {
         private double attendLevel;
         private double workLevel;
         private String avatar;
+        private Boolean isMine;
+        private List<UserDto.ProjectInfo> projectInfo;
 
-        public static UserResponse.Info build(User user, String avatarUrl) {
-            return UserResponse.Info.builder()
+        public static UserResponse.Info build(User user, User loginUser, List<UserDto.ProjectInfo> projectInfos) {
+            InfoBuilder builder = Info.builder()
                     .id(user.getId())
                     .nickname(user.getNickname())
                     .job(user.getJob())
                     .introduce(user.getIntroduce())
                     .userSkills(user.getUserSkills().stream().map(UserSkillResponse.GetUserSkill::build).collect(Collectors.toList()))
                     .attendLevel(user.getAttendLevel())
-                    .workLevel(user.getWorkLevel())
-                    .avatar(avatarUrl)
-                    .build();
+                    .isMine(user.isMine(loginUser))
+                    .projectInfo(projectInfos)
+                    .workLevel(user.getWorkLevel());
+            if (user.getAvatar() != null) {
+                builder.avatar(user.getAvatar().getUrl());
+            }
+            return builder.build();
         }
     }
 }

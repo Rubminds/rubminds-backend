@@ -9,6 +9,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Builder
@@ -55,6 +56,10 @@ public class User extends BaseEntity {
         this.job = request.getJob();
         this.introduce = request.getIntroduce();
         this.userSkills = userSkills;
+    }
+
+    public boolean isMine(User user) {
+        return Objects.equals(this.id, user.id);
     }
 
     public void updateAvatar(Avatar updateAvatar) {

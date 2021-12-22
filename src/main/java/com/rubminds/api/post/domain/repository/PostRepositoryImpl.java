@@ -6,15 +6,20 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.PostStatus;
+import com.rubminds.api.user.dto.QUserDto_ProjectInfo;
+import com.rubminds.api.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.rubminds.api.post.domain.QPost.post;
+import static com.rubminds.api.team.domain.QTeam.team;
+import static com.rubminds.api.team.domain.QTeamUser.teamUser;
 
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
@@ -56,5 +61,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             return post.postStatus.eq(postStatus);
         }
         return null;
+    }
+
+    public List<UserDto.ProjectInfo> findCountByStatusAndUser(Long userId) {
+        return queryFactory.select(new QUserDto_ProjectInfo(post.kinds.stringValue(), post.count()))
+                .from(post)
+                .join(post.team, team)
+                .join(team.teamUsers, teamUser)
+                .where(teamUser.user.id.eq(userId))
+                .groupBy(post.kinds)
+                .fetch();
     }
 }

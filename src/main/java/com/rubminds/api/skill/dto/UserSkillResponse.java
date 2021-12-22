@@ -12,12 +12,12 @@ public class UserSkillResponse {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetUserSkill {
-        private Long userSkillId;
+        private Long id;
         private String name;
 
         public static UserSkillResponse.GetUserSkill build(UserSkill userSkill){
             return UserSkillResponse.GetUserSkill.builder()
-                    .userSkillId(userSkill.getId())
+                    .id(userSkill.getId())
                     .name(userSkill.getSkill().getName())
                     .build();
         }

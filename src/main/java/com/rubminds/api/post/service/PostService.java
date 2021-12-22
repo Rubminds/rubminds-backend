@@ -15,6 +15,7 @@ import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
 import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
@@ -42,18 +43,14 @@ public class PostService {
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.CreateOrUpdate request, List<MultipartFile> files, User user) {
-        Team team = Team.create(user);
+        TeamUser teamUser = TeamUser.create(user);
+        Team team = Team.create(user, teamUser);
         teamRepository.save(team);
 
         Post post = Post.create(request, team, user);
         Post savedPost = postRepository.save(post);
 
-        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-        List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
-        List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
-
-        postSkillRepository.saveAll(postSkills);
-        customSkillRepository.saveAll(customSkills);
+        createOrUpdatePostAndCustomSKill(request, post);
 
         if (files != null) {
             List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(savedPost, savedFile)).collect(Collectors.toList());
@@ -76,12 +73,7 @@ public class PostService {
         postSkillRepository.deleteAllByPost(post);
         customSkillRepository.deleteAllByPost(post);
 
-        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
-        List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
-        List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
-
-        postSkillRepository.saveAll(postSkills);
-        customSkillRepository.saveAll(customSkills);
+        createOrUpdatePostAndCustomSKill(request, post);
 
         return PostResponse.OnlyId.build(post);
     }
@@ -99,6 +91,15 @@ public class PostService {
     public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, PageDto pageDto, CustomUserDetails customUserDetails) {
         Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, pageDto.of());
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
+    }
+
+    private void createOrUpdatePostAndCustomSKill(PostRequest.CreateOrUpdate request, Post post) {
+        List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
+        List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
+        List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
+
+        postSkillRepository.saveAll(postSkills);
+        customSkillRepository.saveAll(customSkills);
     }
 
 //    @Transactional

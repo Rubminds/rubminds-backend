@@ -88,7 +88,7 @@ public class Post extends BaseEntity {
         this.meeting = request.getMeeting();
     }
 
-    public void updateComplete(PostRequest.CreateOrUpdate request) {
+    public void updateComplete(PostRequest.CreateCompletePost request) {
         this.completeContent = request.getCompleteContent();
         this.refLink = request.getRefLink();
     }

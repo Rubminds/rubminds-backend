@@ -332,5 +332,41 @@ public class PostControllerTest extends MvcTest {
 
     }
 
+    @Test
+    @DisplayName("완료게시글 작성 및 수정")
+    public void updatePostComplete() throws Exception {
+        PostRequest.CreateCompletePost request = PostRequest.CreateCompletePost.builder()
+                .refLink("http://rubmind.com")
+                .completeContent("완성했습니다.")
+                .build();
+
+        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
+        given(postService.updateCompletePost(any(), any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .put("/api/post/{postId}/complete", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .characterEncoding("UTF-8"));
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_complete",
+                        pathParameters(
+                                parameterWithName("postId").description("게시물 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크"),
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용")
+
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자")
+
+                        )
+                ));
+
+    }
+
 }
 

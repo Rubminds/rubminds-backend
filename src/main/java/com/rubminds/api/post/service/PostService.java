@@ -139,7 +139,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateOrUpdate request) {
+    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         post.updateComplete(request);
 

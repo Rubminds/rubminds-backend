@@ -61,7 +61,7 @@ public class PostController {
     }
 
     @PutMapping("/post/{postId}/complete")
-    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestBody PostRequest.CreateOrUpdate request) {
+    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestBody PostRequest.CreateCompletePost request) {
         PostResponse.OnlyId response = postService.updateCompletePost(postId,request);
         return ResponseEntity.ok().body(response);
     }

@@ -45,6 +45,10 @@ public class TeamUser {
         this.workLevel = workLevel;
     }
 
+    public void updateAttendLevel(double attendLevel){
+        this.attendLevel = attendLevel;
+    }
+
     public void updateFinish() {
         this.finish = true;
     }

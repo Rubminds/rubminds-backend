@@ -7,7 +7,7 @@
 :sectlinks:
 :snippets: ../../../build/generated-snippets
 
-= SKILL
+= Team
 ---
 == *기본* API
 

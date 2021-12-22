@@ -18,12 +18,12 @@ public class TeamUserController {
 
     private final TeamUserService teamUserService;
 
-    @PostMapping("/{userid}")
+    @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TeamUserResponse.OnlyId> saveTeamUser(@PathVariable Long userid, @RequestBody TeamUserRequest.Create request) {
-        TeamUserResponse.OnlyId response = teamUserService.create(userid,request);
+    public ResponseEntity<TeamUserResponse.OnlyId> saveTeamUser(@PathVariable Long userId, @RequestBody TeamUserRequest.Create request) {
+        TeamUserResponse.OnlyId response = teamUserService.create(userId,request);
 
-        return ResponseEntity.created(URI.create("/api/teamUser/" + response.getId())).body(response);
+        return ResponseEntity.created(URI.create("/api/team-user/" + response.getId())).body(response);
     }
 
     @PutMapping("/{teamUserId}")
@@ -38,7 +38,4 @@ public class TeamUserController {
         return teamUserService.delete(teamUserId);
 
     }
-
-
-
 }

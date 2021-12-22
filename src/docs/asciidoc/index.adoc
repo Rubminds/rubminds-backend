@@ -4,3 +4,4 @@
 - link:/docs/post.html[게시물(Post) API]
 - link:/docs/skill.html[기술(SKILL) API]
 - link:/docs/team.html[팀(Team) API]
+- link:/docs/team.html[팀원(TeamUser) API]

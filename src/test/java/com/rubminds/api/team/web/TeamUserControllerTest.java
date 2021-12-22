@@ -1,14 +1,14 @@
 package com.rubminds.api.team.web;
 
-
 import com.rubminds.MvcTest;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
-import com.rubminds.api.team.Service.TeamService;
+import com.rubminds.api.team.Service.TeamUserService;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
-import com.rubminds.api.team.dto.TeamResponse;
+import com.rubminds.api.team.dto.TeamUserRequest;
+import com.rubminds.api.team.dto.TeamUserResponse;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -24,22 +25,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("Team API 문서화")
-@WebMvcTest(TeamController.class)
-public class TeamControllerTest extends MvcTest {
+@DisplayName("TeamUser API 문서화")
+@WebMvcTest(TeamUserController.class)
+public class TeamUserControllerTest extends MvcTest {
 
     @MockBean
-    private TeamService teamService;
+    private TeamUserService teamUserService;
+
     private User user1;
     private User user2;
     private TeamUser user3;
@@ -71,12 +72,12 @@ public class TeamControllerTest extends MvcTest {
 
         team = Team.builder()
                 .id(1L)
-            .admin(user1)
-            .teamUsers(userList)
-            .build();
+                .admin(user1)
+                .teamUsers(userList)
+                .build();
 
         user3 = TeamUser.builder()
-                .id(2L)
+                .id(1L)
                 .team(team)
                 .finish(false)
                 .user(user2)
@@ -102,30 +103,71 @@ public class TeamControllerTest extends MvcTest {
                 .build();
 
 
+    }
+
+    @Test
+    @DisplayName("팀원 추가 문서화")
+    public void getTeamUser() throws Exception {
+        TeamUserRequest.Create request = TeamUserRequest.Create.builder().team_id(1L).build();
+
+        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
+        given(teamUserService.create(any(),any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .post("/api/team-user/{userId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .characterEncoding("UTF-8"));
+
+
+        results.andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(document("teamUser_add", pathParameters(
+                              parameterWithName("userId").description("유저 식별자")
+                        ),
+
+                        requestFields(
+                                fieldWithPath("team_id").type(JsonFieldType.NUMBER).description("팀 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
+
+                        )
+                ));
 
     }
 
     @Test
-    @DisplayName("팀 조회 문서화")
-    public void getTeam() throws Exception {
-        TeamResponse.GetTeam response = TeamResponse.GetTeam.build(team,userList);
-        given(teamService.getTeamInfo(any())).willReturn(response);
+    @DisplayName("끝내기 확인 문서화")
+    public void changeFinishUser() throws Exception {
+        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
+        given(teamUserService.update(any())).willReturn(response);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/team/{teamId}", 1L));
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.put("/api/team-user/{teamUserId}", 1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("team_info", pathParameters(
-                        parameterWithName("teamId").description("팀 식별자")
+                .andDo(document("teamUser_finsih", pathParameters(
+                        parameterWithName("teamUserId").description("팀원식별자")
                         ),
                         responseFields(
-                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 식별자"),
-                                fieldWithPath("adminId").type(JsonFieldType.NUMBER).description("팀장 식별자"),
-                                fieldWithPath("teamUsers").type(JsonFieldType.ARRAY).description("유저 식별자"),
-                                fieldWithPath("teamUsers[].teamUserId").type(JsonFieldType.NUMBER).description("팀원 식별자"),
-                                fieldWithPath("teamUsers[].userId").type(JsonFieldType.NUMBER).description("팀원의 유저아이디 식별자"),
-                                fieldWithPath("teamUsers[].userNickname").type(JsonFieldType.STRING).description("팀원의 닉네임"),
-                                fieldWithPath("teamUsers[].finish").type(JsonFieldType.BOOLEAN).description("팀원의 종료버튼 승인여부")
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
+
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("팀원 추가 문서화")
+    public void deleteTeamUser() throws Exception {
+        given(teamUserService.delete(any())).willReturn(1l);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.delete("/api/team-user/{teamUserId}", 1L));
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("teamUser_delete", pathParameters(
+                        parameterWithName("teamUserId").description("팀원식별자")
                         )
                 ));
     }

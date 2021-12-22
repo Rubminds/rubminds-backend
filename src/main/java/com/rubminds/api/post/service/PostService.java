@@ -101,6 +101,7 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
+
 //    @Transactional
 //    public Long delete(Long postId) {
 //        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
@@ -128,6 +129,7 @@ public class PostService {
 //        }
 //        return PostResponse.GetList.build(posts);
 //    }
+
     private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
@@ -135,5 +137,14 @@ public class PostService {
     private boolean getPostLikeStatus(User user, Post post) {
         return postLikeRepository.existsByUserAndPost(user, post);
     }
+
+    @Transactional
+    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateOrUpdate request) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        post.updateComplete(request);
+
+        return PostResponse.OnlyId.build(post);
+    }
+
 
 }

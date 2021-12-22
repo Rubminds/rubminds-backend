@@ -22,5 +22,7 @@ public class PostRequest {
         private String region;
         private List<Long> skillIds;
         private List<String> customSkillName;
+        private String refLink;
+        private String completeContent;
     }
 }

@@ -15,12 +15,31 @@
 `POST /api/post`
 
 요청 HTTP
-include::{snippets}/post_create_project_study/http-request.adoc[]
-include::{snippets}/post_create_project_study/request-fields.adoc[]
+include::{snippets}/post_create/request-parts.adoc[]
+- userInfo JSON data
+----
+[source]
+{
+"title": "테스트",
+"content": "테스트내용",
+"headcount": 3,
+"kinds": "PROJECT",
+"meeting": "ONLINE",
+"region": "서울",
+"skillIds": [
+2,
+3
+],
+"customSkillName": [
+"firebase",
+"spring"
+]
+}
+----
 
 성공 응답 HTTP
-include::{snippets}/post_create_project_study/http-response.adoc[]
-include::{snippets}/post_create_project_study/response-fields.adoc[]
+include::{snippets}/post_create/http-response.adoc[]
+include::{snippets}/post_create/response-fields.adoc[]
 
 === 게시글 상세 조회
 `GET /api/post/{postId}`
@@ -49,8 +68,7 @@ include::{snippets}/post_list/response-fields.adoc[]
 
 요청 HTTP
 include::{snippets}/post_postLike/http-request.adoc[]
-include::{snippets}/post_postLike/request-fields.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/post_postLike/http-response.adoc[]
-include::{snippets}/post_postLike/response-fields.adoc[]
+

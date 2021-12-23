@@ -27,10 +27,6 @@ public class TeamUser {
     @Column(nullable = false)
     private boolean finish;
 
-    private double attendLevel;
-
-    private double workLevel;
-
     public static TeamUser create(User user, Team team) {
         TeamUser teamUser = TeamUser.builder()
                 .team(team)
@@ -38,15 +34,6 @@ public class TeamUser {
                 .finish(false)
                 .build();
         return teamUser;
-    }
-
-    public void updateLevel(double attendLevel, double workLevel){
-        this.attendLevel = attendLevel;
-        this.workLevel = workLevel;
-    }
-
-    public void updateAttendLevel(double attendLevel){
-        this.attendLevel = attendLevel;
     }
 
     public void updateFinish() {

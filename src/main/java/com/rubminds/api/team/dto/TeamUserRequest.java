@@ -1,4 +1,5 @@
 package com.rubminds.api.team.dto;
+import com.rubminds.api.post.domain.Kinds;
 import lombok.*;
 
 import java.util.List;
@@ -17,36 +18,19 @@ public class TeamUserRequest {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class EvaluateProject {
+    public static class Evaluate {
+        private Kinds kinds;
         private Long teamUserId;
-        private List<EvaluateProjectData> evaluation;
+        private List<EvaluateData> evaluation;
     }
 
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class EvaluateStudy {
-        private Long teamUserId;
-        private List<EvaluateStudyData> evaluation;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class EvaluateProjectData {
+    public static class EvaluateData {
         private Long teamUserId;
         private Integer attendLevel;
         private Integer workLevel;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class EvaluateStudyData {
-        private Long teamUserId;
-        private Integer attendLevel;
     }
 }

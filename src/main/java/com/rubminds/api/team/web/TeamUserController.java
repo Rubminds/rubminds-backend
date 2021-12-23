@@ -29,17 +29,23 @@ public class TeamUserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/teamUser/evaluateProject")
-    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.EvaluateProject request) {
-        TeamUserResponse.OnlyId response = teamUserService.evaluateProject(request);
+    @PostMapping("/teamUser/evaluate")
+    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.Evaluate request) {
+        TeamUserResponse.OnlyId response = teamUserService.evaluate(request);
         return ResponseEntity.ok().body(response);
     }
-
-    @PostMapping("/teamUser/evaluateStudy")
-    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.EvaluateStudy request) {
-        TeamUserResponse.OnlyId response = teamUserService.evaluateStudy(request);
-        return ResponseEntity.ok().body(response);
-    }
+//
+//    @PostMapping("/teamUser/evaluateProject")
+//    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.EvaluateProject request) {
+//        TeamUserResponse.OnlyId response = teamUserService.evaluateProject(request);
+//        return ResponseEntity.ok().body(response);
+//    }
+//
+//    @PostMapping("/teamUser/evaluateStudy")
+//    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.EvaluateStudy request) {
+//        TeamUserResponse.OnlyId response = teamUserService.evaluateStudy(request);
+//        return ResponseEntity.ok().body(response);
+//    }
 
 
     @DeleteMapping("/teamUser/{teamUserId}")

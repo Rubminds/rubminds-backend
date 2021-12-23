@@ -5,7 +5,5 @@ CREATE TABLE `team_user`
     `user_id`      BIGINT      NOT NULL,
     `team_id`      BIGINT      NOT NULL,
     `finish`       boolean DEFAULT NULL,
-    `attend_level` DOUBLE  DEFAULT NULL,
-    `work_level`   DOUBLE  DEFAULT NULL,
     PRIMARY KEY (`id`)
 );

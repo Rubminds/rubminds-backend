@@ -1,4 +1,5 @@
 package com.rubminds.api.team.Service;
+import com.rubminds.api.common.exception.PermissionException;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Permission;
+
 
 @Service
 @Transactional
@@ -23,26 +26,40 @@ public class TeamUserService {
     private final UserRepository userRepository;
     private final TeamUserRepository teamUserRepository;
 
-    public TeamUserResponse.OnlyId create(Long userId, TeamUserRequest.Create request) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        Team team = teamRepository.findById(request.getTeam_id()).orElseThrow(TeamNotFoundException::new);
-        TeamUser teamUser = TeamUser.create(team,user);
+    public TeamUserResponse.OnlyId addTeamUser(Long userId, TeamUserRequest.CreateAndDelete request, User currentUser) {
 
+        Team team = teamRepository.findById(request.getTeam_id()).orElseThrow(TeamNotFoundException::new);
+        PermissionCheck(currentUser, team.getAdmin());
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        TeamUser teamUser = TeamUser.create(team,user);
         teamUserRepository.save(teamUser);
+
         return TeamUserResponse.OnlyId.build(teamUser);
     }
 
-    public TeamUserResponse.OnlyId update(Long teamUserId) {
+
+    public TeamUserResponse.OnlyId changeFinish(Long teamUserId, User member) {
         TeamUser teamUser = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
+        PermissionCheck(member, teamUser.getUser());
+
         teamUser.update(teamUser);
         return TeamUserResponse.OnlyId.build(teamUser);
     }
 
 
-    public Long delete(Long teamUserId) {
+    public Long deleteUser(Long teamUserId, User currentUser, Long teamId) {
+        User admin = userRepository.findByTeamId(teamId).orElseThrow(UserNotFoundException::new);
+        PermissionCheck(currentUser,admin);
+
         teamUserRepository.deleteById(teamUserId);
         return teamUserId;
     }
 
+    private void PermissionCheck(User currentUser, User admin) {
+        if (currentUser.getId() != admin.getId()) {
+            throw new PermissionException();
+        }
+    }
 
 }

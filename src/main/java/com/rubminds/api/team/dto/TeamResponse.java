@@ -25,4 +25,18 @@ public class TeamResponse {
         }
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetAdminId {
+        private Long adminId;
+
+        public static TeamResponse.GetAdminId build(Team team){
+            return GetAdminId.builder()
+                    .adminId(team.getAdmin().getId())
+                    .build();
+        }
+    }
+
 }

@@ -4,16 +4,25 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "team_id" : 1
+  "team_id" : 3
 }
 
 ###
-PUT {{apiUrl}}/team-user/2
+PUT {{apiUrl}}/team-user/6
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
+
+{
+  "team_id" : 3
+}
+
 
 
 ###
-DELETE {{apiUrl}}/team-user/4
+DELETE {{apiUrl}}/team-user/2
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
+
+{
+  "team_id" : 1
+}

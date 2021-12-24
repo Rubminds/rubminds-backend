@@ -16,4 +16,7 @@ UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u join fetch u.avatar where u.id=:userId")
     Optional<User> findByIdWithAvatar(Long userId);
+
+    @Query("select u from User u left join fetch Team t on u.id=t.admin.id where t.id=:teamId")
+    Optional<User> findByTeamId(Long teamId);
 }

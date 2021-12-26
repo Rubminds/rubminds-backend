@@ -8,6 +8,7 @@ import com.rubminds.api.team.domain.repository.TeamUserRepository;
 import com.rubminds.api.team.dto.TeamUserRequest;
 import com.rubminds.api.team.dto.TeamUserResponse;
 import com.rubminds.api.team.exception.DuplicateTeamUserException;
+import com.rubminds.api.team.exception.EvaluateException;
 import com.rubminds.api.team.exception.TeamNotFoundException;
 import com.rubminds.api.team.exception.TeamUserNotFoundException;
 import com.rubminds.api.user.domain.User;
@@ -44,8 +45,12 @@ public class TeamUserService {
         List<TeamUser> teamUsers = teamUserRepository.findAllByTeam(team);
         return teamUsers.stream().map(TeamUserResponse.GetList::build).collect(Collectors.toList());
     }
-    public TeamUserResponse.OnlyId evaluate(TeamUserRequest.Evaluate request) {
-        TeamUser evaluator = teamUserRepository.findById(request.getTeamUserId()).orElseThrow(TeamUserNotFoundException::new);
+
+    public TeamUserResponse.OnlyId evaluate(Long teamUserId, TeamUserRequest.Evaluate request) {
+        TeamUser evaluator = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
+        if(evaluator.isFinish()){
+            throw new EvaluateException();
+        }
         evaluateTeam(request);
         evaluator.updateFinish();
         return TeamUserResponse.OnlyId.build(evaluator);
@@ -53,8 +58,7 @@ public class TeamUserService {
 
     public Long delete(Long teamUserId) {
         TeamUser teamUser = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
-        User user = teamUser.getUser();
-        user.updateAttendLevel(calcLevel(user.getAttendLevel(), 0));
+        teamUser.getUser().updateAttendLevel(0);
         teamUserRepository.deleteById(teamUserId);
         return teamUserId;
     }
@@ -63,20 +67,10 @@ public class TeamUserService {
         for(int i = 0 ; i<request.getEvaluation().size(); i++){
             TeamUser target = teamUserRepository.findById(request.getEvaluation().get(i).getTeamUserId()).orElseThrow(TeamUserNotFoundException::new);
             User user = target.getUser();
-            double attendLevel = calcLevel(user.getAttendLevel(), request.getEvaluation().get(i).getAttendLevel());
-            user.updateAttendLevel(attendLevel);
+            user.updateAttendLevel(request.getEvaluation().get(i).getAttendLevel());
             if(request.getKinds() == Kinds.PROJECT){
-                double workLevel = calcLevel(user.getWorkLevel(), request.getEvaluation().get(i).getWorkLevel());
-                user.updateWorkLevel(workLevel);
+                user.updateWorkLevel(request.getEvaluation().get(i).getWorkLevel());
             }
         }
     }
-
-    private double calcLevel(double currentLevel, double newLevel){
-        if(currentLevel!=0) {
-            newLevel = (currentLevel + newLevel) / 2;
-        }
-        return newLevel;
-    }
-
 }

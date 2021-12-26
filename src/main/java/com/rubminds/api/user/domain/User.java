@@ -69,10 +69,16 @@ public class User extends BaseEntity {
     }
 
     public void updateAttendLevel(double attendLevel){
+        if(this.attendLevel!=0){
+            attendLevel = (this.getAttendLevel() + attendLevel)/2;
+        }
         this.attendLevel = attendLevel;
     }
 
     public void updateWorkLevel(double workLevel){
-        this.workLevel = workLevel;
+       if(this.workLevel!=0) {
+           workLevel = (this.getWorkLevel() + workLevel)/2;
+       }
+       this.workLevel = workLevel;
     }
 }

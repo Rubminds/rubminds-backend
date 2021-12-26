@@ -20,7 +20,6 @@ public class TeamUserRequest {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Evaluate {
         private Kinds kinds;
-        private Long teamUserId;
         private List<EvaluateData> evaluation;
     }
 

@@ -4,6 +4,7 @@ import com.rubminds.api.team.Service.TeamUserService;
 import com.rubminds.api.team.dto.TeamUserRequest;
 import com.rubminds.api.team.dto.TeamUserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,35 +19,23 @@ public class TeamUserController {
     private final TeamUserService teamUserService;
 
     @PostMapping("/teamUser/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<TeamUserResponse.OnlyId> addTeamUser(@RequestBody TeamUserRequest.Create request) {
         TeamUserResponse.OnlyId response = teamUserService.add(request);
-        return ResponseEntity.created(URI.create("/api/teamUser/" + response.getId())).body(response);
+        return ResponseEntity.created(URI.create("/api/teamUsers/" + request.getTeamId())).body(response);
     }
 
-    @GetMapping("/teamUsers")
-    public ResponseEntity<List<TeamUserResponse.GetList>> getList(@RequestParam(name = "teamId") Long teamId){
+    @GetMapping("/teamUsers/{teamId}")
+    public ResponseEntity<List<TeamUserResponse.GetList>> getList(@PathVariable Long teamId){
         List<TeamUserResponse.GetList> response = teamUserService.getList(teamId);
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/teamUser/evaluate")
-    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.Evaluate request) {
-        TeamUserResponse.OnlyId response = teamUserService.evaluate(request);
+    @PostMapping("/teamUser/evaluate/{teamUserId}")
+    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@PathVariable Long teamUserId, @RequestBody TeamUserRequest.Evaluate request) {
+        TeamUserResponse.OnlyId response = teamUserService.evaluate(teamUserId, request);
         return ResponseEntity.ok().body(response);
     }
-//
-//    @PostMapping("/teamUser/evaluateProject")
-//    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.EvaluateProject request) {
-//        TeamUserResponse.OnlyId response = teamUserService.evaluateProject(request);
-//        return ResponseEntity.ok().body(response);
-//    }
-//
-//    @PostMapping("/teamUser/evaluateStudy")
-//    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@RequestBody TeamUserRequest.EvaluateStudy request) {
-//        TeamUserResponse.OnlyId response = teamUserService.evaluateStudy(request);
-//        return ResponseEntity.ok().body(response);
-//    }
-
 
     @DeleteMapping("/teamUser/{teamUserId}")
     public Long delete(@PathVariable("teamUserId") Long teamUserId) {

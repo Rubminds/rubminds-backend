@@ -4,6 +4,7 @@ import com.rubminds.MvcTest;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
+import com.rubminds.api.team.Service.TeamService;
 import com.rubminds.api.team.Service.TeamUserService;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
@@ -30,7 +31,6 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +40,9 @@ public class TeamUserControllerTest extends MvcTest {
 
     @MockBean
     private TeamUserService teamUserService;
+
+    @MockBean
+    private TeamService teamService;
 
     private User user1;
     private User user2;
@@ -108,14 +111,15 @@ public class TeamUserControllerTest extends MvcTest {
     @Test
     @DisplayName("팀원 추가 문서화")
     public void getTeamUser() throws Exception {
-        TeamUserRequest.Create request = TeamUserRequest.Create.builder().team_id(1L).build();
+        TeamUserRequest.CreateAndDelete request = TeamUserRequest.CreateAndDelete.builder().team_id(1L).build();
 
         TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
-        given(teamUserService.create(any(),any())).willReturn(response);
+        given(teamUserService.addTeamUser(any(),any(),any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
                 .post("/api/team-user/{userId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
+
                         .content(objectMapper.writeValueAsString(request))
                         .characterEncoding("UTF-8"));
 
@@ -141,13 +145,15 @@ public class TeamUserControllerTest extends MvcTest {
     @DisplayName("끝내기 확인 문서화")
     public void changeFinishUser() throws Exception {
         TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
-        given(teamUserService.update(any())).willReturn(response);
+        given(teamUserService.changeFinish(any(),any())).willReturn(response);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.put("/api/team-user/{teamUserId}", 1L));
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.put("/api/team-user/{teamUserId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8"));
 
         results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("teamUser_finsih", pathParameters(
+                .andDo(document("teamUser_finish", pathParameters(
                         parameterWithName("teamUserId").description("팀원식별자")
                         ),
                         responseFields(
@@ -158,16 +164,23 @@ public class TeamUserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("팀원 추가 문서화")
+    @DisplayName("팀원 삭제 문서화")
     public void deleteTeamUser() throws Exception {
-        given(teamUserService.delete(any())).willReturn(1l);
+        TeamUserRequest.CreateAndDelete request = TeamUserRequest.CreateAndDelete.builder().team_id(1L).build();
+        given(teamUserService.deleteUser(any(),any(),any())).willReturn(1l);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.delete("/api/team-user/{teamUserId}", 1L));
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.delete("/api/team-user/{teamUserId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .characterEncoding("UTF-8"));
 
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("teamUser_delete", pathParameters(
                         parameterWithName("teamUserId").description("팀원식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("team_id").type(JsonFieldType.NUMBER).description("팀 식별자")
                         )
                 ));
     }

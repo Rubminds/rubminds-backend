@@ -258,8 +258,10 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("content[].isLike").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true"),
                                 fieldWithPath("totalElements").description("전체 개수"),
                                 fieldWithPath("last").description("마지막 페이지인지 식별"),
-                                fieldWithPath("totalPages").description("전체 페이지")
-                        )
+                                fieldWithPath("totalPages").description("전체 페이지"),
+                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional()
+                                )
                 ));
     }
     //    @Test

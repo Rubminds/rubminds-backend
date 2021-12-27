@@ -64,7 +64,7 @@ Content-Type: application/json;charset=UTF-8
 }
 
 ###
-DELETE {{apiUrl}}/post/6
+DELETE {{apiUrl}}/post/3
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

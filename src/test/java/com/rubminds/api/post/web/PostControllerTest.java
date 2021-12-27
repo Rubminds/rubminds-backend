@@ -219,7 +219,9 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
-                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id")
+                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id"),
+                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional()
                         )
                 ));
 

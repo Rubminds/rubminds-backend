@@ -6,6 +6,7 @@ import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.team.domain.repository.TeamUserRepository;
 import com.rubminds.api.team.dto.TeamUserRequest;
 import com.rubminds.api.team.dto.TeamUserResponse;
+import com.rubminds.api.team.exception.AlreadyExitException;
 import com.rubminds.api.team.exception.TeamNotFoundException;
 import com.rubminds.api.team.exception.TeamUserNotFoundException;
 import com.rubminds.api.user.domain.User;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Permission;
+import java.util.List;
 
 
 @Service
@@ -32,6 +34,7 @@ public class TeamUserService {
         PermissionCheck(currentUser, team.getAdmin());
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        AlreadyExistsCheck(user,team);
         TeamUser teamUser = TeamUser.create(team,user);
         teamUserRepository.save(teamUser);
 
@@ -59,6 +62,13 @@ public class TeamUserService {
     private void PermissionCheck(User currentUser, User admin) {
         if (currentUser.getId() != admin.getId()) {
             throw new PermissionException();
+        }
+    }
+
+    private void AlreadyExistsCheck(User user, Team team) {
+        boolean check = teamUserRepository.existsByUserAndTeam(user,team);
+        if (check == true) {
+            throw new AlreadyExitException();
         }
     }
 

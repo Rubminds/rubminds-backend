@@ -50,6 +50,13 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Role role;
 
+    public void signup(AuthRequest.Signup request, Avatar avatar, List<UserSkill> userSkills) {
+        this.nickname = request.getNickname();
+        this.job = request.getJob();
+        this.introduce = request.getIntroduce();
+        this.userSkills = userSkills;
+        this.avatar = avatar;
+    }
     public void update(AuthRequest.Update request, List<UserSkill> userSkills) {
         this.nickname = request.getNickname();
         this.job = request.getJob();
@@ -61,11 +68,17 @@ public class User extends BaseEntity {
         this.avatar = updateAvatar;
     }
 
-    public void signup(AuthRequest.Signup request, Avatar avatar, List<UserSkill> userSkills) {
-        this.nickname = request.getNickname();
-        this.job = request.getJob();
-        this.introduce = request.getIntroduce();
-        this.userSkills = userSkills;
-        this.avatar = avatar;
+    public void updateAttendLevel(double attendLevel){
+        if(this.attendLevel!=0){
+            attendLevel = (this.getAttendLevel() + attendLevel)/2;
+        }
+        this.attendLevel = attendLevel;
+    }
+
+    public void updateWorkLevel(double workLevel){
+       if(this.workLevel!=0) {
+           workLevel = (this.getWorkLevel() + workLevel)/2;
+       }
+       this.workLevel = workLevel;
     }
 }

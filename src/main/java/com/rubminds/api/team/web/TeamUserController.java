@@ -42,7 +42,4 @@ public class TeamUserController {
         return teamUserService.delete(teamUserId);
 
     }
-
-
-
 }

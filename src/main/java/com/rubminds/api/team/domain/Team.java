@@ -25,6 +25,7 @@ public class Team extends BaseEntity {
     private User admin;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<TeamUser> teamUsers = new ArrayList<>();
 
     public static Team create(User user) {

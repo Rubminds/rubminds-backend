@@ -11,6 +11,8 @@ CREATE TABLE `post`
     `meeting`     VARCHAR(30)  NOT NULL,
     `post_status` VARCHAR(20)  NOT NULL,
     `region`      VARCHAR(20)  NOT NULL,
+    `complete_content` VARCHAR(255) ,
+    `ref_link`    VARCHAR(255) ,
     `created_at`  DATETIME DEFAULT NULL,
     `updated_at`  DATETIME DEFAULT NULL,
     `deleted_at`  DATETIME DEFAULT NULL,

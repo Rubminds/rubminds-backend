@@ -1,5 +1,4 @@
-GET {{apiUrl}}/team/2
-
+GET {{apiUrl}}/team/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

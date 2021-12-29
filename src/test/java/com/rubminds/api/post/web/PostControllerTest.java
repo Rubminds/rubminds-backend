@@ -219,7 +219,9 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
-                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id")
+                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id"),
+                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional()
                         )
                 ));
 
@@ -327,6 +329,42 @@ public class PostControllerTest extends MvcTest {
                 .andDo(document("post_postLike",
                         pathParameters(
                                 parameterWithName("postId").description("게시물 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("완료게시글 작성 및 수정")
+    public void updatePostComplete() throws Exception {
+        PostRequest.CreateCompletePost request = PostRequest.CreateCompletePost.builder()
+                .refLink("http://rubmind.com")
+                .completeContent("완성했습니다.")
+                .build();
+
+        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
+        given(postService.updateCompletePost(any(), any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .put("/api/post/{postId}/complete", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .characterEncoding("UTF-8"));
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_complete",
+                        pathParameters(
+                                parameterWithName("postId").description("게시물 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크"),
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용")
+
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자")
+
                         )
                 ));
 

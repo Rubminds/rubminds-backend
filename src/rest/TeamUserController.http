@@ -18,6 +18,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
+  "team_id" : 1
   "kinds" : "PROJECT",
   "evaluation" : [{"teamUserId" : 1, "attendLevel" : 5, "workLevel" : 5}, {"teamUserId" : 3, "attendLevel" : 4, "workLevel" : 4}]
 }

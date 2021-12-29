@@ -22,5 +22,16 @@ public class PostRequest {
         private String region;
         private List<Long> skillIds;
         private List<String> customSkillName;
+        private String refLink;
+        private String completeContent;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class CreateCompletePost {
+        private String refLink;
+        private String completeContent;
     }
 }

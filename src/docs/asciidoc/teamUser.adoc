@@ -1,0 +1,51 @@
+= Rubminds API 문서 (SKILL)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+= TeamUser
+---
+== *기본* API
+
+=== 팀원 추가하기
+
+`POST /api/team-user/{userId}`
+
+요청 HTTP
+include::{snippets}/teamUser_add/http-request.adoc[]
+include::{snippets}/teamUser_add/path-parameters.adoc[]
+include::{snippets}/teamUser_add/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_add/http-response.adoc[]
+include::{snippets}/teamUser_add/response-fields.adoc[]
+
+
+=== 팀원 끝내기 싸인
+
+`PUT /api/team-user/{userId}`
+
+요청 HTTP
+include::{snippets}/teamUser_finsih/http-request.adoc[]
+include::{snippets}/teamUser_finsih/path-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_finsih/http-response.adoc[]
+include::{snippets}/teamUser_finsih/response-fields.adoc[]
+
+=== 팀원 추방
+
+`DELETE /api/team-user/{userId}`
+
+요청 HTTP
+include::{snippets}/teamUser_delete/http-request.adoc[]
+include::{snippets}/teamUser_delete/path-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_delete/http-response.adoc[]
+
+

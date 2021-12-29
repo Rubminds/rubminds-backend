@@ -19,7 +19,6 @@ public class TeamUserResponse {
         }
     }
 
-
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -36,6 +35,24 @@ public class TeamUserResponse {
                     .userId(teamUser.getUser().getId())
                     .userNickname(teamUser.getUser().getNickname())
                     .finish(teamUser.isFinish())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetList {
+        private Long teamUserId;
+        private Long userId;
+        private String userNickname;
+
+        public static TeamUserResponse.GetList build(TeamUser teamUser){
+            return GetList.builder()
+                    .teamUserId(teamUser.getId())
+                    .userId(teamUser.getUser().getId())
+                    .userNickname(teamUser.getUser().getNickname())
                     .build();
         }
     }

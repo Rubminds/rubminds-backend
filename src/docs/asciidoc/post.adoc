@@ -37,8 +37,6 @@ include::{snippets}/post_create/request-parts.adoc[]
 ]
 }
 ----
-
-include::{snippets}/post_create/http-request.adoc[]
 include::{snippets}/post_create/request-parts.adoc[]
 
 

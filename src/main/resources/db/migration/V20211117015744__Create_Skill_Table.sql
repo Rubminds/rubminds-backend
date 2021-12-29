@@ -21,4 +21,4 @@ VALUES ('Java'),
        ('Html'),
        ('Css'),
        ('Django'),
-       ('Flask'),
+       ('Flask');

@@ -88,8 +88,8 @@ public class PostService {
         }
     }
 
-    public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, PageDto pageDto, CustomUserDetails customUserDetails) {
-        Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, pageDto.of());
+    public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, PageDto pageDto, List<Long> skillId, List<String> customSkillNameList, CustomUserDetails customUserDetails) {
+        Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, skillId, customSkillNameList, pageDto.of());
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
@@ -122,6 +122,4 @@ public class PostService {
 
         return PostResponse.OnlyId.build(post);
     }
-
-
 }

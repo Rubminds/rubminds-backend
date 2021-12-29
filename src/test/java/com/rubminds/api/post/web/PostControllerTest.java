@@ -238,12 +238,16 @@ public class PostControllerTest extends MvcTest {
         Page<Post> postPage = new PageImpl<>(postList, PageRequest.of(1, 5), postList.size());
         Page<PostResponse.GetList> response = postPage.map(post1 -> PostResponse.GetList.build(post1, customUserDetails));
 
-        given(postService.getList(any(), any(), any(), any())).willReturn(response);
+        given(postService.getList(any(), any(), any(), any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(get("/api/posts")
                 .param("page", "1")
                 .param("size", "10")
                 .param("kinds", "PROJECT")
+                .param("keywords", "firebase")
+                .param("keywords", "jpa")
+                .param("skill", "1")
+                .param("skill", "2")
                 .param("status", "RECRUIT")
         );
 
@@ -254,7 +258,9 @@ public class PostControllerTest extends MvcTest {
                                 parameterWithName("page").description("조회할 페이지"),
                                 parameterWithName("size").description("조회할 사이즈"),
                                 parameterWithName("kinds").description("게시물 종류 (PROJECT,SCOUT,STUDY)"),
-                                parameterWithName("status").description("게시물상태 (RECRUIT,FINISHED)")
+                                parameterWithName("status").description("게시물상태 (RECRUIT,FINISHED)"),
+                                parameterWithName("skill").description("skill 식별자"),
+                                parameterWithName("keywords").description("직접 입력 키워드")
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),

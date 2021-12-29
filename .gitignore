@@ -8,6 +8,7 @@ db_volume
 /src/main/resources/static/docs/**
 /src/main/generated
 spy.log
+BOOT-INF/
 ### STS ###
 .apt_generated
 .classpath

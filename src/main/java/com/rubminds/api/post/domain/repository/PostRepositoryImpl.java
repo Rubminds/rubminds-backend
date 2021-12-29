@@ -1,5 +1,6 @@
 package com.rubminds.api.post.domain.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,6 +22,8 @@ import java.util.Optional;
 
 import static com.rubminds.api.post.domain.QPost.post;
 import static com.rubminds.api.post.domain.QPostLike.postLike;
+import static com.rubminds.api.post.domain.QPostSkill.postSkill;
+import static com.rubminds.api.skill.domain.QCustomSkill.customSkill;
 import static com.rubminds.api.team.domain.QTeam.team;
 import static com.rubminds.api.team.domain.QTeamUser.teamUser;
 
@@ -40,10 +43,14 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findAllByKindsAndStatus(Kinds kinds, PostStatus postStatus, Pageable pageable) {
-        QueryResults<Post> result = queryFactory.selectFrom(post)
+    public Page<Post> findAllByKindsAndStatus(Kinds kinds, PostStatus postStatus, List<Long> skillId, List<String> customSkillNameList, Pageable pageable) {
+        QueryResults<Post> result = queryFactory.select(post).distinct()
+                .from(post)
+                .leftJoin(post.postSkills, postSkill)
+                .leftJoin(post.customSkills, customSkill)
                 .where(postKindsEq(kinds))
                 .where(postStatusEq(postStatus))
+                .where(postSkillEq(skillId, customSkillNameList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(post.id.desc())
@@ -64,6 +71,22 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetchResults();
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
+
+
+    private BooleanBuilder postSkillEq(List<Long> skillIdList, List<String> customSkillList) {
+        BooleanBuilder expression = new BooleanBuilder();
+        if (Objects.nonNull(skillIdList) && !skillIdList.isEmpty()) {
+            for (Long skillId : skillIdList) {
+                expression.or(postSkill.skill.id.eq(skillId));
+            }
+        }
+        if (Objects.nonNull(customSkillList) && !customSkillList.isEmpty()) {
+            for (String skill : customSkillList) {
+                expression.or(customSkill.name.eq(skill));
+            }
+        }
+        return expression;
     }
 
     private BooleanExpression postKindsEq(Kinds kinds) {

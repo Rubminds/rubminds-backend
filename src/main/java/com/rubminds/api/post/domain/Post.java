@@ -53,6 +53,10 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String region;
 
+    private String completeContent;
+
+    private String refLink;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<PostSkill> postSkills = new ArrayList<>();
@@ -85,6 +89,11 @@ public class Post extends BaseEntity {
         this.kinds = request.getKinds();
     }
 
+    public void updateComplete(PostRequest.CreateCompletePost request) {
+        this.completeContent = request.getCompleteContent();
+        this.refLink = request.getRefLink();
+    }
+
     public static Post create(PostRequest.CreateOrUpdate request, Team team, User user) {
         return Post.builder()
                 .title(request.getTitle())
@@ -99,4 +108,6 @@ public class Post extends BaseEntity {
                 .team(team)
                 .build();
     }
+
+
 }

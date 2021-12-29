@@ -15,6 +15,7 @@
 `POST /api/post`
 
 요청 HTTP
+<<<<<<< HEAD
 include::{snippets}/post_create/request-parts.adoc[]
 - userInfo JSON data
 ----
@@ -36,6 +37,10 @@ include::{snippets}/post_create/request-parts.adoc[]
 ]
 }
 ----
+
+include::{snippets}/post_create/http-request.adoc[]
+include::{snippets}/post_create/request-parts.adoc[]
+
 
 성공 응답 HTTP
 include::{snippets}/post_create/http-response.adoc[]
@@ -79,7 +84,31 @@ include::{snippets}/post_likePosts/response-fields.adoc[]
 
 요청 HTTP
 include::{snippets}/post_postLike/http-request.adoc[]
+include::{snippets}/post_postLike/path-parameters.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/post_postLike/http-response.adoc[]
+
+=== 게시글 수정
+`PUT /api/post/{postId}`
+
+요청 HTTP
+include::{snippets}/post_update/http-request.adoc[]
+include::{snippets}/post_update/path-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_update/http-response.adoc[]
+include::{snippets}/post_update/response-fields.adoc[]
+
+=== 완료게시글 작성 및 수정
+`POST /api/post/{postId}/complete`
+
+요청 HTTP
+include::{snippets}/post_complete/http-request.adoc[]
+include::{snippets}/post_complete/path-parameters.adoc[]
+include::{snippets}/post_complete/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_complete/http-response.adoc[]
+include::{snippets}/post_complete/response-fields.adoc[]
 

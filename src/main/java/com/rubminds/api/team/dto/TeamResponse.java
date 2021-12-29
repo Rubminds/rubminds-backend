@@ -13,14 +13,12 @@ public class TeamResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetTeam {
         private Long teamId;
-        private String postTitle;
         private Long adminId;
         private List<TeamUserResponse.GetTeamUser> teamUsers;
       
         public static TeamResponse.GetTeam build(Team team, List<TeamUser> teamUser){
             return GetTeam.builder()
                     .teamId(team.getId())
-//                    .postTitle(team.getPost().getTitle())
                     .adminId(team.getAdmin().getId())
                     .teamUsers(teamUser.stream().map(TeamUserResponse.GetTeamUser::build).collect(Collectors.toList()))
                     .build();

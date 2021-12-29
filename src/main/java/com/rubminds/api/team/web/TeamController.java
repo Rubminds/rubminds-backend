@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/team")
 public class TeamController {
-    private final TeamService teamService;
 
+    private final TeamService teamService;
 
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamResponse.GetTeam> TeamInfo(@PathVariable Long teamId) {

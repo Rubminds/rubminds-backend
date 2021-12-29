@@ -1,19 +1,39 @@
-
-POST {{apiUrl}}/team-user/2
+POST {{apiUrl}}/teamUser/add
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "team_id" : 2
+  "teamId" : 1,
+  "userId" : 3
 }
 
 ###
-PUT {{apiUrl}}/team-user/2
+GET {{apiUrl}}/teamUsers/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
+###
+POST {{apiUrl}}/teamUser/evaluate/4
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "team_id" : 1
+  "kinds" : "PROJECT",
+  "evaluation" : [{"teamUserId" : 1, "attendLevel" : 5, "workLevel" : 5}, {"teamUserId" : 3, "attendLevel" : 4, "workLevel" : 4}]
+}
 
 ###
-DELETE {{apiUrl}}/team-user/4
+POST {{apiUrl}}/teamUser/evaluate/6
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "kinds" : "STUDY",
+  "evaluation" : [{"teamUserId" : 7, "attendLevel" : 5}, {"teamUserId" : 8, "attendLevel" : 2}]
+}
+
+###
+DELETE {{apiUrl}}/teamUser/3
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8

@@ -115,4 +115,13 @@ public class PostService {
         return postLikeRepository.existsByUserAndPost(user, post);
     }
 
+    @Transactional
+    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        post.updateComplete(request);
+
+        return PostResponse.OnlyId.build(post);
+    }
+
+
 }

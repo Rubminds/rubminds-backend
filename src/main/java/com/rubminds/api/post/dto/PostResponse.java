@@ -47,6 +47,8 @@ public class PostResponse {
         private Boolean isLike;
         private Long teamId;
         private List<PostDto.File> files;
+        private String refLink;
+        private String completeContent;
 
         public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails) {
             return Info.builder()
@@ -63,6 +65,8 @@ public class PostResponse {
                     .isLike(post.isLike(customUserDetails))
                     .teamId(post.getTeam().getId())
                     .files(post.getPostFileList().stream().map(PostDto.File::build).collect(Collectors.toList()))
+                    .completeContent(post.getContent())
+                    .refLink(post.getRefLink())
                     .build();
         }
     }

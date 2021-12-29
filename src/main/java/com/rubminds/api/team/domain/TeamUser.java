@@ -27,6 +27,7 @@ public class TeamUser {
     @Column(nullable = false)
     private boolean finish;
 
+
     public void setTeam(Team team) {
         this.team = team;
     }
@@ -38,9 +39,15 @@ public class TeamUser {
                 .build();
     }
 
-    public void update(TeamUser teamUser) {
-        this.team = teamUser.getTeam();
-        this.user = teamUser.getUser();
+    public static TeamUser createWithTeam(User user, Team team) {
+        return TeamUser.builder()
+                .user(user)
+                .finish(false)
+                .team(team)
+                .build();
+    }
+
+    public void updateFinish() {
         this.finish = true;
     }
 

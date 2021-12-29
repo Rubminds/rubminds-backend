@@ -5,7 +5,7 @@
 :toc: left
 :toclevels: 2
 :sectlinks:
-:snippets: ../../../build/generated-snippets
+:snippets: ./build/generated-snippets
 
 = User
 ---
@@ -55,17 +55,6 @@ include::{snippets}/user-update/request-parts.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/user-update/http-response.adoc[]
-
-=== *내정보 조회*
-
-`GET /api/user/me`
-
-요청 HTTP
-include::{snippets}/user-me/http-request.adoc[]
-
-성공 응답 HTTP
-include::{snippets}/user-me/http-response.adoc[]
-include::{snippets}/user-me/response-fields.adoc[]
 
 === *회원정보 조회*
 

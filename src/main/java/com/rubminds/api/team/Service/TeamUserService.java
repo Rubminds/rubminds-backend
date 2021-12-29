@@ -29,13 +29,14 @@ public class TeamUserService {
     private final UserRepository userRepository;
     private final TeamUserRepository teamUserRepository;
 
+
     public TeamUserResponse.OnlyId add(TeamUserRequest.Create request) {
         User applicant = userRepository.findById(request.getUserId()).orElseThrow(UserNotFoundException::new);
         Team team = teamRepository.findById(request.getTeamId()).orElseThrow(TeamNotFoundException::new);
         if(teamUserRepository.existsByUserAndTeam(applicant, team)){
             throw new DuplicateTeamUserException();
         }
-        TeamUser teamUser = TeamUser.create(applicant, team);
+        TeamUser teamUser = TeamUser.createWithTeam(applicant, team);
         teamUserRepository.save(teamUser);
         return TeamUserResponse.OnlyId.build(teamUser);
     }

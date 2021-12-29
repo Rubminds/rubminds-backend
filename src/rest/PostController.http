@@ -3,7 +3,12 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-GET {{apiUrl}}/posts?kind=PROJECT&status=RECRUIT&page=1&size=5
+GET {{apiUrl}}/posts?kinds=PROJECT&status=RECRUIT&page=1&size=5
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+###
+GET {{apiUrl}}/posts/like?kinds=SCOUT&page=1&size=5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -18,25 +23,25 @@ Content-Disposition: form-data; name="postInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
-  "title": "테스트",
+  "title": "PROJECT12345",
   "content": "테스트내용",
   "headcount": 3,
   "kinds": "PROJECT",
   "meeting": "ONLINE",
   "region": "서울",
   "skillIds": [
-    2,
-    3
+    6,
+    5
   ],
   "customSkillName": [
     "firebase",
     "spring"
   ]
 }
-###
-#--boundary
-#Content-Disposition: form-data; name="files"; filename="white.jpeg"
 
+###--boundary
+#Content-Disposition: form-data; name="files"; filename="white.jpeg"
+#
 #< ./../main/resources/dummy/image/white.jpeg
 
 
@@ -49,7 +54,7 @@ Content-Type: application/json;charset=UTF-8
   "title": "123",
   "content": "수정완료",
   "headcount": 1,
-  "kinds": "PROJECT",
+  "kinds": "STUDY",
   "meeting": "BOTH",
   "postsStatus": "GATHERING",
   "region": "서울",
@@ -74,12 +79,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-GET {{apiUrl}}/posts/like
-Authorization: {{authorizationToken}}
-Content-Type: application/json;charset=UTF-8
-
-###
-POST {{apiUrl}}/post/1/like
+POST {{apiUrl}}/post/2/like
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

@@ -112,14 +112,18 @@ public class PostResponse {
         private Long id;
         private String title;
         private String kinds;
-        private Boolean isLike;
+        private String status;
         private List<String> skill;
+        private String region;
+        private Boolean isLike;
 
         public static GetList build(Post post, CustomUserDetails customUserDetails) {
             return GetList.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .kinds(post.getKinds().name())
+                    .region(post.getRegion())
+                    .status(post.getPostStatus().name())
                     .skill(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
                     .isLike(post.isLike(customUserDetails))
                     .build();

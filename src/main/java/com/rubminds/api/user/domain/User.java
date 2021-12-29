@@ -9,6 +9,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Builder
@@ -57,6 +58,7 @@ public class User extends BaseEntity {
         this.userSkills = userSkills;
         this.avatar = avatar;
     }
+
     public void update(AuthRequest.Update request, List<UserSkill> userSkills) {
         this.nickname = request.getNickname();
         this.job = request.getJob();
@@ -64,21 +66,25 @@ public class User extends BaseEntity {
         this.userSkills = userSkills;
     }
 
+    public boolean isMine(User user) {
+        return Objects.equals(this.id, user.id);
+    }
+
     public void updateAvatar(Avatar updateAvatar) {
         this.avatar = updateAvatar;
     }
 
-    public void updateAttendLevel(double attendLevel){
-        if(this.attendLevel!=0){
-            attendLevel = (this.getAttendLevel() + attendLevel)/2;
+    public void updateAttendLevel(double attendLevel) {
+        if (this.attendLevel != 0) {
+            attendLevel = (this.getAttendLevel() + attendLevel) / 2;
         }
         this.attendLevel = attendLevel;
     }
 
-    public void updateWorkLevel(double workLevel){
-       if(this.workLevel!=0) {
-           workLevel = (this.getWorkLevel() + workLevel)/2;
-       }
-       this.workLevel = workLevel;
+    public void updateWorkLevel(double workLevel) {
+        if (this.workLevel != 0) {
+            workLevel = (this.getWorkLevel() + workLevel) / 2;
+        }
+        this.workLevel = workLevel;
     }
 }

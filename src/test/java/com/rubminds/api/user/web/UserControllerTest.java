@@ -9,6 +9,7 @@ import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.dto.AuthRequest;
 import com.rubminds.api.user.dto.AuthResponse;
+import com.rubminds.api.user.dto.UserDto;
 import com.rubminds.api.user.dto.UserResponse;
 import com.rubminds.api.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +36,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -137,56 +138,8 @@ class UserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("내 정보 조회 문서화")
-    public void readMyInfo() throws Exception {
-        User user = User.builder()
-                .id(1L)
-                .oauthId("1")
-                .avatar(avatar)
-                .nickname("동그라미")
-                .job("학생")
-                .introduce("안녕하세요!")
-                .provider(SignupProvider.RUBMINDS)
-                .signupCheck(true)
-                .build();
-
-        List<UserSkill> userSkills = new ArrayList<>();
-        UserSkill userSkill1 = UserSkill.builder().id(1L).user(user).skill(Skill.builder().id(1L).name("Spring").build()).build();
-        UserSkill userSkill2 = UserSkill.builder().id(2L).user(user).skill(Skill.builder().id(2L).name("JavaScript").build()).build();
-        userSkills.add(userSkill1);
-        userSkills.add(userSkill2);
-        user.getUserSkills().addAll(userSkills);
-
-        UserResponse.Info response = UserResponse.Info.build(user, user.getAvatar().getUrl());
-
-        given(userService.getMe(any())).willReturn(response);
-
-        ResultActions results = mvc.perform(get("/api/user/me")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-        );
-
-        results.andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("user-me",
-                        responseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),
-                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
-                                fieldWithPath("job").type(JsonFieldType.STRING).description("직업"),
-                                fieldWithPath("introduce").type(JsonFieldType.STRING).description("소개"),
-                                fieldWithPath("userSkills").type(JsonFieldType.ARRAY).description("관심기술"),
-                                fieldWithPath("userSkills[].userSkillId").type(JsonFieldType.NUMBER).description("유저스킬 식별자"),
-                                fieldWithPath("userSkills[].name").type(JsonFieldType.STRING).description("유저스킬 이름"),
-                                fieldWithPath("attendLevel").type(JsonFieldType.NUMBER).description("참여도"),
-                                fieldWithPath("workLevel").type(JsonFieldType.NUMBER).description("숙련도"),
-                                fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url")
-                        )
-                ));
-    }
-
-    @Test
     @DisplayName("게시물 정보조회(회원정보) 문서화")
-    public void readInfo() throws Exception {
+    public void getInfo() throws Exception {
         User user = User.builder()
                 .id(1L)
                 .oauthId("1")
@@ -205,9 +158,11 @@ class UserControllerTest extends MvcTest {
         userSkills.add(userSkill2);
         user.getUserSkills().addAll(userSkills);
 
-        UserResponse.Info response = UserResponse.Info.build(user, user.getAvatar().getUrl());
+        UserDto.ProjectInfo projectInfo = UserDto.ProjectInfo.builder().kinds("RECRUIT").count(1L).build();
+        UserDto.LikeInfo likeInfo = UserDto.LikeInfo.builder().kinds("STUDY").count(1L).build();
+        UserResponse.Info response = UserResponse.Info.build(user, user, Collections.singletonList(projectInfo), Collections.singletonList(likeInfo));
 
-        given(userService.getUserInfo(any())).willReturn(response);
+        given(userService.getUserInfo(any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
                 .get("/api/user/{userId}", 1L));
@@ -224,11 +179,16 @@ class UserControllerTest extends MvcTest {
                                 fieldWithPath("job").type(JsonFieldType.STRING).description("직업"),
                                 fieldWithPath("introduce").type(JsonFieldType.STRING).description("소개"),
                                 fieldWithPath("userSkills").type(JsonFieldType.ARRAY).description("관심기술"),
-                                fieldWithPath("userSkills[].userSkillId").type(JsonFieldType.NUMBER).description("유저스킬 식별자"),
+                                fieldWithPath("userSkills[].id").type(JsonFieldType.NUMBER).description("유저스킬 식별자"),
                                 fieldWithPath("userSkills[].name").type(JsonFieldType.STRING).description("유저스킬 이름"),
                                 fieldWithPath("attendLevel").type(JsonFieldType.NUMBER).description("참여도"),
                                 fieldWithPath("workLevel").type(JsonFieldType.NUMBER).description("숙련도"),
-                                fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url")
+                                fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url"),
+                                fieldWithPath("isMine").type(JsonFieldType.BOOLEAN).description("자신의 프로필 페이지라면 true "),
+                                fieldWithPath("projectInfo[].kinds").type(JsonFieldType.STRING).description("게시물 상태 (RECRUIT, WORKING, FINISHED)"),
+                                fieldWithPath("projectInfo[].count").type(JsonFieldType.NUMBER).description("게시물 개수 (해당 게시물이 없다면 kinds와 count는 전달되지 않습니다!)"),
+                                fieldWithPath("likeInfo[].kinds").type(JsonFieldType.STRING).description("게시물 종류 (SCOUT,PROJECT,STUDY)"),
+                                fieldWithPath("likeInfo[].count").type(JsonFieldType.NUMBER).description("게시물 개수 (해당 게시물이 없다면 kinds와 count는 전달되지 않습니다!)")
                         )
                 ));
     }

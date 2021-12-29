@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -106,28 +106,26 @@ public class TeamUserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("팀원 추가 문서화")
+    @DisplayName("팀원 초대 문서화")
     public void getTeamUser() throws Exception {
-        TeamUserRequest.Create request = TeamUserRequest.Create.builder().team_id(1L).build();
+        TeamUserRequest.Create request = TeamUserRequest.Create.builder().userId(1L).teamId(1L).build();
 
         TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
-        given(teamUserService.create(any(),any())).willReturn(response);
+        given(teamUserService.add(any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .post("/api/team-user/{userId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                        .characterEncoding("UTF-8"));
+                .post("/api/teamUser/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .characterEncoding("UTF-8"));
 
 
         results.andExpect(status().isCreated())
                 .andDo(print())
-                .andDo(document("teamUser_add", pathParameters(
-                              parameterWithName("userId").description("유저 식별자")
-                        ),
-
+                .andDo(document("teamUser_add",
                         requestFields(
-                                fieldWithPath("team_id").type(JsonFieldType.NUMBER).description("팀 식별자")
+                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 식별자"),
+                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 식별자")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
@@ -137,37 +135,37 @@ public class TeamUserControllerTest extends MvcTest {
 
     }
 
+//    @Test
+//    @DisplayName("끝내기 확인 문서화")
+//    public void changeFinishUser() throws Exception {
+//        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
+//        given(teamUserService.(any())).willReturn(response);
+//
+//        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.put("/api/team-user/{teamUserId}", 1L));
+//
+//        results.andExpect(status().isOk())
+//                .andDo(print())
+//                .andDo(document("teamUser_finsih", pathParameters(
+//                                parameterWithName("teamUserId").description("팀원식별자")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
+//
+//                        )
+//                ));
+//    }
+
     @Test
-    @DisplayName("끝내기 확인 문서화")
-    public void changeFinishUser() throws Exception {
-        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
-        given(teamUserService.update(any())).willReturn(response);
-
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.put("/api/team-user/{teamUserId}", 1L));
-
-        results.andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("teamUser_finsih", pathParameters(
-                        parameterWithName("teamUserId").description("팀원식별자")
-                        ),
-                        responseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
-
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("팀원 추가 문서화")
+    @DisplayName("팀원 추방 문서화")
     public void deleteTeamUser() throws Exception {
         given(teamUserService.delete(any())).willReturn(1l);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.delete("/api/team-user/{teamUserId}", 1L));
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.delete("/api/teamUser/{teamUserId}", 1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("teamUser_delete", pathParameters(
-                        parameterWithName("teamUserId").description("팀원식별자")
+                                parameterWithName("teamUserId").description("팀원식별자")
                         )
                 ));
     }

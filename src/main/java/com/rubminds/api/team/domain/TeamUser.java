@@ -27,13 +27,24 @@ public class TeamUser {
     @Column(nullable = false)
     private boolean finish;
 
-    public static TeamUser create(User user, Team team) {
-        TeamUser teamUser = TeamUser.builder()
-                .team(team)
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public static TeamUser create(User user) {
+        return TeamUser.builder()
                 .user(user)
                 .finish(false)
                 .build();
-        return teamUser;
+    }
+
+    public static TeamUser createWithTeam(User user, Team team) {
+        return TeamUser.builder()
+                .user(user)
+                .finish(false)
+                .team(team)
+                .build();
     }
 
     public void updateFinish() {

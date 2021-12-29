@@ -5,7 +5,7 @@
 :toc: left
 :toclevels: 2
 :sectlinks:
-:snippets: ../../../build/generated-snippets
+:snippets: ./build/generated-snippets
 
 = Post
 ---
@@ -15,8 +15,32 @@
 `POST /api/post`
 
 요청 HTTP
+<<<<<<< HEAD
+include::{snippets}/post_create/request-parts.adoc[]
+- userInfo JSON data
+----
+[source]
+{
+"title": "테스트",
+"content": "테스트내용",
+"headcount": 3,
+"kinds": "PROJECT",
+"meeting": "ONLINE",
+"region": "서울",
+"skillIds": [
+2,
+3
+],
+"customSkillName": [
+"firebase",
+"spring"
+]
+}
+----
+
 include::{snippets}/post_create/http-request.adoc[]
 include::{snippets}/post_create/request-parts.adoc[]
+
 
 성공 응답 HTTP
 include::{snippets}/post_create/http-response.adoc[]
@@ -44,6 +68,16 @@ include::{snippets}/post_list/request-parameters.adoc[]
 include::{snippets}/post_list/http-response.adoc[]
 include::{snippets}/post_list/response-fields.adoc[]
 
+=== 게시글 찜목록 조회
+`GET /api/posts/like`
+
+요청 HTTP
+include::{snippets}/post_likePosts/http-request.adoc[]
+include::{snippets}/post_likePosts/request-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/post_likePosts/http-response.adoc[]
+include::{snippets}/post_likePosts/response-fields.adoc[]
 
 === 게시글 찜 생성 및 삭제
 `POST /api/post/{postId}/like`
@@ -56,7 +90,7 @@ include::{snippets}/post_postLike/path-parameters.adoc[]
 include::{snippets}/post_postLike/http-response.adoc[]
 
 === 게시글 수정
-`POST /api/post/{postId}/like`
+`PUT /api/post/{postId}`
 
 요청 HTTP
 include::{snippets}/post_update/http-request.adoc[]

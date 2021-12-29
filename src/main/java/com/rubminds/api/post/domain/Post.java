@@ -86,6 +86,7 @@ public class Post extends BaseEntity {
         this.content = request.getContent();
         this.headcount = request.getHeadcount();
         this.meeting = request.getMeeting();
+        this.kinds = request.getKinds();
     }
 
     public void updateComplete(PostRequest.CreateCompletePost request) {

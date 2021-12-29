@@ -40,6 +40,5 @@ public class TeamUserController {
     @DeleteMapping("/teamUser/{teamUserId}")
     public Long delete(@PathVariable("teamUserId") Long teamUserId) {
         return teamUserService.delete(teamUserId);
-
     }
 }

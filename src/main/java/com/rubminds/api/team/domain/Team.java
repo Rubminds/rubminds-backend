@@ -1,7 +1,6 @@
 package com.rubminds.api.team.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
-import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
@@ -24,13 +23,20 @@ public class Team extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private User admin;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @Builder.Default
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamUser> teamUsers = new ArrayList<>();
 
-    public static Team create(User user) {
-        return Team.builder()
+    private void addTeamUser(TeamUser teamUser) {
+        teamUser.setTeam(this);
+        this.teamUsers.add(teamUser);
+    }
+
+    public static Team create(User user, TeamUser teamUser) {
+        Team team = Team.builder()
                 .admin(user)
                 .build();
+        team.addTeamUser(teamUser);
+        return team;
     }
 }

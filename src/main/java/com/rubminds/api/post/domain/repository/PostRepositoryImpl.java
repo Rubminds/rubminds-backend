@@ -6,6 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.PostStatus;
+import com.rubminds.api.post.domain.QPostLike;
+import com.rubminds.api.user.dto.QUserDto_LikeInfo;
 import com.rubminds.api.user.dto.QUserDto_ProjectInfo;
 import com.rubminds.api.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.rubminds.api.post.domain.QPost.post;
+import static com.rubminds.api.post.domain.QPostLike.*;
 import static com.rubminds.api.team.domain.QTeam.team;
 import static com.rubminds.api.team.domain.QTeamUser.teamUser;
 
@@ -64,11 +67,20 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     public List<UserDto.ProjectInfo> findCountByStatusAndUser(Long userId) {
-        return queryFactory.select(new QUserDto_ProjectInfo(post.kinds.stringValue(), post.count()))
+        return queryFactory.select(new QUserDto_ProjectInfo(post.postStatus.stringValue(), post.count()))
                 .from(post)
                 .join(post.team, team)
                 .join(team.teamUsers, teamUser)
                 .where(teamUser.user.id.eq(userId))
+                .groupBy(post.postStatus)
+                .fetch();
+    }
+
+    @Override
+    public List<UserDto.LikeInfo> findCountByLikeAndUser(Long userId) {
+        return queryFactory.select(new QUserDto_LikeInfo(post.kinds.stringValue(), post.count()))
+                .from(post)
+                .join(post.postLikeList, postLike).on(postLike.user.id.eq(userId))
                 .groupBy(post.kinds)
                 .fetch();
     }

@@ -23,8 +23,9 @@ public class UserResponse {
         private String avatar;
         private Boolean isMine;
         private List<UserDto.ProjectInfo> projectInfo;
+        private List<UserDto.LikeInfo> likeInfo;
 
-        public static UserResponse.Info build(User user, User loginUser, List<UserDto.ProjectInfo> projectInfos) {
+        public static UserResponse.Info build(User user, User loginUser, List<UserDto.ProjectInfo> projectInfos, List<UserDto.LikeInfo> likeInfo) {
             InfoBuilder builder = Info.builder()
                     .id(user.getId())
                     .nickname(user.getNickname())
@@ -34,6 +35,7 @@ public class UserResponse {
                     .attendLevel(user.getAttendLevel())
                     .isMine(user.isMine(loginUser))
                     .projectInfo(projectInfos)
+                    .likeInfo(likeInfo)
                     .workLevel(user.getWorkLevel());
             if (user.getAvatar() != null) {
                 builder.avatar(user.getAvatar().getUrl());

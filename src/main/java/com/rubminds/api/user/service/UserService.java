@@ -66,7 +66,9 @@ public class UserService {
     public UserResponse.Info getUserInfo(Long userId, User loginUser) {
         User findUser = userRepository.findByIdWithAvatar(userId).orElseThrow(UserNotFoundException::new);
         List<UserDto.ProjectInfo> projectInfos = postRepository.findCountByStatusAndUser(userId);
-        return UserResponse.Info.build(findUser, loginUser, projectInfos);
+        List<UserDto.LikeInfo> likeInfo = postRepository.findCountByLikeAndUser(userId);
+
+        return UserResponse.Info.build(findUser, loginUser, projectInfos, likeInfo);
     }
 
     private void duplicateNickname(String nickname) {

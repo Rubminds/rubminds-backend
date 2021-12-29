@@ -158,9 +158,9 @@ class UserControllerTest extends MvcTest {
         userSkills.add(userSkill2);
         user.getUserSkills().addAll(userSkills);
 
-        UserDto.ProjectInfo projectInfo = UserDto.ProjectInfo.builder().kinds("STUDY").count(1L).build();
-
-        UserResponse.Info response = UserResponse.Info.build(user, user, Collections.singletonList(projectInfo));
+        UserDto.ProjectInfo projectInfo = UserDto.ProjectInfo.builder().kinds("RECRUIT").count(1L).build();
+        UserDto.LikeInfo likeInfo = UserDto.LikeInfo.builder().kinds("STUDY").count(1L).build();
+        UserResponse.Info response = UserResponse.Info.build(user, user, Collections.singletonList(projectInfo), Collections.singletonList(likeInfo));
 
         given(userService.getUserInfo(any(), any())).willReturn(response);
 
@@ -185,8 +185,10 @@ class UserControllerTest extends MvcTest {
                                 fieldWithPath("workLevel").type(JsonFieldType.NUMBER).description("숙련도"),
                                 fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url"),
                                 fieldWithPath("isMine").type(JsonFieldType.BOOLEAN).description("자신의 프로필 페이지라면 true "),
-                                fieldWithPath("projectInfo[].kinds").type(JsonFieldType.STRING).description("게시물 종류 (SCOUT,PROJECT,STUDY)"),
-                                fieldWithPath("projectInfo[].count").type(JsonFieldType.NUMBER).description("게시물 개수 (해당 게시물이 없다면 kinds와 count는 전달되지 않습니다!)")
+                                fieldWithPath("projectInfo[].kinds").type(JsonFieldType.STRING).description("게시물 상태 (RECRUIT, WORKING, FINISHED)"),
+                                fieldWithPath("projectInfo[].count").type(JsonFieldType.NUMBER).description("게시물 개수 (해당 게시물이 없다면 kinds와 count는 전달되지 않습니다!)"),
+                                fieldWithPath("likeInfo[].kinds").type(JsonFieldType.STRING).description("게시물 종류 (SCOUT,PROJECT,STUDY)"),
+                                fieldWithPath("likeInfo[].count").type(JsonFieldType.NUMBER).description("게시물 개수 (해당 게시물이 없다면 kinds와 count는 전달되지 않습니다!)")
                         )
                 ));
     }

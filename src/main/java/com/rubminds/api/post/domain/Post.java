@@ -82,6 +82,7 @@ public class Post extends BaseEntity {
         this.content = request.getContent();
         this.headcount = request.getHeadcount();
         this.meeting = request.getMeeting();
+        this.kinds = request.getKinds();
     }
 
     public static Post create(PostRequest.CreateOrUpdate request, Team team, User user) {

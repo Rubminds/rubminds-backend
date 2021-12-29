@@ -18,4 +18,19 @@ public class UserDto {
             this.count = count;
         }
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class LikeInfo {
+        private String kinds;
+        private Long count;
+
+        @Builder
+        @QueryProjection
+        public LikeInfo(String kinds, Long count) {
+            this.kinds = kinds;
+            this.count = count;
+        }
+    }
 }

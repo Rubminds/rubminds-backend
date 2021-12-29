@@ -47,12 +47,14 @@ public class TeamUserResponse {
         private Long teamUserId;
         private Long userId;
         private String userNickname;
+        private boolean admin;
 
         public static TeamUserResponse.GetList build(TeamUser teamUser){
             return GetList.builder()
                     .teamUserId(teamUser.getId())
                     .userId(teamUser.getUser().getId())
                     .userNickname(teamUser.getUser().getNickname())
+                    .admin(teamUser.getTeam().getAdmin().equals(teamUser.getUser()))
                     .build();
         }
     }

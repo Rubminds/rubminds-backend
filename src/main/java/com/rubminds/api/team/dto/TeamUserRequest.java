@@ -9,15 +9,6 @@ public class TeamUserRequest {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Create {
-       private Long teamId;
-       private Long userId;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Evaluate {
         private Kinds kinds;
         private List<EvaluateData> evaluation;
@@ -28,7 +19,7 @@ public class TeamUserRequest {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class EvaluateData {
-        private Long teamUserId;
+        private Long userId;
         private Integer attendLevel;
         private Integer workLevel;
     }

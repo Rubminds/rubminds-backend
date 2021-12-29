@@ -254,6 +254,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
                                 fieldWithPath("content[].title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content[].kinds").type(JsonFieldType.STRING).description("글종류"),
+                                fieldWithPath("content[].region").type(JsonFieldType.STRING).description("지역"),
                                 fieldWithPath("content[].status").type(JsonFieldType.STRING).description("글 상태"),
                                 fieldWithPath("content[].skill[]").type(JsonFieldType.ARRAY).description("커스텀 스킬 식별자"),
                                 fieldWithPath("content[].isLike").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true"),
@@ -263,59 +264,45 @@ public class PostControllerTest extends MvcTest {
                         )
                 ));
     }
-    //    @Test
-//    @DisplayName("게시물 삭제 문서화")
-//    public void deletePost() throws Exception {
-//        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.
-//                delete("/api/post/{postId}", 1));
-//
-//        results.andExpect(status().isOk())
-//                .andDo(print())
-//                .andDo(document("post_delete",
-//                        pathParameters(
-//                                parameterWithName("postId").description("게시물 식별자")
-//                        )
-//                ));
-//    }
 
-//    @Test
-//    @DisplayName("게시물 찜목록 조회 문서화")
-//    public void getLikePosts() throws Exception {
-//        List<PostResponse.GetPost> posts = new ArrayList<>();
-//        PostResponse.GetPost post1 = PostResponse.GetPost.build(this.post1, true);
-//        PostResponse.GetPost post2 = PostResponse.GetPost.build(this.post1, true);
-//        posts.add(post1);
-//        posts.add(post2);
-//
-//        PostResponse.GetList response = PostResponse.GetList.build(posts);
-//
-//        given(postService.getLikePosts(any())).willReturn(response);
-//
-//        ResultActions results = mvc.perform(get("/api/posts/like", user)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .characterEncoding("UTF-8")
-//        );
-//
-//        results.andExpect(status().isOk())
-//                .andDo(print())
-//                .andDo(document("post_likePosts",
-//                        responseFields(
-//                                fieldWithPath("posts").type(JsonFieldType.ARRAY).description("찜 목록"),
-//                                fieldWithPath("posts[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
-//                                fieldWithPath("posts[].title").type(JsonFieldType.STRING).description("제목"),
-//                                fieldWithPath("posts[].region").type(JsonFieldType.STRING).description("지역"),
-//                                fieldWithPath("posts[].postStatus").type(JsonFieldType.STRING).description("진행상태"),
-//                                fieldWithPath("posts[].kinds").type(JsonFieldType.STRING).description("글종류"),
-//                                fieldWithPath("posts[].meeting").type(JsonFieldType.STRING).description("미팅방법"),
-//                                fieldWithPath("posts[].writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
-//                                fieldWithPath("posts[].postSkills").type(JsonFieldType.ARRAY).description("게시물지정스킬목록"),
-//                                fieldWithPath("posts[].customSkills[].id").type(JsonFieldType.NUMBER).description("커스텀 스킬 식별자"),
-//                                fieldWithPath("posts[].customSkills[].name").type(JsonFieldType.STRING).description("커스텀 스킬 이름"),
-//                                fieldWithPath("posts[].postLikeStatus").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true")
-//                        )
-//                ));
-//
-//    }
+    @Test
+    @DisplayName("게시물 찜목록 조회 문서화")
+    public void getLikePosts() throws Exception {
+        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
+        Page<Post> postPage = new PageImpl<>(postList, PageRequest.of(1, 5), postList.size());
+        Page<PostResponse.GetList> response = postPage.map(post1 -> PostResponse.GetList.build(post1, customUserDetails));
+
+        given(postService.getLikePosts(any(), any(), any())).willReturn(response);
+
+        ResultActions results = mvc.perform(get("/api/posts/like", user)
+                .param("page", "1")
+                .param("size", "10")
+                .param("kinds", "PROJECT")
+        );
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_likePosts",
+                        requestParameters(
+                                parameterWithName("page").description("조회할 페이지"),
+                                parameterWithName("size").description("조회할 사이즈"),
+                                parameterWithName("kinds").description("게시물 종류 (PROJECT,SCOUT,STUDY)")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
+                                fieldWithPath("content[].title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content[].kinds").type(JsonFieldType.STRING).description("글종류"),
+                                fieldWithPath("content[].region").type(JsonFieldType.STRING).description("지역"),
+                                fieldWithPath("content[].status").type(JsonFieldType.STRING).description("글 상태"),
+                                fieldWithPath("content[].skill[]").type(JsonFieldType.ARRAY).description("커스텀 스킬 식별자"),
+                                fieldWithPath("content[].isLike").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true"),
+                                fieldWithPath("totalElements").description("전체 개수"),
+                                fieldWithPath("last").description("마지막 페이지인지 식별"),
+                                fieldWithPath("totalPages").description("전체 페이지")
+                        )
+                ));
+
+    }
 
     @Test
     @DisplayName("게시물 찜 생성및삭제 문서화")
@@ -332,6 +319,5 @@ public class PostControllerTest extends MvcTest {
                 ));
 
     }
-
 }
 

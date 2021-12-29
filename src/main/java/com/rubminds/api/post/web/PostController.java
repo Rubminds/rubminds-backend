@@ -48,11 +48,13 @@ public class PostController {
         return ResponseEntity.ok().body(response);
     }
 
-//    @GetMapping("/posts/like")
-//    public ResponseEntity<PostResponse.GetList> getLikePosts(@CurrentUser CustomUserDetails customUserDetails) {
-//        PostResponse.GetList response = postService.getLikePosts(customUserDetails.getUser());
-//        return ResponseEntity.ok().body(response);
-//    }
+    @GetMapping("/posts/like")
+    public ResponseEntity<Page<PostResponse.GetList>> getLikePosts(@RequestParam(name = "kinds") Kinds kinds,
+                                                                   PageDto pageDto,
+                                                                   @CurrentUser CustomUserDetails customUserDetails) {
+        Page<PostResponse.GetList> response = postService.getLikePosts(kinds, pageDto, customUserDetails);
+        return ResponseEntity.ok().body(response);
+    }
 
     @PostMapping("/post/{postId}/like")
     public ResponseEntity<Void> updatePostLike(@PathVariable Long postId, @CurrentUser CustomUserDetails customUserDetails) {

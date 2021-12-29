@@ -93,6 +93,11 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
+    public Page<PostResponse.GetList> getLikePosts(Kinds kinds, PageDto pageDto, CustomUserDetails customUserDetails) {
+        Page<Post> posts = postRepository.findAllLikePostByUserId(kinds, customUserDetails.getUser(), pageDto.of());
+        return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
+    }
+
     private void createOrUpdatePostAndCustomSKill(PostRequest.CreateOrUpdate request, Post post) {
         List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
         List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
@@ -102,33 +107,6 @@ public class PostService {
         customSkillRepository.saveAll(customSkills);
     }
 
-//    @Transactional
-//    public Long delete(Long postId) {
-//        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-//
-//        teamRepository.deleteAllByPost(post).orElseThrow(TeamNotFoundException::new);
-//        postRepository.deleteById(postId);
-//
-//        return postId;
-//    }
-
-//    public PostResponse.GetList getLikePosts(User user) {
-//        List<PostLike> postLikes = postLikeRepository.findAllByUser(user);
-//        List<Post> postList = new ArrayList<>();
-//        for (PostLike postLike : postLikes) {
-//            Post post = postLike.getPost();
-//            postList.add(post);
-//        }
-//        return createPosts(postList, user);
-//    }
-
-    //    private PostResponse.GetList createPosts(List<Post> postList, User user) {
-//        List<PostResponse.GetPost> posts = new ArrayList<>();
-//        for (Post post : postList) {
-//            posts.add(PostResponse.GetPost.build(post, getPostLikeStatus(user, post)));
-//        }
-//        return PostResponse.GetList.build(posts);
-//    }
     private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }

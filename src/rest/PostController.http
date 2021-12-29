@@ -3,7 +3,12 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-GET {{apiUrl}}/posts?kind=PROJECT&status=RECRUIT&page=1&size=5
+GET {{apiUrl}}/posts?kinds=PROJECT&status=RECRUIT&page=1&size=5
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+###
+GET {{apiUrl}}/posts/like?kinds=SCOUT&page=1&size=5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -70,11 +75,6 @@ Content-Type: application/json;charset=UTF-8
 
 ###
 GET {{apiUrl}}/post/getPosts
-Authorization: {{authorizationToken}}
-Content-Type: application/json;charset=UTF-8
-
-###
-GET {{apiUrl}}/posts/like
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

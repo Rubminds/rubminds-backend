@@ -6,7 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Post;
 import com.rubminds.api.post.domain.PostStatus;
-import com.rubminds.api.post.domain.QPostLike;
+import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.dto.QUserDto_LikeInfo;
 import com.rubminds.api.user.dto.QUserDto_ProjectInfo;
 import com.rubminds.api.user.dto.UserDto;
@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.rubminds.api.post.domain.QPost.post;
-import static com.rubminds.api.post.domain.QPostLike.*;
+import static com.rubminds.api.post.domain.QPostLike.postLike;
 import static com.rubminds.api.team.domain.QTeam.team;
 import static com.rubminds.api.team.domain.QTeamUser.teamUser;
 
@@ -41,9 +41,23 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     @Override
     public Page<Post> findAllByKindsAndStatus(Kinds kinds, PostStatus postStatus, Pageable pageable) {
-        final QueryResults<Post> result = queryFactory.selectFrom(post)
+        QueryResults<Post> result = queryFactory.selectFrom(post)
                 .where(postKindsEq(kinds))
                 .where(postStatusEq(postStatus))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.id.desc())
+                .fetchResults();
+
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
+
+    @Override
+    public Page<Post> findAllLikePostByUserId(Kinds kinds, User user, Pageable pageable) {
+        QueryResults<Post> result = queryFactory.selectFrom(post)
+                .join(post.postLikeList, postLike)
+                .where(postLike.user.id.eq(user.getId())
+                        .and(postKindsEq(kinds)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(post.id.desc())

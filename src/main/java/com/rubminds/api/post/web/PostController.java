@@ -41,7 +41,8 @@ public class PostController {
     @GetMapping("/posts")
     public ResponseEntity<Page<PostResponse.GetList>> getList(@RequestParam(name = "kinds", required = false) Kinds kinds,
                                                               @RequestParam(name = "status", required = false) PostStatus postStatus,
-//                                                         @RequestParam(name = "skill", required = false) String skill,
+//                                                              @RequestParam(name = "skill", required = false) Long skillId,
+//                                                              @RequestParam(name = "keywords", required = false) String customSkillName,
                                                               PageDto pageDto,
                                                               @CurrentUser CustomUserDetails customUserDetails) {
         Page<PostResponse.GetList> response = postService.getList(kinds, postStatus, pageDto, customUserDetails);
@@ -64,7 +65,7 @@ public class PostController {
 
     @PutMapping("/post/{postId}/complete")
     public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestBody PostRequest.CreateCompletePost request) {
-        PostResponse.OnlyId response = postService.updateCompletePost(postId,request);
+        PostResponse.OnlyId response = postService.updateCompletePost(postId, request);
         return ResponseEntity.ok().body(response);
     }
 

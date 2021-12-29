@@ -20,6 +20,11 @@ Content-Type: image/jpeg
 < ./../main/resources/dummy/image/white.jpeg
 
 ###
+GET {{apiUrl}}/user/nickname/check?nickname=테스터1ㄴ
+Authorization: {{authorizationToken}}
+
+
+###
 POST {{apiUrl}}/user/update
 Authorization: {{authorizationToken}}
 Content-Type: multipart/form-data; boundary=boundary
@@ -61,5 +66,5 @@ Content-Type: application/json;charset=UTF-8
 ###
 GET {{apiUrl}}/user/1
 Authorization: {{authorizationToken}}
-Content-Type: application/json;charset=UTF-8
+
 

@@ -192,4 +192,22 @@ class UserControllerTest extends MvcTest {
                         )
                 ));
     }
+
+    @Test
+    @DisplayName("닉네임 중복 체크 문서화")
+    public void nicknameCheck() throws Exception {
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .get("/api/user/nickname/check")
+                .param("nickname", "테스터")
+        );
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("user_nickname_check",
+                        requestParameters(
+                                parameterWithName("nickname").description("중복체크할 닉네임")
+                        )
+                ));
+    }
+
 }

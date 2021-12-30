@@ -197,7 +197,7 @@ public class PostControllerTest extends MvcTest {
     public void detailPost() throws Exception {
         CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
-        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails);
+        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails,1);
 
         given(postService.getOne(any(), any())).willReturn(response);
 
@@ -225,7 +225,8 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
                                 fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id"),
                                 fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
-                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional()
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional(),
+                                fieldWithPath("finishNum").type(JsonFieldType.NUMBER).description("팀원의 FINISH전환 수")
                         )
                 ));
 

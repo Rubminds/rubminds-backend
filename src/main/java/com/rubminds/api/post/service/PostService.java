@@ -62,7 +62,8 @@ public class PostService {
 
     public PostResponse.Info getOne(Long postId, CustomUserDetails customUserDetails) {
         Post post = postRepository.findByIdWithSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
-        return PostResponse.Info.build(post, customUserDetails);
+        Integer finishNum = postRepository.FindCountFinish(post);
+        return PostResponse.Info.build(post, customUserDetails,finishNum);
     }
 
     @Transactional

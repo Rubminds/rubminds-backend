@@ -49,8 +49,9 @@ public class PostResponse {
         private List<PostDto.File> files;
         private String refLink;
         private String completeContent;
+        private Integer finishNum;
 
-        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails) {
+        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails, Integer finishNum) {
             return Info.builder()
                     .id(post.getId())
                     .writer(post.getWriter().getNickname())
@@ -67,6 +68,7 @@ public class PostResponse {
                     .files(post.getPostFileList().stream().map(PostDto.File::build).collect(Collectors.toList()))
                     .completeContent(post.getContent())
                     .refLink(post.getRefLink())
+                    .finishNum(finishNum)
                     .build();
         }
     }

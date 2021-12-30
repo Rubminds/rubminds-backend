@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/1
+GET {{apiUrl}}/post/2
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

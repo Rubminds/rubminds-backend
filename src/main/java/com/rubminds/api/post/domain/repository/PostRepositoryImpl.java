@@ -26,6 +26,7 @@ import static com.rubminds.api.post.domain.QPostSkill.postSkill;
 import static com.rubminds.api.skill.domain.QCustomSkill.customSkill;
 import static com.rubminds.api.team.domain.QTeam.team;
 import static com.rubminds.api.team.domain.QTeamUser.teamUser;
+import static com.rubminds.api.user.domain.QUser.user;
 
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
@@ -37,7 +38,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.customSkills).fetchJoin()
                 .leftJoin(post.postLikeList).fetchJoin()
                 .leftJoin(post.postFileList).fetchJoin()
-                .join(post.writer).fetchJoin()
+                .join(post.writer, user).fetchJoin()
+                .leftJoin(user.avatar).fetchJoin()
                 .where(post.id.eq(postId))
                 .fetchOne());
     }

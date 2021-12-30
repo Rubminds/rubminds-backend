@@ -1,5 +1,6 @@
 package com.rubminds.api.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Meeting;
 import com.rubminds.api.post.domain.Post;
@@ -10,6 +11,7 @@ import com.rubminds.api.skill.dto.PostSkillResponse;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,13 +37,15 @@ public class PostResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Info {
         private Long id;
-        private String writer;
+        private PostDto.Writer writer;
         private String title;
         private String content;
         private int headcount;
         private String meeting;
         private String postsStatus;
         private String region;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        private LocalDateTime createAt;
         private List<String> postSkills;
         private List<String> customSkills;
         private Boolean isLike;
@@ -54,7 +58,7 @@ public class PostResponse {
         public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails, Integer finishNum) {
             return Info.builder()
                     .id(post.getId())
-                    .writer(post.getWriter().getNickname())
+                    .writer(PostDto.Writer.build(post.getWriter()))
                     .title(post.getTitle())
                     .content(post.getContent())
                     .headcount(post.getHeadcount())
@@ -69,6 +73,7 @@ public class PostResponse {
                     .completeContent(post.getContent())
                     .refLink(post.getRefLink())
                     .finishNum(finishNum)
+                    .createAt(post.getCreatedAt())
                     .build();
         }
     }

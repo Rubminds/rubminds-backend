@@ -3,6 +3,7 @@ package com.rubminds.api.user.domain;
 import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.skill.domain.UserSkill;
+import com.rubminds.api.team.exception.AdminException;
 import com.rubminds.api.user.dto.AuthRequest;
 import lombok.*;
 
@@ -86,5 +87,9 @@ public class User extends BaseEntity {
             workLevel = (this.getWorkLevel() + workLevel) / 2;
         }
         this.workLevel = workLevel;
+    }
+
+    public void isAdmin(Long userId) {
+        if (!Objects.equals(this.id, userId)) throw new AdminException();
     }
 }

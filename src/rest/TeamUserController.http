@@ -1,36 +1,30 @@
-POST {{apiUrl}}/teamUser/add
-Authorization: {{authorizationToken}}
-Content-Type: application/json;charset=UTF-8
-
-{
-  "teamId" : 1,
-  "userId" : 3
-}
-
-###
-GET {{apiUrl}}/teamUsers/1
+POST {{apiUrl}}/team/1/user/2
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-POST {{apiUrl}}/teamUser/evaluate/4
+GET {{apiUrl}}/team/1/teamUsers
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+###
+POST {{apiUrl}}/teamUser/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "team_id" : 1
   "kinds" : "PROJECT",
-  "evaluation" : [{"teamUserId" : 1, "attendLevel" : 5, "workLevel" : 5}, {"teamUserId" : 3, "attendLevel" : 4, "workLevel" : 4}]
+  "evaluation" : [{"userId" : 2, "attendLevel" : 5, "workLevel" : 5}, {"userId" : 3, "attendLevel" : 4, "workLevel" : 4}]
 }
 
 ###
-POST {{apiUrl}}/teamUser/evaluate/6
+POST {{apiUrl}}/teamUser/4
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
   "kinds" : "STUDY",
-  "evaluation" : [{"teamUserId" : 7, "attendLevel" : 5}, {"teamUserId" : 8, "attendLevel" : 2}]
+  "evaluation" : [{"userId" : 1, "attendLevel" : 5}, {"userId" : 3, "attendLevel" : 2}]
 }
 
 ###

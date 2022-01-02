@@ -4,15 +4,13 @@ import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.team.exception.TeamOutOfBoundException;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @Getter
@@ -109,5 +107,8 @@ public class Post extends BaseEntity {
                 .build();
     }
 
+    public void isHeadcountFull(Team team){
+        if (Objects.equals(this.headcount, team.getTeamUsers().size())) throw new TeamOutOfBoundException();
+    }
 
 }

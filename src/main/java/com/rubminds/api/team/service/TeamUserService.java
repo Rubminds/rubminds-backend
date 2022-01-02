@@ -1,16 +1,16 @@
-package com.rubminds.api.team.Service;
+package com.rubminds.api.team.service;
 
 import com.rubminds.api.post.domain.Kinds;
+import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.post.domain.repository.PostRepository;
+import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.team.domain.repository.TeamUserRepository;
 import com.rubminds.api.team.dto.TeamUserRequest;
 import com.rubminds.api.team.dto.TeamUserResponse;
-import com.rubminds.api.team.exception.DuplicateTeamUserException;
-import com.rubminds.api.team.exception.EvaluateException;
-import com.rubminds.api.team.exception.TeamNotFoundException;
-import com.rubminds.api.team.exception.TeamUserNotFoundException;
+import com.rubminds.api.team.exception.*;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.domain.repository.UserRepository;
 import com.rubminds.api.user.exception.UserNotFoundException;
@@ -28,11 +28,14 @@ public class TeamUserService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
     private final TeamUserRepository teamUserRepository;
+    private final PostRepository postRepository;
 
-
-    public TeamUserResponse.OnlyId add(TeamUserRequest.Create request) {
-        User applicant = userRepository.findById(request.getUserId()).orElseThrow(UserNotFoundException::new);
-        Team team = teamRepository.findById(request.getTeamId()).orElseThrow(TeamNotFoundException::new);
+    public TeamUserResponse.OnlyId add(Long teamId, Long userId, User loginUser) {
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        loginUser.isAdmin(team.getAdmin().getId());
+        Post post = postRepository.findByTeam(team).orElseThrow(PostNotFoundException::new);
+        post.isHeadcountFull(team);
+        User applicant = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         if(teamUserRepository.existsByUserAndTeam(applicant, team)){
             throw new DuplicateTeamUserException();
         }
@@ -49,29 +52,24 @@ public class TeamUserService {
 
     public TeamUserResponse.OnlyId evaluate(Long teamUserId, TeamUserRequest.Evaluate request) {
         TeamUser evaluator = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
-        if(evaluator.isFinish()){
-            throw new EvaluateException();
-        }
-        evaluateTeam(request);
-        evaluator.updateFinish();
-        return TeamUserResponse.OnlyId.build(evaluator);
-    }
-
-    public Long delete(Long teamUserId) {
-        TeamUser teamUser = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
-        teamUser.getUser().updateAttendLevel(0);
-        teamUserRepository.deleteById(teamUserId);
-        return teamUserId;
-    }
-
-    private void evaluateTeam(TeamUserRequest.Evaluate request){
+        evaluator.isEvaluated();
         for(int i = 0 ; i<request.getEvaluation().size(); i++){
-            TeamUser target = teamUserRepository.findById(request.getEvaluation().get(i).getTeamUserId()).orElseThrow(TeamUserNotFoundException::new);
-            User user = target.getUser();
+            User user = userRepository.findById(request.getEvaluation().get(i).getUserId()).orElseThrow(UserNotFoundException::new);
             user.updateAttendLevel(request.getEvaluation().get(i).getAttendLevel());
             if(request.getKinds() == Kinds.PROJECT){
                 user.updateWorkLevel(request.getEvaluation().get(i).getWorkLevel());
             }
         }
+        evaluator.updateFinish();
+        return TeamUserResponse.OnlyId.build(evaluator);
+    }
+
+    public Long delete(Long teamUserId, User loginUser) {
+        TeamUser teamUser = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
+        Team team = teamRepository.findById(teamUser.getTeam().getId()).orElseThrow(TeamNotFoundException::new);
+        loginUser.isAdmin(team.getAdmin().getId());
+        teamUser.getUser().updateAttendLevel(0);
+        teamUserRepository.deleteById(teamUserId);
+        return teamUserId;
     }
 }

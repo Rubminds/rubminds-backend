@@ -5,7 +5,7 @@ import com.rubminds.MvcTest;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
-import com.rubminds.api.team.Service.TeamService;
+import com.rubminds.api.team.service.TeamService;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.dto.TeamResponse;

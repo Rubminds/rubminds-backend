@@ -1,5 +1,6 @@
 package com.rubminds.api.team.domain;
 
+import com.rubminds.api.team.exception.EvaluateStateException;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
 
@@ -51,5 +52,8 @@ public class TeamUser {
         this.finish = true;
     }
 
+    public void isEvaluated(){
+        if (this.finish) throw new EvaluateStateException();
+    }
 }
 

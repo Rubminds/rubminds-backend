@@ -1,4 +1,4 @@
-package com.rubminds.api.team.Service;
+package com.rubminds.api.team.service;
 
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;

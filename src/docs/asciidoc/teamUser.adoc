@@ -1,4 +1,4 @@
-= Rubminds API 문서 (SKILL)
+= Rubminds API 문서 (TeamUser)
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -11,35 +11,47 @@
 ---
 == *기본* API
 
-=== 팀원 추가하기
+=== 팀원 추가
 
-`POST /api/team-user/{userId}`
+`POST /api/team/{teamId}/user/{userId}`
 
 요청 HTTP
 include::{snippets}/teamUser_add/http-request.adoc[]
 include::{snippets}/teamUser_add/path-parameters.adoc[]
-include::{snippets}/teamUser_add/request-fields.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/teamUser_add/http-response.adoc[]
 include::{snippets}/teamUser_add/response-fields.adoc[]
 
+=== 팀원 목록
 
-=== 팀원 끝내기 싸인
-
-`PUT /api/team-user/{userId}`
+`GET /api/team/{teamId}/teamUsers`
 
 요청 HTTP
-include::{snippets}/teamUser_finsih/http-request.adoc[]
-include::{snippets}/teamUser_finsih/path-parameters.adoc[]
+include::{snippets}/teamUser_list/http-request.adoc[]
+include::{snippets}/teamUser_list/path-parameters.adoc[]
 
 성공 응답 HTTP
-include::{snippets}/teamUser_finsih/http-response.adoc[]
-include::{snippets}/teamUser_finsih/response-fields.adoc[]
+include::{snippets}/teamUser_list/http-response.adoc[]
+include::{snippets}/teamUser_list/response-fields.adoc[]
+
+
+=== 팀원 평가
+
+`POST /api/teamUser/{teamUserId}`
+
+요청 HTTP
+include::{snippets}/teamUser_evaluate/http-request.adoc[]
+include::{snippets}/teamUser_evaluate/path-parameters.adoc[]
+include::{snippets}/teamUser_evaluate/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_evaluate/http-response.adoc[]
+include::{snippets}/teamUser_evaluate/response-fields.adoc[]
 
 === 팀원 추방
 
-`DELETE /api/team-user/{userId}`
+`DELETE /api/teamUser/{teamUserId}`
 
 요청 HTTP
 include::{snippets}/teamUser_delete/http-request.adoc[]

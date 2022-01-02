@@ -12,7 +12,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("select count(tu.finish) from TeamUser tu left join Post p on p.team = tu.team where p=:post and tu.finish=true")
     Integer FindCountFinish(@Param("post") Post post);
 
-public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
     Optional<Post> findByTeam(Team team);
 }
 

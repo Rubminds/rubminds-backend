@@ -50,7 +50,7 @@ public class PostController {
     }
 
     @GetMapping("/posts/like")
-    public ResponseEntity<Page<PostResponse.GetList>> getLikePosts(@RequestParam(name = "kinds") Kinds kinds,
+    public ResponseEntity<Page<PostResponse.GetList>> getLikePosts(@RequestParam(name = "kinds", required = false) Kinds kinds,
                                                                    PageDto pageDto,
                                                                    @CurrentUser CustomUserDetails customUserDetails) {
         Page<PostResponse.GetList> response = postService.getLikePosts(kinds, pageDto, customUserDetails);

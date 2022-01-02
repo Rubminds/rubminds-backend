@@ -7,6 +7,11 @@ GET {{apiUrl}}/team/1/teamUsers
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
+{
+  "teamId" : 1,
+  "userId" : 3
+}
+
 ###
 POST {{apiUrl}}/teamUser/1
 Authorization: {{authorizationToken}}

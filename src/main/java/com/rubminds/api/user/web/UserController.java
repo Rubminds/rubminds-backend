@@ -34,4 +34,9 @@ public class UserController {
         UserResponse.Info infoResponse = userService.getUserInfo(userId, customUserDetails.getUser());
         return ResponseEntity.ok().body(infoResponse);
     }
+
+    @GetMapping("/nickname/check")
+    public void nicknameCheck(@RequestParam(name = "nickname") String nickname){
+        userService.nicknameCheck(nickname);
+    }
 }

@@ -58,6 +58,7 @@ public class User extends BaseEntity {
         this.introduce = request.getIntroduce();
         this.userSkills = userSkills;
         this.avatar = avatar;
+        this.signupCheck = true;
     }
 
     public void update(AuthRequest.Update request, List<UserSkill> userSkills) {

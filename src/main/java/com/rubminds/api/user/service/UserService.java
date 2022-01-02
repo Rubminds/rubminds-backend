@@ -46,6 +46,10 @@ public class UserService {
         return AuthResponse.Signup.build(findUser, avatar);
     }
 
+    public void nicknameCheck(String nickname) {
+        duplicateNickname(nickname);
+    }
+
     @Transactional
     public void update(AuthRequest.Update request, MultipartFile file, User user) {
         User findUser = userRepository.findByIdWithAvatar(user.getId()).orElseThrow(UserNotFoundException::new);

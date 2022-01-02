@@ -1,6 +1,7 @@
 package com.rubminds.api.post.web;
 
 import com.rubminds.MvcTest;
+import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,6 +65,7 @@ public class PostControllerTest extends MvcTest {
                 .introduce("안녕하세요!")
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
+                .avatar(Avatar.builder().url("profile url").build())
                 .build();
 
         post1 = Post.builder()
@@ -81,6 +84,7 @@ public class PostControllerTest extends MvcTest {
                 .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").build()))
                 .build();
 
+        post1.setCreatedAt(LocalDateTime.of(2021,2,3,9,00));
         post2 = Post.builder()
                 .id(2L)
                 .title("테스트2")
@@ -218,7 +222,9 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("postsStatus").type(JsonFieldType.STRING).description("진행상태"),
                                 fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
                                 fieldWithPath("meeting").type(JsonFieldType.STRING).description("미팅방법"),
-                                fieldWithPath("writer").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                                fieldWithPath("createAt").type(JsonFieldType.STRING).description("작성 날짜"),
+                                fieldWithPath("writer.nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                                fieldWithPath("writer.avatar").type(JsonFieldType.STRING).description("작성자 프로필 url"),
                                 fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
@@ -238,12 +244,16 @@ public class PostControllerTest extends MvcTest {
         Page<Post> postPage = new PageImpl<>(postList, PageRequest.of(1, 5), postList.size());
         Page<PostResponse.GetList> response = postPage.map(post1 -> PostResponse.GetList.build(post1, customUserDetails));
 
-        given(postService.getList(any(), any(), any(), any())).willReturn(response);
+        given(postService.getList(any(), any(), any(), any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(get("/api/posts")
                 .param("page", "1")
                 .param("size", "10")
                 .param("kinds", "PROJECT")
+                .param("keywords", "firebase")
+                .param("keywords", "jpa")
+                .param("skill", "1")
+                .param("skill", "2")
                 .param("status", "RECRUIT")
         );
 
@@ -254,7 +264,9 @@ public class PostControllerTest extends MvcTest {
                                 parameterWithName("page").description("조회할 페이지"),
                                 parameterWithName("size").description("조회할 사이즈"),
                                 parameterWithName("kinds").description("게시물 종류 (PROJECT,SCOUT,STUDY)"),
-                                parameterWithName("status").description("게시물상태 (RECRUIT,FINISHED)")
+                                parameterWithName("status").description("게시물상태 (RECRUIT,FINISHED)"),
+                                parameterWithName("skill").description("skill 식별자"),
+                                parameterWithName("keywords").description("직접 입력 키워드")
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),

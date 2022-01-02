@@ -245,11 +245,12 @@ public class PostControllerTest extends MvcTest {
         Page<Post> postPage = new PageImpl<>(postList, PageRequest.of(1, 5), postList.size());
         Page<PostResponse.GetList> response = postPage.map(post1 -> PostResponse.GetList.build(post1, customUserDetails));
 
-        given(postService.getList(any(), any(), any(), any(), any(), any())).willReturn(response);
+        given(postService.getList(any(), any(), any(), any(), any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(get("/api/posts")
                 .param("page", "1")
                 .param("size", "10")
+                .param("region", "Seoul")
                 .param("kinds", "PROJECT")
                 .param("keywords", "firebase")
                 .param("keywords", "jpa")
@@ -267,6 +268,7 @@ public class PostControllerTest extends MvcTest {
                                 parameterWithName("kinds").description("게시물 종류 (PROJECT,SCOUT,STUDY)"),
                                 parameterWithName("status").description("게시물상태 (RECRUIT,FINISHED)"),
                                 parameterWithName("skill").description("skill 식별자"),
+                                parameterWithName("region").description("지역 조회"),
                                 parameterWithName("keywords").description("직접 입력 키워드")
                         ),
                         relaxedResponseFields(

@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface PostRepositoryCustom {
     Optional<Post> findByIdWithSkillAndUser(Long postId);
 
-    Page<Post> findAllByKindsAndStatus(Kinds kinds, PostStatus postStatus, List<Long> skillId, List<String> customSkillNameList, Pageable of);
+    Page<Post> findAllByKindsAndStatus(Kinds kinds, PostStatus postStatus, String region, List<Long> skillId, List<String> customSkillNameList, Pageable of);
 
     List<UserDto.ProjectInfo> findCountByStatusAndUser(Long userId);
 

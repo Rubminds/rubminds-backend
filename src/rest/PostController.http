@@ -3,7 +3,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-GET {{apiUrl}}/posts?kinds=PROJECT&status=RECRUIT&skill=1&skill=5&keywords=a&page=1&size=5
+GET {{apiUrl}}/posts?kinds=PROJECT&region=부산&skill=1&skill=5&keywords=a&page=1&size=5
 Authorization: {{authorizationToken}}
 
 ###
@@ -37,13 +37,6 @@ Content-Type: application/json;charset=UTF-8
     "b"
   ]
 }
-
---boundary
-Content-Disposition: form-data; name="files"; filename="white.jpeg"
-
-< ./../main/resources/dummy/image/white.jpeg
-
-
 ###
 PUT {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}

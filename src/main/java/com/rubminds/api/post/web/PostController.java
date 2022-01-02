@@ -41,11 +41,12 @@ public class PostController {
     @GetMapping("/posts")
     public ResponseEntity<Page<PostResponse.GetList>> getList(@RequestParam(name = "kinds", required = false) Kinds kinds,
                                                               @RequestParam(name = "status", required = false) PostStatus postStatus,
+                                                              @RequestParam(name = "region", required = false) String region,
                                                               @RequestParam(name = "skill", required = false) List<Long> skill,
                                                               @RequestParam(name = "keywords", required = false) List<String> customSkillList,
                                                               PageDto pageDto,
                                                               @CurrentUser CustomUserDetails customUserDetails) {
-        Page<PostResponse.GetList> response = postService.getList(kinds, postStatus, pageDto, skill, customSkillList, customUserDetails);
+        Page<PostResponse.GetList> response = postService.getList(kinds, postStatus, region, pageDto, skill, customSkillList, customUserDetails);
         return ResponseEntity.ok().body(response);
     }
 

@@ -45,13 +45,14 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findAllByKindsAndStatus(Kinds kinds, PostStatus postStatus, List<Long> skillId, List<String> customSkillNameList, Pageable pageable) {
+    public Page<Post> findAllByKindsAndStatus(Kinds kinds, PostStatus postStatus, String region, List<Long> skillId, List<String> customSkillNameList, Pageable pageable) {
         QueryResults<Post> result = queryFactory.select(post).distinct()
                 .from(post)
                 .leftJoin(post.postSkills, postSkill)
                 .leftJoin(post.customSkills, customSkill)
                 .where(postKindsEq(kinds))
                 .where(postStatusEq(postStatus))
+                .where(post.region.eq(region))
                 .where(postSkillEq(skillId, customSkillNameList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

@@ -15,7 +15,7 @@
 `POST /api/post`
 
 요청 HTTP
-<<<<<<< HEAD
+
 include::{snippets}/post_create/request-parts.adoc[]
 - userInfo JSON data
 ----

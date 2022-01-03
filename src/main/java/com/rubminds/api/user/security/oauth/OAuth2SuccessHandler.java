@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Transactional
@@ -40,6 +42,19 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         Token token = tokenProvider.generateAccessToken(user);
 
-        response.sendRedirect(url + token.getToken() + "/" + user.isSignupCheck());
+        String nickname = user.getNickname();
+        if (nickname != null) {
+            nickname = URLEncoder.encode(nickname, StandardCharsets.UTF_8);
+        }
+        String avatar = null;
+        if (user.getAvatar() != null) {
+            avatar = user.getAvatar().getUrl().substring(8);
+        }
+
+        if (user.getAvatar() != null) {
+            response.sendRedirect(url + user.getId() + "/" + nickname + "/" + token.getToken() + "/" + user.isSignupCheck() + "/" + avatar);
+        } else {
+            response.sendRedirect(url + user.getId() + "/" + nickname + "/" + token.getToken() + "/" + user.isSignupCheck());
+        }
     }
 }

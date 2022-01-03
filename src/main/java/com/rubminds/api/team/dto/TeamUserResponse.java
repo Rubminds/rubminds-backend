@@ -1,6 +1,7 @@
 package com.rubminds.api.team.dto;
 
 
+import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.team.domain.TeamUser;
 import lombok.*;
 
@@ -27,35 +28,21 @@ public class TeamUserResponse {
         private Long teamUserId;
         private Long userId;
         private String userNickname;
+        private String userAvatar;
+        private boolean admin;
         private boolean finish;
 
         public static TeamUserResponse.GetTeamUser build(TeamUser teamUser) {
-            return GetTeamUser.builder()
-                    .teamUserId(teamUser.getId())
-                    .userId(teamUser.getUser().getId())
-                    .userNickname(teamUser.getUser().getNickname())
-                    .finish(teamUser.isFinish())
-                    .build();
-        }
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class GetList {
-        private Long teamUserId;
-        private Long userId;
-        private String userNickname;
-        private boolean admin;
-
-        public static TeamUserResponse.GetList build(TeamUser teamUser) {
-            return GetList.builder()
+            GetTeamUserBuilder builder = GetTeamUser.builder()
                     .teamUserId(teamUser.getId())
                     .userId(teamUser.getUser().getId())
                     .userNickname(teamUser.getUser().getNickname())
                     .admin(teamUser.getTeam().getAdmin().equals(teamUser.getUser()))
-                    .build();
+                    .finish(teamUser.isFinish());
+            if (teamUser.getUser().getAvatar() != null) {
+                builder.userAvatar(teamUser.getUser().getAvatar().getUrl());
+            }
+            return builder.build();
         }
     }
 }

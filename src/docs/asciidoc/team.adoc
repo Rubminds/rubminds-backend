@@ -1,4 +1,4 @@
-= Rubminds API 문서 (SKILL)
+= Rubminds API 문서 (Team)
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs

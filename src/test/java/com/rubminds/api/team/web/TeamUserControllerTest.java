@@ -4,7 +4,7 @@ import com.rubminds.MvcTest;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
-import com.rubminds.api.team.Service.TeamUserService;
+import com.rubminds.api.team.service.TeamUserService;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.dto.TeamUserRequest;
@@ -43,10 +43,16 @@ public class TeamUserControllerTest extends MvcTest {
 
     private User user1;
     private User user2;
-    private TeamUser user3;
+    private User user3;
+
+    private TeamUser teamUser1;
+    private TeamUser teamUser2;
+    private TeamUser teamUser3;
+
     private Post post1;
+
     private Team team;
-    private List<TeamUser> userList = new ArrayList<>();
+    private List<TeamUser> teamUserList = new ArrayList<>();
 
     @BeforeEach
     public void setup() {
@@ -63,7 +69,17 @@ public class TeamUserControllerTest extends MvcTest {
         user2 = User.builder()
                 .id(2L)
                 .oauthId("2")
-                .nickname("동그라미")
+                .nickname("네모")
+                .job("학생")
+                .introduce("안녕하세요!")
+                .provider(SignupProvider.RUBMINDS)
+                .signupCheck(true)
+                .build();
+
+        user3 = User.builder()
+                .id(3L)
+                .oauthId("3")
+                .nickname("세모")
                 .job("학생")
                 .introduce("안녕하세요!")
                 .provider(SignupProvider.RUBMINDS)
@@ -73,18 +89,33 @@ public class TeamUserControllerTest extends MvcTest {
         team = Team.builder()
                 .id(1L)
                 .admin(user1)
-                .teamUsers(userList)
+                .teamUsers(teamUserList)
                 .build();
 
-        user3 = TeamUser.builder()
+        teamUser1 = TeamUser.builder()
                 .id(1L)
+                .team(team)
+                .finish(false)
+                .user(user1)
+                .build();
+
+        teamUser2 = TeamUser.builder()
+                .id(2L)
                 .team(team)
                 .finish(false)
                 .user(user2)
                 .build();
 
-        userList.add(user3);
+        teamUser3 = TeamUser.builder()
+                .id(3L)
+                .team(team)
+                .finish(false)
+                .user(user3)
+                .build();
 
+        teamUserList.add(teamUser1);
+        teamUserList.add(teamUser2);
+        teamUserList.add(teamUser3);
 
         post1 = Post.builder()
                 .id(1L)
@@ -108,64 +139,99 @@ public class TeamUserControllerTest extends MvcTest {
     @Test
     @DisplayName("팀원 초대 문서화")
     public void getTeamUser() throws Exception {
-        TeamUserRequest.Create request = TeamUserRequest.Create.builder().userId(1L).teamId(1L).build();
+        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(teamUser2);
+        given(teamUserService.add(any(), any(), any())).willReturn(response);
 
-        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
-        given(teamUserService.add(any())).willReturn(response);
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.post("/api/team/{teamId}/user/{userId}", 1L, 1L));
+
+        results.andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(document("teamUser_add", pathParameters(
+                        parameterWithName("teamId").description("팀 식별자"),
+                        parameterWithName("userId").description("유저 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("팀원 목록 문서화")
+    public void getTeamUserList() throws Exception {
+        List<TeamUserResponse.GetList> response = new ArrayList<>();
+        response.add(TeamUserResponse.GetList.build(teamUser1));
+        response.add(TeamUserResponse.GetList.build(teamUser2));
+        response.add(TeamUserResponse.GetList.build(teamUser3));
+
+        given(teamUserService.getList(any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/team/{teamId}/teamUsers", 1L));
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("teamUser_list", pathParameters(
+                                parameterWithName("teamId").description("팀 식별자")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("[].teamUserId").type(JsonFieldType.NUMBER).description("팀원 식별자"),
+                                fieldWithPath("[].userId").type(JsonFieldType.NUMBER).description("유저 식별자"),
+                                fieldWithPath("[].userNickname").type(JsonFieldType.STRING).description("유저 닉네임"),
+                                fieldWithPath("[].admin").type(JsonFieldType.BOOLEAN).description("팀장 여부(팀장이면 true)")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("팀원 평가 문서화")
+    public void evaluateTeamUser() throws Exception {
+        List<TeamUserRequest.EvaluateData> evaluation = new ArrayList<>();
+        TeamUserRequest.EvaluateData evaluateData1 = TeamUserRequest.EvaluateData.builder().userId(2L).attendLevel(5).workLevel(3).build();
+        TeamUserRequest.EvaluateData evaluateData2 = TeamUserRequest.EvaluateData.builder().userId(3L).attendLevel(2).workLevel(4).build();
+        evaluation.add(evaluateData1);
+        evaluation.add(evaluateData2);
+
+        TeamUserRequest.Evaluate request = TeamUserRequest.Evaluate.builder().kinds(Kinds.PROJECT).evaluation(evaluation).build();
+        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(teamUser1);
+        given(teamUserService.evaluate(any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .post("/api/teamUser/add")
+                .post("/api/teamUser/{teamUserId}",1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .characterEncoding("UTF-8"));
 
-
-        results.andExpect(status().isCreated())
+        results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("teamUser_add",
+                .andDo(document("teamUser_evaluate", pathParameters(
+                                parameterWithName("teamUserId").description("팀원 식별자")
+                        ),
                         requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 식별자"),
-                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 식별자")
+                                fieldWithPath("kinds").type(JsonFieldType.STRING).description("게시글 Kinds"),
+                                fieldWithPath("evaluation").type(JsonFieldType.ARRAY).description("팀원 평가 목록"),
+                                fieldWithPath("evaluation[].userId").type(JsonFieldType.NUMBER).description("유저 식별자"),
+                                fieldWithPath("evaluation[].attendLevel").type(JsonFieldType.NUMBER).description("참여도"),
+                                fieldWithPath("evaluation[].workLevel").type(JsonFieldType.NUMBER).description("숙련도(Kinds.PROJECT의 경우에만 사용)")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
 
                         )
                 ));
-
     }
-
-//    @Test
-//    @DisplayName("끝내기 확인 문서화")
-//    public void changeFinishUser() throws Exception {
-//        TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(user3);
-//        given(teamUserService.(any())).willReturn(response);
-//
-//        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.put("/api/team-user/{teamUserId}", 1L));
-//
-//        results.andExpect(status().isOk())
-//                .andDo(print())
-//                .andDo(document("teamUser_finsih", pathParameters(
-//                                parameterWithName("teamUserId").description("팀원식별자")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
-//
-//                        )
-//                ));
-//    }
 
     @Test
     @DisplayName("팀원 추방 문서화")
     public void deleteTeamUser() throws Exception {
-        given(teamUserService.delete(any())).willReturn(1l);
+        given(teamUserService.delete(any() ,any())).willReturn(1L);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders.delete("/api/teamUser/{teamUserId}", 1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("teamUser_delete", pathParameters(
-                                parameterWithName("teamUserId").description("팀원식별자")
+                                parameterWithName("teamUserId").description("팀원 식별자")
                         )
                 ));
     }

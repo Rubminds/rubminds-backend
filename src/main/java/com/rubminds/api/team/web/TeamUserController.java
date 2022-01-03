@@ -28,8 +28,8 @@ public class TeamUserController {
     }
 
     @GetMapping("/team/{teamId}/teamUsers")
-    public ResponseEntity<List<TeamUserResponse.GetList>> getList(@PathVariable Long teamId){
-        List<TeamUserResponse.GetList> response = teamUserService.getList(teamId);
+    public ResponseEntity<List<TeamUserResponse.GetTeamUser>> getList(@PathVariable Long teamId){
+        List<TeamUserResponse.GetTeamUser> response = teamUserService.getList(teamId);
         return ResponseEntity.ok().body(response);
     }
 

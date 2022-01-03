@@ -44,10 +44,10 @@ public class TeamUserService {
         return TeamUserResponse.OnlyId.build(teamUser);
     }
 
-    public List<TeamUserResponse.GetList> getList(Long teamId){
+    public List<TeamUserResponse.GetTeamUser> getList(Long teamId){
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         List<TeamUser> teamUsers = teamUserRepository.findAllByTeam(team);
-        return teamUsers.stream().map(TeamUserResponse.GetList::build).collect(Collectors.toList());
+        return teamUsers.stream().map(TeamUserResponse.GetTeamUser::build).collect(Collectors.toList());
     }
 
     public TeamUserResponse.OnlyId evaluate(Long teamUserId, TeamUserRequest.Evaluate request) {

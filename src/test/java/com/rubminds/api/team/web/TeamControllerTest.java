@@ -2,6 +2,8 @@ package com.rubminds.api.team.web;
 
 
 import com.rubminds.MvcTest;
+import com.rubminds.api.file.domain.Avatar;
+import com.rubminds.api.file.dto.SavedFile;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
@@ -27,8 +29,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -42,13 +43,25 @@ public class TeamControllerTest extends MvcTest {
     private TeamService teamService;
     private User user1;
     private User user2;
-    private TeamUser user3;
+    private TeamUser teamUser1;
+    private TeamUser teamUser2;
     private Post post1;
     private Team team;
-    private List<TeamUser> userList = new ArrayList<>();
+    private List<TeamUser> teamUserList = new ArrayList<>();
+    private Avatar avatar;
 
     @BeforeEach
     public void setup() {
+        avatar = Avatar.create(SavedFile.builder()
+                .originalName("white.jpeg")
+                .name("cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
+                .extension(".jpeg")
+                .size(7695L)
+                .publicUrl("https://rubminds.s3.ap-northeast-2.amazonaws.com/cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
+                .width(225)
+                .height(300)
+                .build());
+
         user1 = User.builder()
                 .id(1L)
                 .oauthId("1")
@@ -57,33 +70,42 @@ public class TeamControllerTest extends MvcTest {
                 .introduce("안녕하세요!")
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
+                .avatar(avatar)
                 .build();
 
         user2 = User.builder()
                 .id(2L)
                 .oauthId("2")
-                .nickname("동그라미")
+                .nickname("네모")
                 .job("학생")
                 .introduce("안녕하세요!")
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
+                .avatar(avatar)
                 .build();
 
         team = Team.builder()
                 .id(1L)
             .admin(user1)
-            .teamUsers(userList)
+            .teamUsers(teamUserList)
             .build();
 
-        user3 = TeamUser.builder()
+        teamUser1 = TeamUser.builder()
+                .id(1L)
+                .team(team)
+                .finish(false)
+                .user(user1)
+                .build();
+
+        teamUser2 = TeamUser.builder()
                 .id(2L)
                 .team(team)
                 .finish(false)
                 .user(user2)
                 .build();
 
-        userList.add(user3);
-
+        teamUserList.add(teamUser1);
+        teamUserList.add(teamUser2);
 
         post1 = Post.builder()
                 .id(1L)
@@ -92,7 +114,7 @@ public class TeamControllerTest extends MvcTest {
                 .region("서울")
                 .postStatus(PostStatus.RECRUIT)
                 .kinds(Kinds.PROJECT)
-                .headcount(3)
+                .headcount(2)
                 .meeting(Meeting.BOTH)
                 .writer(user1)
                 .postSkills(Collections.singletonList(PostSkill.builder().id(1L).skill(Skill.builder().id(1L).name("JAVA").build()).build()))
@@ -108,7 +130,7 @@ public class TeamControllerTest extends MvcTest {
     @Test
     @DisplayName("팀 조회 문서화")
     public void getTeam() throws Exception {
-        TeamResponse.GetTeam response = TeamResponse.GetTeam.build(team,userList);
+        TeamResponse.GetTeam response = TeamResponse.GetTeam.build(team, teamUserList);
         given(teamService.getTeamInfo(any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/team/{teamId}", 1L));
@@ -116,16 +138,18 @@ public class TeamControllerTest extends MvcTest {
         results.andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("team_info", pathParameters(
-                        parameterWithName("teamId").description("팀 식별자")
+                            parameterWithName("teamId").description("팀 식별자")
                         ),
-                        responseFields(
+                        relaxedResponseFields(
                                 fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 식별자"),
                                 fieldWithPath("adminId").type(JsonFieldType.NUMBER).description("팀장 식별자"),
-                                fieldWithPath("teamUsers").type(JsonFieldType.ARRAY).description("유저 식별자"),
+                                fieldWithPath("teamUsers").type(JsonFieldType.ARRAY).description("팀원 목록"),
                                 fieldWithPath("teamUsers[].teamUserId").type(JsonFieldType.NUMBER).description("팀원 식별자"),
                                 fieldWithPath("teamUsers[].userId").type(JsonFieldType.NUMBER).description("팀원의 유저아이디 식별자"),
                                 fieldWithPath("teamUsers[].userNickname").type(JsonFieldType.STRING).description("팀원의 닉네임"),
-                                fieldWithPath("teamUsers[].finish").type(JsonFieldType.BOOLEAN).description("팀원의 종료버튼 승인여부")
+                                fieldWithPath("teamUsers[].userAvatar").type(JsonFieldType.STRING).description("팀원의 프로필 이미지"),
+                                fieldWithPath("teamUsers[].admin").type(JsonFieldType.BOOLEAN).description("팀원의 팀장 여부"),
+                                fieldWithPath("teamUsers[].finish").type(JsonFieldType.BOOLEAN).description("팀원의 평가 완료 여부")
                         )
                 ));
     }

@@ -1,6 +1,8 @@
 package com.rubminds.api.team.web;
 
 import com.rubminds.MvcTest;
+import com.rubminds.api.file.domain.Avatar;
+import com.rubminds.api.file.dto.SavedFile;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
@@ -54,8 +56,20 @@ public class TeamUserControllerTest extends MvcTest {
     private Team team;
     private List<TeamUser> teamUserList = new ArrayList<>();
 
+    private Avatar avatar;
+
     @BeforeEach
     public void setup() {
+        avatar = Avatar.create(SavedFile.builder()
+                .originalName("white.jpeg")
+                .name("cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
+                .extension(".jpeg")
+                .size(7695L)
+                .publicUrl("https://rubminds.s3.ap-northeast-2.amazonaws.com/cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
+                .width(225)
+                .height(300)
+                .build());
+
         user1 = User.builder()
                 .id(1L)
                 .oauthId("1")
@@ -64,6 +78,7 @@ public class TeamUserControllerTest extends MvcTest {
                 .introduce("안녕하세요!")
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
+                .avatar(avatar)
                 .build();
 
         user2 = User.builder()
@@ -74,6 +89,7 @@ public class TeamUserControllerTest extends MvcTest {
                 .introduce("안녕하세요!")
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
+                .avatar(avatar)
                 .build();
 
         user3 = User.builder()
@@ -84,6 +100,7 @@ public class TeamUserControllerTest extends MvcTest {
                 .introduce("안녕하세요!")
                 .provider(SignupProvider.RUBMINDS)
                 .signupCheck(true)
+                .avatar(avatar)
                 .build();
 
         team = Team.builder()
@@ -160,10 +177,10 @@ public class TeamUserControllerTest extends MvcTest {
     @Test
     @DisplayName("팀원 목록 문서화")
     public void getTeamUserList() throws Exception {
-        List<TeamUserResponse.GetList> response = new ArrayList<>();
-        response.add(TeamUserResponse.GetList.build(teamUser1));
-        response.add(TeamUserResponse.GetList.build(teamUser2));
-        response.add(TeamUserResponse.GetList.build(teamUser3));
+        List<TeamUserResponse.GetTeamUser> response = new ArrayList<>();
+        response.add(TeamUserResponse.GetTeamUser.build(teamUser1));
+        response.add(TeamUserResponse.GetTeamUser.build(teamUser2));
+        response.add(TeamUserResponse.GetTeamUser.build(teamUser3));
 
         given(teamUserService.getList(any())).willReturn(response);
 
@@ -178,7 +195,9 @@ public class TeamUserControllerTest extends MvcTest {
                                 fieldWithPath("[].teamUserId").type(JsonFieldType.NUMBER).description("팀원 식별자"),
                                 fieldWithPath("[].userId").type(JsonFieldType.NUMBER).description("유저 식별자"),
                                 fieldWithPath("[].userNickname").type(JsonFieldType.STRING).description("유저 닉네임"),
-                                fieldWithPath("[].admin").type(JsonFieldType.BOOLEAN).description("팀장 여부(팀장이면 true)")
+                                fieldWithPath("[].userAvatar").type(JsonFieldType.STRING).description("유저 프로필 이미지"),
+                                fieldWithPath("[].admin").type(JsonFieldType.BOOLEAN).description("팀장 여부(팀장이면 true)"),
+                                fieldWithPath("[].finish").type(JsonFieldType.BOOLEAN).description("평가 완료 여부(완료하면 true)")
                         )
                 ));
     }

@@ -54,7 +54,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         if (user.getAvatar() != null) {
             response.sendRedirect(url + user.getId() + "/" + nickname + "/" + token.getToken() + "/" + user.isSignupCheck() + "/" + avatar);
         } else {
-            response.sendRedirect(url + user.getId() + "/" + nickname + "/" + token.getToken() + "/" + user.isSignupCheck());
+            response.sendRedirect(url + user.getId() + "/" + nickname + "/" + token.getToken() + "/" + user.isSignupCheck() + "/0");
         }
     }
 }

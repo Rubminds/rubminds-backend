@@ -5,7 +5,7 @@
 :toc: left
 :toclevels: 2
 :sectlinks:
-:snippets: ./build/generated-snippets
+:snippets: ../../../build/generated-snippets
 
 = Post
 ---
@@ -15,7 +15,7 @@
 `POST /api/post`
 
 요청 HTTP
-<<<<<<< HEAD
+
 include::{snippets}/post_create/request-parts.adoc[]
 - userInfo JSON data
 ----

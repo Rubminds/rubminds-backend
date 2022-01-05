@@ -98,7 +98,6 @@ public class Post extends BaseEntity {
                 .content(request.getContent())
                 .headcount(request.getHeadcount())
                 .kinds(request.getKinds())
-                .kinds(Kinds.PROJECT)
                 .meeting(request.getMeeting())
                 .postStatus(PostStatus.RECRUIT)
                 .region(request.getRegion())

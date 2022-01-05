@@ -27,9 +27,10 @@ public class PostDto {
     public static class Writer {
         private String nickname;
         private String avatar;
+        private Long id;
 
         public static PostDto.Writer build(User user) {
-            WriterBuilder builder = Writer.builder().nickname(user.getNickname());
+            WriterBuilder builder = Writer.builder().nickname(user.getNickname()).id(user.getId());
             if (user.getAvatar() != null) {
                 builder.avatar(user.getAvatar().getUrl());
             }

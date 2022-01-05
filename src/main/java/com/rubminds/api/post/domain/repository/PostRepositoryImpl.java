@@ -52,7 +52,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.customSkills, customSkill)
                 .where(postKindsEq(kinds))
                 .where(postStatusEq(postStatus))
-                .where(post.region.eq(region))
+                .where(postRegionEq(region))
                 .where(postSkillEq(skillId, customSkillNameList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -102,6 +102,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private BooleanExpression postStatusEq(PostStatus postStatus) {
         if (Objects.nonNull(postStatus)) {
             return post.postStatus.eq(postStatus);
+        }
+        return null;
+    }
+
+    private BooleanExpression postRegionEq(String region) {
+        if (Objects.nonNull(region)) {
+            return post.region.eq(region);
         }
         return null;
     }

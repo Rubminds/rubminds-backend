@@ -76,6 +76,6 @@ public class TeamUserService {
         }
         teamUser.getUser().updateAttendLevel(0);
         teamUserRepository.deleteById(teamUser.getId());
-        return teamUser.getId();
+        return teamUser.getUser().getId();
     }
 }

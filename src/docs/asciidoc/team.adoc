@@ -49,7 +49,7 @@ include::{snippets}/teamUser_list/response-fields.adoc[]
 
 === 팀원 평가
 
-`POST /api/team/{team}`
+`POST /api/team/{teamId}`
 
 요청 HTTP
 include::{snippets}/teamUser_evaluate/http-request.adoc[]

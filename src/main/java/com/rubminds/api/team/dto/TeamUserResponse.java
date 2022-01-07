@@ -15,7 +15,7 @@ public class TeamUserResponse {
 
         public static TeamUserResponse.OnlyId build(TeamUser teamUser) {
             return TeamUserResponse.OnlyId.builder()
-                    .id(teamUser.getId())
+                    .id(teamUser.getUser().getId())
                     .build();
         }
     }
@@ -25,7 +25,6 @@ public class TeamUserResponse {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetTeamUser {
-        private Long teamUserId;
         private Long userId;
         private String userNickname;
         private String userAvatar;
@@ -34,7 +33,6 @@ public class TeamUserResponse {
 
         public static TeamUserResponse.GetTeamUser build(TeamUser teamUser) {
             GetTeamUserBuilder builder = GetTeamUser.builder()
-                    .teamUserId(teamUser.getId())
                     .userId(teamUser.getUser().getId())
                     .userNickname(teamUser.getUser().getNickname())
                     .admin(teamUser.getTeam().getAdmin().equals(teamUser.getUser()))

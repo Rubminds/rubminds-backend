@@ -33,14 +33,14 @@ public class TeamUserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/teamUser/{teamUserId}")
-    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@PathVariable Long teamUserId, @RequestBody TeamUserRequest.Evaluate request) {
-        TeamUserResponse.OnlyId response = teamUserService.evaluate(teamUserId, request);
+    @PostMapping("/team/{teamId}")
+    public ResponseEntity<TeamUserResponse.OnlyId> evaluate(@PathVariable Long teamId, @RequestBody TeamUserRequest.Evaluate request, @CurrentUser CustomUserDetails customUserDetails) {
+        TeamUserResponse.OnlyId response = teamUserService.evaluate(teamId, request, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/teamUser/{teamUserId}")
-    public Long delete(@PathVariable("teamUserId") Long teamUserId, @CurrentUser CustomUserDetails customUserDetails) {
-        return teamUserService.delete(teamUserId, customUserDetails.getUser());
+    @DeleteMapping("/team/{teamId}/user/{userId}")
+    public Long delete(@PathVariable(value = "teamId") Long teamId, @PathVariable(value = "userId") Long userId, @CurrentUser CustomUserDetails customUserDetails) {
+        return teamUserService.delete(teamId, userId, customUserDetails.getUser());
     }
 }

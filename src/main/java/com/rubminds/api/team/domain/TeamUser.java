@@ -51,7 +51,7 @@ public class TeamUser {
         this.finish = true;
     }
 
-    public void isEvaluated(){
+    public void validate(){
         if (this.finish) throw new EvaluateStateException();
     }
 }

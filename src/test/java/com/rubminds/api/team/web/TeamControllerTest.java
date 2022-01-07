@@ -144,7 +144,6 @@ public class TeamControllerTest extends MvcTest {
                                 fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 식별자"),
                                 fieldWithPath("adminId").type(JsonFieldType.NUMBER).description("팀장 식별자"),
                                 fieldWithPath("teamUsers").type(JsonFieldType.ARRAY).description("팀원 목록"),
-                                fieldWithPath("teamUsers[].teamUserId").type(JsonFieldType.NUMBER).description("팀원 식별자"),
                                 fieldWithPath("teamUsers[].userId").type(JsonFieldType.NUMBER).description("팀원의 유저아이디 식별자"),
                                 fieldWithPath("teamUsers[].userNickname").type(JsonFieldType.STRING).description("팀원의 닉네임"),
                                 fieldWithPath("teamUsers[].userAvatar").type(JsonFieldType.STRING).description("팀원의 프로필 이미지"),

@@ -50,27 +50,32 @@ public class TeamUserService {
         return teamUsers.stream().map(TeamUserResponse.GetTeamUser::build).collect(Collectors.toList());
     }
 
-    public TeamUserResponse.OnlyId evaluate(Long teamUserId, TeamUserRequest.Evaluate request) {
-        TeamUser evaluator = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
-        evaluator.isEvaluated();
+    public TeamUserResponse.OnlyId evaluate(Long teamId, TeamUserRequest.Evaluate request, User user) {
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        TeamUser evaluator = teamUserRepository.findByUserAndTeam(user, team).orElseThrow(TeamUserNotFoundException::new);
+        evaluator.validate();
 
         for(int i = 0 ; i<request.getEvaluation().size(); i++){
-            User user = userRepository.findById(request.getEvaluation().get(i).getUserId()).orElseThrow(UserNotFoundException::new);
-            user.updateAttendLevel(request.getEvaluation().get(i).getAttendLevel());
+            User targetUser = userRepository.findById(request.getEvaluation().get(i).getUserId()).orElseThrow(UserNotFoundException::new);
+            targetUser.updateAttendLevel(request.getEvaluation().get(i).getAttendLevel());
             if(request.getKinds() == Kinds.PROJECT){
-                user.updateWorkLevel(request.getEvaluation().get(i).getWorkLevel());
+                targetUser.updateWorkLevel(request.getEvaluation().get(i).getWorkLevel());
             }
         }
         evaluator.updateFinish();
         return TeamUserResponse.OnlyId.build(evaluator);
     }
 
-    public Long delete(Long teamUserId, User loginUser) {
-        TeamUser teamUser = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
-        Team team = teamRepository.findById(teamUser.getTeam().getId()).orElseThrow(TeamNotFoundException::new);
+    public Long delete(Long teamId, Long userId, User loginUser) {
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        TeamUser teamUser = teamUserRepository.findByUserAndTeam(user, team).orElseThrow(TeamUserNotFoundException::new);
         loginUser.isAdmin(team.getAdmin().getId());
+        if(user == team.getAdmin()){
+            throw new AdminDeleteException();
+        }
         teamUser.getUser().updateAttendLevel(0);
-        teamUserRepository.deleteById(teamUserId);
-        return teamUserId;
+        teamUserRepository.deleteById(teamUser.getId());
+        return teamUser.getId();
     }
 }

@@ -53,6 +53,7 @@ public class TeamUserService {
     public TeamUserResponse.OnlyId evaluate(Long teamUserId, TeamUserRequest.Evaluate request) {
         TeamUser evaluator = teamUserRepository.findById(teamUserId).orElseThrow(TeamUserNotFoundException::new);
         evaluator.isEvaluated();
+
         for(int i = 0 ; i<request.getEvaluation().size(); i++){
             User user = userRepository.findById(request.getEvaluation().get(i).getUserId()).orElseThrow(UserNotFoundException::new);
             user.updateAttendLevel(request.getEvaluation().get(i).getAttendLevel());

@@ -6,11 +6,11 @@ import com.rubminds.api.file.dto.SavedFile;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
-import com.rubminds.api.team.service.TeamUserService;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.dto.TeamUserRequest;
 import com.rubminds.api.team.dto.TeamUserResponse;
+import com.rubminds.api.team.service.TeamUserService;
 import com.rubminds.api.user.domain.SignupProvider;
 import com.rubminds.api.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -163,9 +163,10 @@ public class TeamUserControllerTest extends MvcTest {
 
         results.andExpect(status().isCreated())
                 .andDo(print())
-                .andDo(document("teamUser_add", pathParameters(
-                        parameterWithName("teamId").description("팀 식별자"),
-                        parameterWithName("userId").description("유저 식별자")
+                .andDo(document("teamUser_add",
+                        pathParameters(
+                                parameterWithName("teamId").description("팀 식별자"),
+                                parameterWithName("userId").description("유저 식별자")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
@@ -184,7 +185,8 @@ public class TeamUserControllerTest extends MvcTest {
 
         given(teamUserService.getList(any())).willReturn(response);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/team/{teamId}/teamUsers", 1L));
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .get("/api/team/{teamId}/teamUsers", 1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())
@@ -216,7 +218,7 @@ public class TeamUserControllerTest extends MvcTest {
         given(teamUserService.evaluate(any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .post("/api/teamUser/{teamUserId}",1L)
+                .post("/api/teamUser/{teamUserId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .characterEncoding("UTF-8"));
@@ -235,7 +237,6 @@ public class TeamUserControllerTest extends MvcTest {
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("팀원 식별자")
-
                         )
                 ));
     }
@@ -243,9 +244,10 @@ public class TeamUserControllerTest extends MvcTest {
     @Test
     @DisplayName("팀원 추방 문서화")
     public void deleteTeamUser() throws Exception {
-        given(teamUserService.delete(any() ,any())).willReturn(1L);
+        given(teamUserService.delete(any(), any())).willReturn(1L);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.delete("/api/teamUser/{teamUserId}", 1L));
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .delete("/api/teamUser/{teamUserId}", 1L));
 
         results.andExpect(status().isOk())
                 .andDo(print())

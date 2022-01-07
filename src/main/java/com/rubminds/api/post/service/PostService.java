@@ -17,6 +17,7 @@ import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
+import com.rubminds.api.team.exception.AdminException;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,10 +119,24 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request) {
+    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request,User loginUser) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        loginUser.isAdmin(post.getWriter().getId());
+
+        Integer finishNum = postRepository.FindCountFinish(post);
+        post.isFinished(post,finishNum);
         post.updateComplete(request);
 
         return PostResponse.OnlyId.build(post);
     }
+
+    @Transactional
+    public PostResponse.OnlyId changeStatus(Long postId, PostRequest.ChangeStatus request, User loginUser) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        loginUser.isAdmin(post.getWriter().getId());
+        post.changeStatus(request);
+
+        return PostResponse.OnlyId.build(post);
+    }
+
 }

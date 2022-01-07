@@ -2,8 +2,10 @@ package com.rubminds.api.post.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.post.dto.PostRequest;
+import com.rubminds.api.post.exception.NotFullFinishedException;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.team.domain.Team;
+import com.rubminds.api.team.exception.AdminException;
 import com.rubminds.api.team.exception.TeamOutOfBoundException;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
@@ -87,6 +89,10 @@ public class Post extends BaseEntity {
         this.kinds = request.getKinds();
     }
 
+    public void changeStatus(PostRequest.ChangeStatus request) {
+        this.postStatus = request.getPostStatus();
+    }
+
     public void updateComplete(PostRequest.CreateCompletePost request) {
         this.completeContent = request.getCompleteContent();
         this.refLink = request.getRefLink();
@@ -108,6 +114,10 @@ public class Post extends BaseEntity {
 
     public void isHeadcountFull(Team team){
         if (Objects.equals(this.headcount, team.getTeamUsers().size())) throw new TeamOutOfBoundException();
+    }
+
+    public void isFinished(Post post, Integer finishNum){
+        if (!Objects.equals(this.headcount, finishNum)) throw new NotFullFinishedException();
     }
 
 }

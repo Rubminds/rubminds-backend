@@ -352,7 +352,7 @@ public class PostControllerTest extends MvcTest {
                 .build();
 
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
-        given(postService.updateCompletePost(any(), any())).willReturn(response);
+        given(postService.updateCompletePost(any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
                 .put("/api/post/{postId}/complete", 1L)
@@ -369,6 +369,38 @@ public class PostControllerTest extends MvcTest {
                         requestFields(
                                 fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크"),
                                 fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용")
+
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자")
+
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("게시물 상태 변화시키기")
+    public void changePostStatus() throws Exception {
+        PostRequest.ChangeStatus request = PostRequest.ChangeStatus.builder().postStatus(PostStatus.WORKING).build();
+
+        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
+        given(postService.changeStatus(any(), any(), any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .put("/api/post/{postId}/changeStatus", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .characterEncoding("UTF-8"));
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_complete",
+                        pathParameters(
+                                parameterWithName("postId").description("게시물 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("postStatus").type(JsonFieldType.STRING).description("상태변화시킬값(RECRUIT, WORKING, RANKING, FINISHED),")
 
                         ),
                         relaxedResponseFields(

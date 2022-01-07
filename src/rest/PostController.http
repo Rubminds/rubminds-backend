@@ -85,3 +85,12 @@ Content-Type: application/json;charset=UTF-8
   "refLink" : "참조링크수정",
   "completeContent" : "완료게시글"
 }
+
+###
+PUT {{apiUrl}}/post/1/changeStatus
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+{
+  "postStatus" : "RANKING"
+}

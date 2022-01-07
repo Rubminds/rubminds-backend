@@ -23,3 +23,55 @@ include::{snippets}/team_info/path-parameters.adoc[]
 include::{snippets}/team_info/http-response.adoc[]
 include::{snippets}/team_info/response-fields.adoc[]
 
+=== 팀원 초대
+
+`POST /api/team/{teamId}/user/{userId}`
+
+요청 HTTP
+include::{snippets}/teamUser_add/http-request.adoc[]
+include::{snippets}/teamUser_add/path-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_add/http-response.adoc[]
+include::{snippets}/teamUser_add/response-fields.adoc[]
+
+=== 팀원 목록 조회
+
+`GET /api/team/{teamId}/teamUsers`
+
+요청 HTTP
+include::{snippets}/teamUser_list/http-request.adoc[]
+include::{snippets}/teamUser_list/path-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_list/http-response.adoc[]
+include::{snippets}/teamUser_list/response-fields.adoc[]
+
+=== 팀원 평가
+
+`POST /api/teamUser/{teamUserId}`
+
+요청 HTTP
+include::{snippets}/teamUser_evaluate/http-request.adoc[]
+include::{snippets}/teamUser_evaluate/path-parameters.adoc[]
+include::{snippets}/teamUser_evaluate/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_evaluate/http-response.adoc[]
+include::{snippets}/teamUser_evaluate/response-fields.adoc[]
+
+=== 팀원 추방
+
+`POST /api/teamUser/{teamUserId}`
+
+요청 HTTP
+include::{snippets}/teamUser_delete/http-request.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/teamUser_delete/http-response.adoc[]
+
+
+
+
+
+

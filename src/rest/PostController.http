@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/1
+GET {{apiUrl}}/post/5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -71,7 +71,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-POST {{apiUrl}}/post/2/like
+POST {{apiUrl}}/post/5/like
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

@@ -28,7 +28,6 @@ public class TeamUser {
     @Column(nullable = false)
     private boolean finish;
 
-
     public void setTeam(Team team) {
         this.team = team;
     }

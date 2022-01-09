@@ -218,6 +218,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
+                                fieldWithPath("kinds").type(JsonFieldType.STRING).description("게시물 종류"),
                                 fieldWithPath("region").type(JsonFieldType.STRING).description("지역"),
                                 fieldWithPath("postsStatus").type(JsonFieldType.STRING).description("진행상태"),
                                 fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
@@ -234,6 +235,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
                                 fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional(),
                                 fieldWithPath("finishNum").type(JsonFieldType.NUMBER).description("팀원의 FINISH전환 수")
+
                         )
                 ));
 
@@ -344,21 +346,28 @@ public class PostControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("완료게시글 작성 및 수정")
+    @DisplayName("완료게시글 작성")
     public void updatePostComplete() throws Exception {
         PostRequest.CreateCompletePost request = PostRequest.CreateCompletePost.builder()
                 .refLink("http://rubmind.com")
                 .completeContent("완성했습니다.")
                 .build();
 
-        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
-        given(postService.updateCompletePost(any(), any(), any())).willReturn(response);
+        String content = objectMapper.writeValueAsString(request);
+        MockMultipartFile completeInfo = new MockMultipartFile("completeInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
+        InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
+        MockMultipartFile files = new MockMultipartFile("files", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .put("/api/post/{postId}/complete", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                .characterEncoding("UTF-8"));
+        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
+        given(postService.updateCompletePost(any(), any(),any(), any())).willReturn(response);
+
+        ResultActions results = mvc.perform(multipart("/api/post/{postId}/complete", 1L)
+                .file(completeInfo)
+                .file(files)
+                .contentType(MediaType.MULTIPART_MIXED)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+        );
 
         results.andExpect(status().isOk())
                 .andDo(print())
@@ -366,18 +375,17 @@ public class PostControllerTest extends MvcTest {
                         pathParameters(
                                 parameterWithName("postId").description("게시물 식별자")
                         ),
-                        requestFields(
-                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크"),
-                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용")
+                        requestParts(
+                                partWithName("files").description("파일"),
+                                partWithName("completeInfo").description("완료게시물 정보 - JSON")
 
                         ),
-                        relaxedResponseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자")
-
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글 식별자")
                         )
                 ));
-
     }
+
 
     @Test
     @DisplayName("게시물 상태 변화시키기")

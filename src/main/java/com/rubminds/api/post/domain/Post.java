@@ -116,8 +116,4 @@ public class Post extends BaseEntity {
         if (Objects.equals(this.headcount, team.getTeamUsers().size())) throw new TeamOutOfBoundException();
     }
 
-    public void isFinished(Post post, Integer finishNum){
-        if (!Objects.equals(this.headcount, finishNum)) throw new NotFullFinishedException();
-    }
-
 }

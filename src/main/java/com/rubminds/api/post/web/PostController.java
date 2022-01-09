@@ -64,9 +64,9 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/post/{postId}/complete")
-    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestBody PostRequest.CreateCompletePost request, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.OnlyId response = postService.updateCompletePost(postId, request, customUserDetails.getUser());
+    @PostMapping("/post/{postId}/complete")
+    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestPart(value = "completeInfo") PostRequest.CreateCompletePost request, @RequestPart(value = "files", required = false) List<MultipartFile> files, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.OnlyId response = postService.updateCompletePost(postId, request, files, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 

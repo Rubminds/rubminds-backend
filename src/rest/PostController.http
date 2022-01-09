@@ -37,6 +37,11 @@ Content-Type: application/json;charset=UTF-8
     "b"
   ]
 }
+--boundary
+Content-Disposition: form-data; name="files"; filename="white.jpeg"
+Content-Type: image/jpeg
+
+< ./../main/resources/dummy/image/white.jpeg
 ###
 PUT {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}
@@ -77,14 +82,25 @@ Content-Type: application/json;charset=UTF-8
 
 
 ###
-PUT {{apiUrl}}/post/1/complete
+PUT {{apiUrl}}/post/4/complete
 Authorization: {{authorizationToken}}
+Content-Type: multipart/form-data; boundary=boundary
+Accept: application/json, image/*
+
+--boundary
+Content-Disposition: form-data; name="completeInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
   "refLink" : "참조링크수정",
   "completeContent" : "완료게시글"
 }
+--boundary
+Content-Disposition: form-data; name="files"; filename="white.jpeg"
+Content-Type: image/jpeg
+
+< ./../main/resources/dummy/image/white.jpeg
+
 
 ###
 PUT {{apiUrl}}/post/1/changeStatus

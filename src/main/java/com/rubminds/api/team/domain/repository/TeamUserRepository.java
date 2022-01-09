@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface TeamUserRepository extends JpaRepository<TeamUser, Long> {
     List<TeamUser> findAllByTeam(Team team);
+    Integer countAllByTeam(Team team);
 
     boolean existsByUserAndTeam(User user, Team team);
 }

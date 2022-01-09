@@ -54,6 +54,7 @@ public class PostResponse {
         private String refLink;
         private String completeContent;
         private Integer finishNum;
+        private Kinds kinds;
 
         public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails, Integer finishNum) {
             return Info.builder()
@@ -63,6 +64,7 @@ public class PostResponse {
                     .content(post.getContent())
                     .headcount(post.getHeadcount())
                     .meeting(post.getMeeting().name())
+                    .kinds(post.getKinds())
                     .postsStatus(post.getPostStatus().name())
                     .region(post.getRegion())
                     .postSkills(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))

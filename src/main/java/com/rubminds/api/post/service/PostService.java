@@ -9,6 +9,7 @@ import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.domain.repository.PostSkillRepository;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
+import com.rubminds.api.post.exception.NotFullFinishedException;
 import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
@@ -17,6 +18,7 @@ import com.rubminds.api.skill.domain.repository.SkillRepository;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
+import com.rubminds.api.team.domain.repository.TeamUserRepository;
 import com.rubminds.api.team.exception.AdminException;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
@@ -42,6 +44,7 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final S3Service s3Service;
     private final PostFileRepository postFileRepository;
+    private final TeamUserRepository teamUserRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.CreateOrUpdate request, List<MultipartFile> files, User user) {
@@ -119,13 +122,18 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request,User loginUser) {
+    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request, List<MultipartFile> files, User loginUser) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         loginUser.isAdmin(post.getWriter().getId());
 
         Integer finishNum = postRepository.FindCountFinish(post);
-        post.isFinished(post,finishNum);
+        isFinished(post,finishNum);
         post.updateComplete(request);
+
+        if (files != null) {
+            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(post, savedFile)).collect(Collectors.toList());
+            postFileRepository.saveAll(postFiles);
+        }
 
         return PostResponse.OnlyId.build(post);
     }
@@ -137,6 +145,12 @@ public class PostService {
         post.changeStatus(request);
 
         return PostResponse.OnlyId.build(post);
+    }
+
+    public void isFinished(Post post, Integer finishNum){
+        Team team = post.getTeam();
+        Integer teamUserCnt = teamUserRepository.countAllByTeam(team);
+        if (!Objects.equals(teamUserCnt, finishNum)) throw new NotFullFinishedException();
     }
 
 }

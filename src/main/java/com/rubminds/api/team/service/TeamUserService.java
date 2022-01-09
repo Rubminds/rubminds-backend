@@ -2,6 +2,7 @@ package com.rubminds.api.team.service;
 
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Post;
+import com.rubminds.api.post.domain.PostStatus;
 import com.rubminds.api.post.domain.repository.PostRepository;
 import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.team.domain.Team;
@@ -63,6 +64,13 @@ public class TeamUserService {
             }
         }
         evaluator.updateFinish();
+
+        Post post = postRepository.findByTeam(team).orElseThrow(PostNotFoundException::new);
+        Integer countTeamUser = teamUserRepository.countAllByTeam(team);
+        Integer countFinished = teamUserRepository.countAllByTeamAndFinishIsTrue(team);
+        if(countTeamUser.equals(countFinished)){
+            post.updateStatus(PostStatus.FINISHED);
+        }
         return TeamUserResponse.OnlyId.build(evaluator);
     }
 

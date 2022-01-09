@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.lang.String.format;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -201,7 +202,7 @@ public class PostControllerTest extends MvcTest {
     public void detailPost() throws Exception {
         CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
-        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails,1);
+        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails);
 
         given(postService.getOne(any(), any())).willReturn(response);
 
@@ -233,8 +234,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
                                 fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id"),
                                 fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
-                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional(),
-                                fieldWithPath("finishNum").type(JsonFieldType.NUMBER).description("팀원의 FINISH전환 수")
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional()
 
                         )
                 ));
@@ -361,7 +361,8 @@ public class PostControllerTest extends MvcTest {
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.updateCompletePost(any(), any(),any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(multipart("/api/post/{postId}/complete", 1L)
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .fileUpload(format("/api/post/{postId}/complete"), 1l)
                 .file(completeInfo)
                 .file(files)
                 .contentType(MediaType.MULTIPART_MIXED)
@@ -403,7 +404,7 @@ public class PostControllerTest extends MvcTest {
 
         results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("post_complete",
+                .andDo(document("post_chageStatus",
                         pathParameters(
                                 parameterWithName("postId").description("게시물 식별자")
                         ),

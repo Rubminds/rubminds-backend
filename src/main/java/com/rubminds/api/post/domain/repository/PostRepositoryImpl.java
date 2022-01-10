@@ -28,6 +28,7 @@ import static com.rubminds.api.team.domain.QTeam.team;
 import static com.rubminds.api.team.domain.QTeamUser.teamUser;
 import static com.rubminds.api.user.domain.QUser.user;
 
+
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory queryFactory;

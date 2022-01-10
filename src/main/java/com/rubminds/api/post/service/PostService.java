@@ -19,7 +19,6 @@ import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.team.domain.repository.TeamUserRepository;
-import com.rubminds.api.team.exception.AdminException;
 import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -126,7 +125,7 @@ public class PostService {
         loginUser.isAdmin(post.getWriter().getId());
 
         Integer finishNum = postRepository.FindCountFinish(post);
-        isFinished(post,finishNum);
+        isFinished(post, finishNum);
         post.updateComplete(request);
 
         if (files != null) {
@@ -146,7 +145,7 @@ public class PostService {
         return PostResponse.OnlyId.build(post);
     }
 
-    public void isFinished(Post post, Integer finishNum){
+    public void isFinished(Post post, Integer finishNum) {
         Team team = post.getTeam();
         Integer teamUserCnt = teamUserRepository.countAllByTeam(team);
         if (!Objects.equals(teamUserCnt, finishNum)) throw new NotFullFinishedException();

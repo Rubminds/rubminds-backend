@@ -34,4 +34,12 @@ public class PostRequest {
         private String refLink;
         private String completeContent;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class ChangeStatus {
+        private PostStatus postStatus;
+    }
 }

@@ -64,15 +64,21 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/post/{postId}/complete")
-    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestBody PostRequest.CreateCompletePost request) {
-        PostResponse.OnlyId response = postService.updateCompletePost(postId, request);
+    @PostMapping("/post/{postId}/complete")
+    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestPart(value = "completeInfo") PostRequest.CreateCompletePost request, @RequestPart(value = "files", required = false) List<MultipartFile> files, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.OnlyId response = postService.updateCompletePost(postId, request, files, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/post/{postId}")
     public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.CreateOrUpdate request) {
         PostResponse.OnlyId response = postService.update(postId, request);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/post/{postId}/changeStatus")
+    public ResponseEntity<PostResponse.OnlyId> chanegStatus (@PathVariable Long postId, @RequestBody PostRequest.ChangeStatus request, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.OnlyId response = postService.changeStatus(postId, request, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 

@@ -53,9 +53,9 @@ public class PostResponse {
         private List<PostDto.File> files;
         private String refLink;
         private String completeContent;
-        private Integer finishNum;
+        private Kinds kinds;
 
-        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails, Integer finishNum) {
+        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails) {
             return Info.builder()
                     .id(post.getId())
                     .writer(PostDto.Writer.build(post.getWriter()))
@@ -63,6 +63,7 @@ public class PostResponse {
                     .content(post.getContent())
                     .headcount(post.getHeadcount())
                     .meeting(post.getMeeting().name())
+                    .kinds(post.getKinds())
                     .postsStatus(post.getPostStatus().name())
                     .region(post.getRegion())
                     .postSkills(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
@@ -72,7 +73,6 @@ public class PostResponse {
                     .files(post.getPostFileList().stream().map(PostDto.File::build).collect(Collectors.toList()))
                     .completeContent(post.getContent())
                     .refLink(post.getRefLink())
-                    .finishNum(finishNum)
                     .createAt(post.getCreatedAt())
                     .build();
         }

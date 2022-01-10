@@ -110,4 +110,8 @@ public class Post extends BaseEntity {
         if (Objects.equals(this.headcount, team.getTeamUsers().size())) throw new TeamOutOfBoundException();
     }
 
+    public void updateStatus(PostStatus postStatus){
+        this.postStatus = postStatus;
+    }
+
 }

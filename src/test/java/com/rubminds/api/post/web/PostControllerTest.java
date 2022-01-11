@@ -38,6 +38,7 @@ import static java.lang.String.format;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -83,6 +84,7 @@ public class PostControllerTest extends MvcTest {
                 .customSkills(Collections.singletonList(CustomSkill.builder().id(1L).name("java").build()))
                 .team(Team.builder().id(1L).admin(user).build())
                 .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").build()))
+                .completeFileList(Collections.singleton(CompleteFile.builder().id(1L).url("file url").build()))
                 .build();
 
         post1.setCreatedAt(LocalDateTime.of(2021,2,3,9,00));
@@ -153,23 +155,26 @@ public class PostControllerTest extends MvcTest {
         PostRequest.Create request = PostRequest.Create.builder()
                 .title("테스트")
                 .content("내용")
-                .region("Seoul")
+                .region("서울")
                 .kinds(Kinds.PROJECT)
                 .headcount(3)
                 .meeting(Meeting.BOTH)
                 .skillIds(List.of(1L, 2L))
-                .refLink("링크")
-                .completeContent("완료내용")
                 .customSkillName(List.of("firebase", "unity"))
                 .build();
+        String content = objectMapper.writeValueAsString(request);
+        MockMultipartFile postInfo = new MockMultipartFile("postInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
+        InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
+        MockMultipartFile files = new MockMultipartFile("files", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
 
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.update(any(), any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .put("/api/post/{postId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/edit"), 1l)
+                .file(postInfo)
+                .file(files)
+                .contentType(MediaType.MULTIPART_MIXED)
+                .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
         );
 
@@ -179,17 +184,9 @@ public class PostControllerTest extends MvcTest {
                         pathParameters(
                                 parameterWithName("postId").description("게시물 식별자")
                         ),
-                        requestFields(
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
-                                fieldWithPath("region").type(JsonFieldType.STRING).description("지역"),
-                                fieldWithPath("kinds").type(JsonFieldType.STRING).description("글종류"),
-                                fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
-                                fieldWithPath("meeting").type(JsonFieldType.STRING).description("미팅방법"),
-                                fieldWithPath("skillIds").type(JsonFieldType.ARRAY).description("게시물지정스킬목록"),
-                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("미팅방법"),
-                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("게시물지정스킬목록"),
-                                fieldWithPath("customSkillName").type(JsonFieldType.ARRAY).description("기타스킬목록지정")
+                        requestParts(
+                                partWithName("files").description("파일"),
+                                partWithName("postInfo").description("게시물 정보 - JSON")
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글 식별자")
@@ -229,6 +226,7 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("writer.avatar").type(JsonFieldType.STRING).description("작성자 프로필 url"),
                                 fieldWithPath("writer.id").type(JsonFieldType.NUMBER).description("작성자 식별자"),
                                 fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
+                                fieldWithPath("completeFiles[].url").type(JsonFieldType.STRING).description("완료게시글파일").optional(),
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
@@ -356,13 +354,12 @@ public class PostControllerTest extends MvcTest {
         String content = objectMapper.writeValueAsString(request);
         MockMultipartFile completeInfo = new MockMultipartFile("completeInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
         InputStream inputStream = new ClassPathResource("dummy/image/white.jpeg").getInputStream();
-        MockMultipartFile files = new MockMultipartFile("files", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
+        MockMultipartFile files = new MockMultipartFile("completeFiles", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
 
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.updateCompletePost(any(), any(),any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .fileUpload(format("/api/post/{postId}/complete"), 1l)
+        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/complete"), 1l)
                 .file(completeInfo)
                 .file(files)
                 .contentType(MediaType.MULTIPART_MIXED)
@@ -377,7 +374,7 @@ public class PostControllerTest extends MvcTest {
                                 parameterWithName("postId").description("게시물 식별자")
                         ),
                         requestParts(
-                                partWithName("files").description("파일"),
+                                partWithName("completeFiles").description("완료게시글 첨부파일"),
                                 partWithName("completeInfo").description("완료게시물 정보 - JSON")
 
                         ),

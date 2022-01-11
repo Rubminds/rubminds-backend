@@ -88,11 +88,30 @@ include::{snippets}/post_postLike/path-parameters.adoc[]
 include::{snippets}/post_postLike/http-response.adoc[]
 
 === 게시글 수정
-`PUT /api/post/{postId}`
+`POST /api/post/{postId}/edit`
+----
+[source]
+{
+"title": "테스트",
+"content": "테스트내용",
+"headcount": 3,
+"kinds": "PROJECT",
+"meeting": "ONLINE",
+"region": "서울",
+"skillIds": [
+2,
+3
+],
+"customSkillName": [
+"firebase",
+"spring"
+]
+}
+----
 
 요청 HTTP
-include::{snippets}/post_update/http-request.adoc[]
 include::{snippets}/post_update/path-parameters.adoc[]
+include::{snippets}/post_update/request-parts.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/post_update/http-response.adoc[]
@@ -116,7 +135,7 @@ include::{snippets}/post_complete/request-parts.adoc[]
 include::{snippets}/post_complete/http-response.adoc[]
 include::{snippets}/post_complete/response-fields.adoc[]
 
-=== 게시물 상태 변화 작성 및 수정
+=== 게시물 상태 변화시키기
 `PUT /api/post/{postId}/changeStatus`
 
 요청 HTTP

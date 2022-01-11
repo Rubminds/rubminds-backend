@@ -70,7 +70,7 @@ public class PostController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/post/{postId}")
+    @PostMapping("/post/{postId}/edit")
     public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestPart(value = "postInfo") PostRequest.Create request, @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         PostResponse.OnlyId response = postService.update(postId, request, files);
         return ResponseEntity.ok().body(response);

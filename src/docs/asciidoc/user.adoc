@@ -57,6 +57,8 @@ include::{snippets}/user-update/request-parts.adoc[]
 
 성공 응답 HTTP
 include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
+
 
 === *닉네임 중복 체크*
 

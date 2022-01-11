@@ -53,16 +53,6 @@ class UserControllerTest extends MvcTest {
 
     @BeforeEach
     public void setup() {
-        user = User.builder()
-                .id(1L)
-                .oauthId("1")
-                .nickname("동그라미")
-                .job("학생")
-                .introduce("안녕하세요!")
-                .provider(SignupProvider.RUBMINDS)
-                .signupCheck(true)
-                .build();
-
         avatar = Avatar.create(SavedFile.builder()
                 .originalName("white.jpeg")
                 .name("cb3ee9d9-f005-46c3-85b8-b6acf630dcb6.jpeg")
@@ -72,6 +62,17 @@ class UserControllerTest extends MvcTest {
                 .width(225)
                 .height(300)
                 .build());
+
+        user = User.builder()
+                .id(1L)
+                .oauthId("1")
+                .nickname("동그라미")
+                .job("학생")
+                .introduce("안녕하세요!")
+                .provider(SignupProvider.RUBMINDS)
+                .signupCheck(true)
+                .avatar(avatar)
+                .build();
     }
 
     @Test
@@ -82,7 +83,7 @@ class UserControllerTest extends MvcTest {
         String content = objectMapper.writeValueAsString(new AuthRequest.Signup("동그라미", "학생", "안녕하세요!", List.of(2L, 6L)));
         MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
-        AuthResponse.Signup response = AuthResponse.Signup.build(user, avatar);
+        AuthResponse.CreateOrUpdate response = AuthResponse.CreateOrUpdate.build(user);
 
         given(userService.signup(any(), any(), any())).willReturn(response);
 
@@ -117,6 +118,10 @@ class UserControllerTest extends MvcTest {
         MockMultipartFile mockAvatar = new MockMultipartFile("avatar", "white.jpeg", "image/jpeg", inputStream.readAllBytes());
         String content = objectMapper.writeValueAsString(new AuthRequest.Update("동그라미", "학생", "안녕하세요!", false, false, List.of(1L, 3L)));
         MockMultipartFile mockUserInfo = new MockMultipartFile("userInfo", "jsondata", "application/json", content.getBytes(StandardCharsets.UTF_8));
+        AuthResponse.CreateOrUpdate response = AuthResponse.CreateOrUpdate.build(user);
+
+        given(userService.update(any(), any(), any())).willReturn(response);
+
 
         ResultActions results = mvc.perform(
                 multipart("/api/user/update")
@@ -133,6 +138,11 @@ class UserControllerTest extends MvcTest {
                         requestParts(
                                 partWithName("avatar").description("프로필이미지 - 없으면 null"),
                                 partWithName("userInfo").description("유저 정보 - JSON")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url")
                         )
                 ));
     }

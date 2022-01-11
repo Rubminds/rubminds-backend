@@ -56,6 +56,9 @@ public class TeamUserService {
         TeamUser evaluator = teamUserRepository.findByUserAndTeam(user, team).orElseThrow(TeamUserNotFoundException::new);
         evaluator.validate();
 
+        Post post = postRepository.findByTeam(team).orElseThrow(PostNotFoundException::new);
+        post.statusValidate();
+
         for(int i = 0 ; i<request.getEvaluation().size(); i++){
             User targetUser = userRepository.findById(request.getEvaluation().get(i).getUserId()).orElseThrow(UserNotFoundException::new);
             targetUser.updateAttendLevel(request.getEvaluation().get(i).getAttendLevel());
@@ -65,7 +68,6 @@ public class TeamUserService {
         }
         evaluator.updateFinish();
 
-        Post post = postRepository.findByTeam(team).orElseThrow(PostNotFoundException::new);
         Integer countTeamUser = teamUserRepository.countAllByTeam(team);
         Integer countFinished = teamUserRepository.countAllByTeamAndFinishIsTrue(team);
         if(countTeamUser.equals(countFinished)){

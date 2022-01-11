@@ -136,13 +136,22 @@ public class PostService {
         return PostResponse.OnlyId.build(post);
     }
 
-    @Transactional
-    public PostResponse.OnlyId changeStatus(Long postId, PostRequest.ChangeStatus request, User loginUser) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        loginUser.isAdmin(post.getWriter().getId());
-        post.changeStatus(request);
+//    @Transactional
+//    public PostResponse.OnlyId changeStatus(Long postId, PostRequest.ChangeStatus request, User loginUser) {
+//        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+//        loginUser.isAdmin(post.getWriter().getId());
+//        post.changeStatus(request);
+//
+//        return PostResponse.OnlyId.build(post);
+//    }
 
-        return PostResponse.OnlyId.build(post);
+    @Transactional
+    public PostResponse.Info updateStatus(Long postId, PostStatus postStatus, CustomUserDetails customUserDetails) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        User user = customUserDetails.getUser();
+        user.isAdmin(post.getWriter().getId());
+        post.updateStatus(postStatus);
+        return PostResponse.Info.build(post, customUserDetails);
     }
 
     public void isFinished(Post post, Integer finishNum) {

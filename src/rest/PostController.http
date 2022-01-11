@@ -7,6 +7,10 @@ GET {{apiUrl}}/posts?kinds=PROJECT&region=서울&skill=1&skill=5&keywords=a&page
 Authorization: {{authorizationToken}}
 
 ###
+GET {{apiUrl}}/posts?status=RECRUIT&page=1&size=5
+Authorization: {{authorizationToken}}
+
+###
 GET {{apiUrl}}/posts/like?kinds=SCOUT&page=1&size=5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
@@ -101,12 +105,19 @@ Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg
 
+###
+POST {{apiUrl}}/post/1/update?status=WORKING
+Authorization: {{authorizationToken}}
 
 ###
-PUT {{apiUrl}}/post/1/changeStatus
+POST {{apiUrl}}/post/1/update?status=RANKING
 Authorization: {{authorizationToken}}
-Content-Type: application/json;charset=UTF-8
 
-{
-  "postStatus" : "RANKING"
-}
+####
+#PUT {{apiUrl}}/post/1/changeStatus
+#Authorization: {{authorizationToken}}
+#Content-Type: application/json;charset=UTF-8
+#
+#{
+#  "postStatus" : "RANKING"
+#}

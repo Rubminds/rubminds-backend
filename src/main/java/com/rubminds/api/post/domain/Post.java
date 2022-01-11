@@ -2,6 +2,7 @@ package com.rubminds.api.post.domain;
 
 import com.rubminds.api.common.domain.BaseEntity;
 import com.rubminds.api.post.dto.PostRequest;
+import com.rubminds.api.post.exception.PostStateException;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.team.domain.Team;
 import com.rubminds.api.team.exception.TeamOutOfBoundException;
@@ -87,9 +88,9 @@ public class Post extends BaseEntity {
         this.kinds = request.getKinds();
     }
 
-    public void changeStatus(PostRequest.ChangeStatus request) {
-        this.postStatus = request.getPostStatus();
-    }
+//    public void changeStatus(PostRequest.ChangeStatus request) {
+//        this.postStatus = request.getPostStatus();
+//    }
 
     public void updateComplete(PostRequest.CreateCompletePost request) {
         this.completeContent = request.getCompleteContent();
@@ -116,5 +117,11 @@ public class Post extends BaseEntity {
 
     public void updateStatus(PostStatus postStatus) {
         this.postStatus = postStatus;
+    }
+
+    public void statusValidate(){
+        if (!this.postStatus.equals(PostStatus.RANKING)){
+            throw new PostStateException();
+        }
     }
 }

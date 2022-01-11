@@ -58,6 +58,8 @@ include::{snippets}/post_detail/response-fields.adoc[]
 === 게시글 목록 조회
 `GET /api/posts`
 
+- kinds, status, skill, region, keywords는 필요에 따라 사용가능
+
 요청 HTTP
 include::{snippets}/post_list/http-request.adoc[]
 include::{snippets}/post_list/request-parameters.adoc[]
@@ -116,14 +118,14 @@ include::{snippets}/post_complete/request-parts.adoc[]
 include::{snippets}/post_complete/http-response.adoc[]
 include::{snippets}/post_complete/response-fields.adoc[]
 
-=== 게시물 상태 변화 작성 및 수정
-`PUT /api/post/{postId}/changeStatus`
+=== 게시물 상태 수정
+`POST /api/post/{postId}/update?status=POSTSTATUS`
 
 요청 HTTP
-include::{snippets}/post_chageStatus/http-request.adoc[]
-include::{snippets}/post_chageStatus/path-parameters.adoc[]
-include::{snippets}/post_chageStatus/request-fields.adoc[]
+include::{snippets}/post_updateStatus/http-request.adoc[]
+include::{snippets}/post_updateStatus/path-parameters.adoc[]
+include::{snippets}/post_updateStatus/request-parameters.adoc[]
 
 성공 응답 HTTP
-include::{snippets}/post_chageStatus/http-response.adoc[]
-include::{snippets}/post_chageStatus/response-fields.adoc[]
+include::{snippets}/post_updateStatus/http-response.adoc[]
+include::{snippets}/post_updateStatus/response-fields.adoc[]

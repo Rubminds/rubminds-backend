@@ -76,11 +76,18 @@ public class PostController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/post/{postId}/changeStatus")
-    public ResponseEntity<PostResponse.OnlyId> chanegStatus (@PathVariable Long postId, @RequestBody PostRequest.ChangeStatus request, @CurrentUser CustomUserDetails customUserDetails) {
-        PostResponse.OnlyId response = postService.changeStatus(postId, request, customUserDetails.getUser());
+    @PostMapping("/post/{postId}/update")
+    public ResponseEntity<PostResponse.Info> updateStatus(@PathVariable Long postId, @RequestParam(value = "status")PostStatus postStatus, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.Info response = postService.updateStatus(postId, postStatus, customUserDetails);
         return ResponseEntity.ok().body(response);
     }
+
+//    @PutMapping("/post/{postId}/changeStatus")
+//    public ResponseEntity<PostResponse.OnlyId> chanegStatus (@PathVariable Long postId, @RequestBody PostRequest.ChangeStatus request, @CurrentUser CustomUserDetails customUserDetails) {
+//        PostResponse.OnlyId response = postService.changeStatus(postId, request, customUserDetails.getUser());
+//        return ResponseEntity.ok().body(response);
+//    }
+
 
 //    @DeleteMapping("/post/{postId}")
 //    public ResponseEntity<Void> delete(@PathVariable("postId") Long postId) {

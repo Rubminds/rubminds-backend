@@ -40,8 +40,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -390,31 +389,47 @@ public class PostControllerTest extends MvcTest {
 
     @Test
     @DisplayName("게시물 상태 변화시키기")
-    public void changePostStatus() throws Exception {
-        PostRequest.ChangeStatus request = PostRequest.ChangeStatus.builder().postStatus(PostStatus.WORKING).build();
+    public void updatePostStatus() throws Exception {
+        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
-        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
-        given(postService.changeStatus(any(), any(), any())).willReturn(response);
+        post1.updateStatus(PostStatus.WORKING);
+        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .put("/api/post/{postId}/changeStatus", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-                .characterEncoding("UTF-8"));
+        given(postService.updateStatus(any(), any(), any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.post("/api/post/{postId}/update", 1L)
+                        .param("status", "WORKING"));
 
         results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("post_chageStatus",
+                .andDo(document("post_updateStatus",
                         pathParameters(
                                 parameterWithName("postId").description("게시물 식별자")
                         ),
-                        requestFields(
-                                fieldWithPath("postStatus").type(JsonFieldType.STRING).description("상태변화시킬값(RECRUIT, WORKING, RANKING, FINISHED),")
+                        requestParameters(
+                                parameterWithName("status").description("변화하고자 하는 포스트상태(WORKING, RANKING)")
 
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자")
-
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자"),
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
+                                fieldWithPath("kinds").type(JsonFieldType.STRING).description("게시물 종류"),
+                                fieldWithPath("region").type(JsonFieldType.STRING).description("지역"),
+                                fieldWithPath("postsStatus").type(JsonFieldType.STRING).description("진행상태"),
+                                fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
+                                fieldWithPath("meeting").type(JsonFieldType.STRING).description("미팅방법"),
+                                fieldWithPath("createAt").type(JsonFieldType.STRING).description("작성 날짜"),
+                                fieldWithPath("writer.nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                                fieldWithPath("writer.avatar").type(JsonFieldType.STRING).description("작성자 프로필 url"),
+                                fieldWithPath("writer.id").type(JsonFieldType.NUMBER).description("작성자 식별자"),
+                                fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
+                                fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
+                                fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
+                                fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
+                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id"),
+                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
+                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional()
                         )
                 ));
 

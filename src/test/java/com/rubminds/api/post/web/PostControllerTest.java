@@ -108,7 +108,7 @@ public class PostControllerTest extends MvcTest {
     @Test
     @DisplayName("게시물 생성 문서화")
     public void create() throws Exception {
-        PostRequest.CreateOrUpdate request = PostRequest.CreateOrUpdate.builder()
+        PostRequest.Create request = PostRequest.Create.builder()
                 .title("테스트")
                 .content("내용")
                 .region("서울")
@@ -150,7 +150,7 @@ public class PostControllerTest extends MvcTest {
     @Test
     @DisplayName("게시물 수정 문서화")
     public void updatePost() throws Exception {
-        PostRequest.CreateOrUpdate request = PostRequest.CreateOrUpdate.builder()
+        PostRequest.Create request = PostRequest.Create.builder()
                 .title("테스트")
                 .content("내용")
                 .region("Seoul")
@@ -164,7 +164,7 @@ public class PostControllerTest extends MvcTest {
                 .build();
 
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
-        given(postService.update(any(), any())).willReturn(response);
+        given(postService.update(any(), any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
                 .put("/api/post/{postId}", 1L)

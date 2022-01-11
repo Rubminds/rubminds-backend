@@ -13,7 +13,7 @@ public class PostRequest {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class CreateOrUpdate {
+    public static class Create {
         private String title;
         private String content;
         private int headcount;

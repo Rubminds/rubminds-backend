@@ -27,7 +27,7 @@ public class PostController {
 
     @PostMapping("/post")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PostResponse.OnlyId> create(@RequestPart(value = "postInfo") PostRequest.CreateOrUpdate request, @RequestPart(value = "files", required = false) List<MultipartFile> files, @CurrentUser CustomUserDetails customUserDetails) {
+    public ResponseEntity<PostResponse.OnlyId> create(@RequestPart(value = "postInfo") PostRequest.Create request, @RequestPart(value = "files", required = false) List<MultipartFile> files, @CurrentUser CustomUserDetails customUserDetails) {
         PostResponse.OnlyId response = postService.create(request, files, customUserDetails.getUser());
         return ResponseEntity.created(URI.create("/api/post/" + response.getId())).body(response);
     }
@@ -65,14 +65,14 @@ public class PostController {
     }
 
     @PostMapping("/post/{postId}/complete")
-    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestPart(value = "completeInfo") PostRequest.CreateCompletePost request, @RequestPart(value = "files", required = false) List<MultipartFile> files, @CurrentUser CustomUserDetails customUserDetails) {
+    public ResponseEntity<PostResponse.OnlyId> updateCompletePost(@PathVariable Long postId, @RequestPart(value = "completeInfo") PostRequest.CreateCompletePost request, @RequestPart(value = "completeFiles", required = false) List<MultipartFile> files, @CurrentUser CustomUserDetails customUserDetails) {
         PostResponse.OnlyId response = postService.updateCompletePost(postId, request, files, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/post/{postId}")
-    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestBody PostRequest.CreateOrUpdate request) {
-        PostResponse.OnlyId response = postService.update(postId, request);
+    public ResponseEntity<PostResponse.OnlyId> update(@PathVariable Long postId, @RequestPart(value = "postInfo") PostRequest.Create request, @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        PostResponse.OnlyId response = postService.update(postId, request, files);
         return ResponseEntity.ok().body(response);
     }
 

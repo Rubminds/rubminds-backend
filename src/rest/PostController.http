@@ -45,6 +45,11 @@ Content-Type: image/jpeg
 ###
 PUT {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}
+Content-Type: multipart/form-data; boundary=boundary
+Accept: application/json, image/*
+
+--boundary
+Content-Disposition: form-data; name="postInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -64,6 +69,11 @@ Content-Type: application/json;charset=UTF-8
     "mysql"
   ]
 }
+--boundary
+Content-Disposition: form-data; name="files"; filename="white.jpeg"
+Content-Type: image/jpeg
+
+< ./../main/resources/dummy/image/white.jpeg
 
 ###
 DELETE {{apiUrl}}/post/6
@@ -82,7 +92,7 @@ Content-Type: application/json;charset=UTF-8
 
 
 ###
-PUT {{apiUrl}}/post/4/complete
+POST {{apiUrl}}/post/4/complete
 Authorization: {{authorizationToken}}
 Content-Type: multipart/form-data; boundary=boundary
 Accept: application/json, image/*
@@ -96,7 +106,7 @@ Content-Type: application/json;charset=UTF-8
   "completeContent" : "완료게시글"
 }
 --boundary
-Content-Disposition: form-data; name="files"; filename="white.jpeg"
+Content-Disposition: form-data; name="completeFiles"; filename="white.jpeg"
 Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg

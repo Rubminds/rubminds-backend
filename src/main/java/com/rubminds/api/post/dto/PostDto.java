@@ -1,5 +1,6 @@
 package com.rubminds.api.post.dto;
 
+import com.rubminds.api.post.domain.CompleteFile;
 import com.rubminds.api.post.domain.PostFile;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
@@ -35,6 +36,21 @@ public class PostDto {
                 builder.avatar(user.getAvatar().getUrl());
             }
             return builder.build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Complete {
+        private String url;
+
+        public static PostDto.Complete build(CompleteFile completeFile) {
+            if (completeFile == null) {
+                return null;
+            }
+            return Complete.builder().url(completeFile.getUrl()).build();
         }
     }
 }

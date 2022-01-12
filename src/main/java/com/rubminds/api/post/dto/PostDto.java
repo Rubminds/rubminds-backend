@@ -1,5 +1,6 @@
 package com.rubminds.api.post.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.rubminds.api.post.domain.PostFile;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
@@ -37,4 +38,5 @@ public class PostDto {
             return builder.build();
         }
     }
+
 }

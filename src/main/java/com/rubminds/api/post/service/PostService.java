@@ -3,13 +3,11 @@ package com.rubminds.api.post.service;
 import com.rubminds.api.common.dto.PageDto;
 import com.rubminds.api.file.service.S3Service;
 import com.rubminds.api.post.domain.*;
-import com.rubminds.api.post.domain.repository.PostFileRepository;
-import com.rubminds.api.post.domain.repository.PostLikeRepository;
-import com.rubminds.api.post.domain.repository.PostRepository;
-import com.rubminds.api.post.domain.repository.PostSkillRepository;
+import com.rubminds.api.post.domain.repository.*;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.exception.NotFullFinishedException;
+import com.rubminds.api.post.exception.NotPostStatusFinishedException;
 import com.rubminds.api.post.exception.PostNotFoundException;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
@@ -46,7 +44,7 @@ public class PostService {
     private final TeamUserRepository teamUserRepository;
 
     @Transactional
-    public PostResponse.OnlyId create(PostRequest.CreateOrUpdate request, List<MultipartFile> files, User user) {
+    public PostResponse.OnlyId create(PostRequest.Create request, List<MultipartFile> files, User user) {
         TeamUser teamUser = TeamUser.create(user);
         Team team = Team.create(user, teamUser);
         teamRepository.save(team);
@@ -55,29 +53,29 @@ public class PostService {
         Post savedPost = postRepository.save(post);
 
         createOrUpdatePostAndCustomSKill(request, post);
-
-        if (files != null) {
-            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(savedPost, savedFile)).collect(Collectors.toList());
-            postFileRepository.saveAll(postFiles);
-        }
+        saveFiles(files, savedPost, false);
 
         return PostResponse.OnlyId.build(savedPost);
     }
 
     public PostResponse.Info getOne(Long postId, CustomUserDetails customUserDetails) {
         Post post = postRepository.findByIdWithSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
-        return PostResponse.Info.build(post, customUserDetails);
+        List<PostFile> postFiles = postFileRepository.findAllByPostAndComplete(post, false);
+        List<PostFile> completeFiles = postFileRepository.findAllByPostAndComplete(post, true);
+        return PostResponse.Info.build(post, customUserDetails, postFiles, completeFiles);
     }
 
     @Transactional
-    public PostResponse.OnlyId update(Long postId, PostRequest.CreateOrUpdate request) {
+    public PostResponse.OnlyId update(Long postId, PostRequest.Create request, List<MultipartFile> files) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         post.update(request);
 
         postSkillRepository.deleteAllByPost(post);
         customSkillRepository.deleteAllByPost(post);
+        postFileRepository.deleteAllByPostAndComplete(post, false);
 
         createOrUpdatePostAndCustomSKill(request, post);
+        saveFiles(files, post, false);
 
         return PostResponse.OnlyId.build(post);
     }
@@ -91,6 +89,35 @@ public class PostService {
             postLikeRepository.save(PostLike.create(user, post));
         }
     }
+    @Transactional
+    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request, List<MultipartFile> files, User loginUser) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        loginUser.isAdmin(post.getWriter().getId());
+
+        Integer finishNum = postRepository.findCountFinish(post);
+        isFinished(post, finishNum);
+        isPostStatusFinished(post);
+
+        postFileRepository.deleteAllByPostAndComplete(post, true);
+        post.updateComplete(request);
+        saveFiles(files, post, true);
+
+        return PostResponse.OnlyId.build(post);
+    }
+
+    @Transactional
+    public PostResponse.OnlyId changeStatus(Long postId, PostRequest.ChangeStatus request, User loginUser) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        loginUser.isAdmin(post.getWriter().getId());
+
+        if(request.getPostStatus().equals(PostStatus.FINISHED)){
+            Integer finishNum = postRepository.findCountFinish(post);
+            isFinished(post, finishNum);
+        }
+        post.changeStatus(request);
+
+        return PostResponse.OnlyId.build(post);
+    }
 
     public Page<PostResponse.GetList> getList(Kinds kinds, PostStatus postStatus, String region, PageDto pageDto, List<Long> skillId, List<String> customSkillNameList, CustomUserDetails customUserDetails) {
         Page<Post> posts = postRepository.findAllByKindsAndStatus(kinds, postStatus, region, skillId, customSkillNameList, pageDto.of());
@@ -102,7 +129,14 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
-    private void createOrUpdatePostAndCustomSKill(PostRequest.CreateOrUpdate request, Post post) {
+    private void saveFiles(List<MultipartFile> files, Post savedPost, boolean complete) {
+        if (files != null) {
+            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(savedPost, savedFile, complete)).collect(Collectors.toList());
+            postFileRepository.saveAll(postFiles);
+        }
+    }
+
+    private void createOrUpdatePostAndCustomSKill(PostRequest.Create request, Post post) {
         List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
         List<PostSkill> postSkills = skills.stream().map(skill -> PostSkill.create(skill, post)).collect(Collectors.toList());
         List<CustomSkill> customSkills = request.getCustomSkillName().stream().map(name -> CustomSkill.create(name, post)).collect(Collectors.toList());
@@ -119,36 +153,14 @@ public class PostService {
         return postLikeRepository.existsByUserAndPost(user, post);
     }
 
-    @Transactional
-    public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request, List<MultipartFile> files, User loginUser) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        loginUser.isAdmin(post.getWriter().getId());
-
-        Integer finishNum = postRepository.FindCountFinish(post);
-        isFinished(post, finishNum);
-        post.updateComplete(request);
-
-        if (files != null) {
-            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(post, savedFile)).collect(Collectors.toList());
-            postFileRepository.saveAll(postFiles);
-        }
-
-        return PostResponse.OnlyId.build(post);
-    }
-
-    @Transactional
-    public PostResponse.OnlyId changeStatus(Long postId, PostRequest.ChangeStatus request, User loginUser) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        loginUser.isAdmin(post.getWriter().getId());
-        post.changeStatus(request);
-
-        return PostResponse.OnlyId.build(post);
-    }
-
     public void isFinished(Post post, Integer finishNum) {
         Team team = post.getTeam();
         Integer teamUserCnt = teamUserRepository.countAllByTeam(team);
         if (!Objects.equals(teamUserCnt, finishNum)) throw new NotFullFinishedException();
+    }
+
+    public void isPostStatusFinished(Post post) {
+        if (!Objects.equals(post.getPostStatus(),PostStatus.FINISHED)) throw new NotPostStatusFinishedException();
     }
 
 }

@@ -79,7 +79,7 @@ public class Post extends BaseEntity {
         return customUserDetails != null && this.postLikeList.stream().anyMatch(postLike -> postLike.getUser().getId().equals(customUserDetails.getUser().getId()));
     }
 
-    public void update(PostRequest.CreateOrUpdate request) {
+    public void update(PostRequest.Create request) {
         this.title = request.getTitle();
         this.content = request.getContent();
         this.headcount = request.getHeadcount();
@@ -96,7 +96,7 @@ public class Post extends BaseEntity {
         this.refLink = request.getRefLink();
     }
 
-    public static Post create(PostRequest.CreateOrUpdate request, Team team, User user) {
+    public static Post create(PostRequest.Create request, Team team, User user) {
         return Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())

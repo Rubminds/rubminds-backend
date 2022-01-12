@@ -22,6 +22,7 @@ public class PostFile extends BaseEntity {
     private String extension;
     private String url;
     private Long size;
+    private boolean complete;
 
     private Integer width;
     private Integer height;
@@ -35,7 +36,7 @@ public class PostFile extends BaseEntity {
         post.getPostFileList().add(this);
     }
 
-    public static PostFile create(Post post, SavedFile file) {
+    public static PostFile create(Post post, SavedFile file, boolean complete) {
         PostFile postFile = PostFile.builder()
                 .name(file.getName())
                 .extension(file.getExtension())
@@ -43,6 +44,7 @@ public class PostFile extends BaseEntity {
                 .width(file.getWidth())
                 .size(file.getSize())
                 .url(file.getPublicUrl())
+                .complete(complete)
                 .build();
         postFile.setPost(post);
         return postFile;

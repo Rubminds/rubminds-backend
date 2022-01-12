@@ -42,7 +42,6 @@ public class PostService {
     private final S3Service s3Service;
     private final PostFileRepository postFileRepository;
     private final TeamUserRepository teamUserRepository;
-    private final CompleteFileRepository completeFileRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, List<MultipartFile> files, User user) {
@@ -54,7 +53,7 @@ public class PostService {
         Post savedPost = postRepository.save(post);
 
         createOrUpdatePostAndCustomSKill(request, post);
-        saveFiles(files, savedPost);
+        saveFiles(files, savedPost, false);
 
         return PostResponse.OnlyId.build(savedPost);
     }
@@ -74,7 +73,7 @@ public class PostService {
         postFileRepository.deleteAllByPost(post);
 
         createOrUpdatePostAndCustomSKill(request, post);
-        saveFiles(files, post);
+        saveFiles(files, post, false);
 
         return PostResponse.OnlyId.build(post);
     }
@@ -98,7 +97,7 @@ public class PostService {
         isPostStatusFinished(post);
 
         post.updateComplete(request);
-        saveCompleteFiles(files, post);
+        saveFiles(files, post, true);
 
         return PostResponse.OnlyId.build(post);
     }
@@ -127,18 +126,10 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
-    private void saveFiles(List<MultipartFile> files, Post savedPost) {
+    private void saveFiles(List<MultipartFile> files, Post savedPost, boolean complete) {
         if (files != null) {
-            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(savedPost, savedFile)).collect(Collectors.toList());
+            List<PostFile> postFiles = s3Service.uploadFileList(files).stream().map(savedFile -> PostFile.create(savedPost, savedFile, complete)).collect(Collectors.toList());
             postFileRepository.saveAll(postFiles);
-        }
-    }
-
-    private void saveCompleteFiles(List<MultipartFile> files, Post post) {
-        if (files != null) {
-            completeFileRepository.deleteAllByPost(post);
-            List<CompleteFile> completeFiles = s3Service.uploadFileList(files).stream().map(savedFile -> CompleteFile.create(post, savedFile)).collect(Collectors.toList());
-            completeFileRepository.saveAll(completeFiles);
         }
     }
 

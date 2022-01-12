@@ -1,6 +1,6 @@
 package com.rubminds.api.post.dto;
 
-import com.rubminds.api.post.domain.CompleteFile;
+import com.querydsl.core.annotations.QueryProjection;
 import com.rubminds.api.post.domain.PostFile;
 import com.rubminds.api.user.domain.User;
 import lombok.*;
@@ -12,12 +12,15 @@ public class PostDto {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class File {
         private String url;
+        private Boolean complete;
 
-        public static PostDto.File build(PostFile postFile) {
+        @Builder
+        @QueryProjection
+        public static PostDto.File build(PostFile postFile, boolean complete) {
             if (postFile == null) {
                 return null;
             }
-            return File.builder().url(postFile.getUrl()).build();
+            return File.builder().complete(complete).url(postFile.getUrl()).build();
         }
     }
 
@@ -39,18 +42,4 @@ public class PostDto {
         }
     }
 
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Complete {
-        private String url;
-
-        public static PostDto.Complete build(CompleteFile completeFile) {
-            if (completeFile == null) {
-                return null;
-            }
-            return Complete.builder().url(completeFile.getUrl()).build();
-        }
-    }
 }

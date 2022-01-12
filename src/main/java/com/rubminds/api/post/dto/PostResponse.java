@@ -51,7 +51,6 @@ public class PostResponse {
         private Boolean isLike;
         private Long teamId;
         private List<PostDto.File> files;
-        private List<PostDto.Complete> completeFiles;
         private String refLink;
         private String completeContent;
         private Kinds kinds;
@@ -72,7 +71,6 @@ public class PostResponse {
                     .isLike(post.isLike(customUserDetails))
                     .teamId(post.getTeam().getId())
                     .files(post.getPostFileList().stream().map(PostDto.File::build).collect(Collectors.toList()))
-                    .completeFiles(post.getCompleteFileList().stream().map(PostDto.Complete::build).collect(Collectors.toList()))
                     .completeContent(post.getContent())
                     .refLink(post.getRefLink())
                     .createAt(post.getCreatedAt())

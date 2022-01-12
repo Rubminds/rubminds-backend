@@ -71,10 +71,6 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<PostFile> postFileList = new LinkedHashSet<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private Set<CompleteFile> completeFileList = new LinkedHashSet<>();
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;

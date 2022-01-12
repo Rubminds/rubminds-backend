@@ -21,4 +21,6 @@ public interface PostRepositoryCustom {
     List<UserDto.LikeInfo> findCountByLikeAndUser(Long userId);
 
     Page<Post> findAllLikePostByUserId(Kinds kinds, User user, Pageable of);
+
+    Page<Post> findAllByStatusAndUser(PostStatus postStatus, Long userId, Pageable of);
 }

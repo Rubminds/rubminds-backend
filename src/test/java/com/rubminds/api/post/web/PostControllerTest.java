@@ -180,7 +180,7 @@ public class PostControllerTest extends MvcTest {
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.update(any(), any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/update"), 1l)
+        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/update"), 1L)
                 .file(postInfo)
                 .file(files)
                 .contentType(MediaType.MULTIPART_MIXED)
@@ -369,7 +369,7 @@ public class PostControllerTest extends MvcTest {
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.updateCompletePost(any(), any(),any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/complete"), 1l)
+        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/complete"), 1L)
                 .file(completeInfo)
                 .file(files)
                 .contentType(MediaType.MULTIPART_MIXED)
@@ -426,6 +426,46 @@ public class PostControllerTest extends MvcTest {
                 ));
 
     }
+    @Test
+    @DisplayName("유저 게시물 목록 조회 문서화")
+    public void getPostsByStatus() throws Exception {
+        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
+        Page<Post> postPage = new PageImpl<>(postList, PageRequest.of(1, 5), postList.size());
+        Page<PostResponse.GetList> response = postPage.map(post1 -> PostResponse.GetList.build(post1, customUserDetails));
 
+        given(postService.getListByStatus(any(), any(), any(),any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/user/{userId}/posts", 1L, user)
+                .param("status", "RECRUIT")
+                .param("page", "1")
+                .param("size", "5")
+        );
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_postsByStatus",
+                        pathParameters(
+                            parameterWithName("userId").description("유저 식별자")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("조회할 페이지"),
+                                parameterWithName("size").description("조회할 사이즈"),
+                                parameterWithName("status").description("게시물 상태 (RECRUIT,WORKING,RANKING,FINISHED)")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
+                                fieldWithPath("content[].title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content[].kinds").type(JsonFieldType.STRING).description("글종류"),
+                                fieldWithPath("content[].region").type(JsonFieldType.STRING).description("지역"),
+                                fieldWithPath("content[].status").type(JsonFieldType.STRING).description("글 상태"),
+                                fieldWithPath("content[].skill[]").type(JsonFieldType.ARRAY).description("커스텀 스킬 식별자"),
+                                fieldWithPath("content[].isLike").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true"),
+                                fieldWithPath("totalElements").description("전체 개수"),
+                                fieldWithPath("last").description("마지막 페이지인지 식별"),
+                                fieldWithPath("totalPages").description("전체 페이지")
+                        )
+                ));
+
+    }
 }
 

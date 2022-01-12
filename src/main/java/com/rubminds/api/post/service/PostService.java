@@ -124,6 +124,11 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
+    public Page<PostResponse.GetList> getListByStatus(PostStatus postStatus, Long userId, PageDto pageDto, CustomUserDetails customUserDetails) {
+        Page<Post> posts = postRepository.findAllByStatusAndUser(postStatus, userId, pageDto.of());
+        return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
+    }
+
     public Page<PostResponse.GetList> getLikePosts(Kinds kinds, PageDto pageDto, CustomUserDetails customUserDetails) {
         Page<Post> posts = postRepository.findAllLikePostByUserId(kinds, customUserDetails.getUser(), pageDto.of());
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));

@@ -77,6 +77,20 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
 
+    @Override
+    public Page<Post> findAllByStatusAndUser(PostStatus postStatus, Long userId, Pageable pageable) {
+        QueryResults<Post> result = queryFactory.selectFrom(post)
+                .join(post.team, team)
+                .join(team.teamUsers, teamUser)
+                .where(teamUser.user.id.eq(userId)
+                        .and(post.postStatus.eq(postStatus)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.id.desc())
+                .fetchResults();
+
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
 
     private BooleanBuilder postSkillEq(List<Long> skillIdList, List<String> customSkillList) {
         BooleanBuilder expression = new BooleanBuilder();

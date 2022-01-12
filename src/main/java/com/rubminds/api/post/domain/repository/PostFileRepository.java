@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PostFileRepository extends JpaRepository<PostFile, Long> {
-    List<PostFile> deleteAllByPost(Post post);
+    List<PostFile> deleteAllByPostAndComplete(Post post, boolean complete);
+
+    List<PostFile> findAllByPostAndComplete(Post post, boolean complete);
 
 }

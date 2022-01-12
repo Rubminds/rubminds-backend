@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
     @Query("select count(tu.finish) from TeamUser tu left join Post p on p.team = tu.team where p=:post and tu.finish=true")
-    Integer FindCountFinish(@Param("post") Post post);
+    Integer findCountFinish(@Param("post") Post post);
 
     Optional<Post> findByTeam(Team team);
 }

@@ -1,10 +1,7 @@
 package com.rubminds.api.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rubminds.api.post.domain.Kinds;
-import com.rubminds.api.post.domain.Meeting;
-import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.domain.PostStatus;
+import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.dto.CustomSkillResponse;
 import com.rubminds.api.skill.dto.PostSkillResponse;
@@ -51,11 +48,12 @@ public class PostResponse {
         private Boolean isLike;
         private Long teamId;
         private List<PostDto.File> files;
+        private List<PostDto.File> completeFiles;
         private String refLink;
         private String completeContent;
         private Kinds kinds;
 
-        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails) {
+        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails, List<PostFile> postfiles, List<PostFile> completeFiles) {
             return Info.builder()
                     .id(post.getId())
                     .writer(PostDto.Writer.build(post.getWriter()))
@@ -70,7 +68,8 @@ public class PostResponse {
                     .customSkills(post.getCustomSkills().stream().map(CustomSkill::getName).collect(Collectors.toList()))
                     .isLike(post.isLike(customUserDetails))
                     .teamId(post.getTeam().getId())
-                    .files(post.getPostFileList().stream().map(PostDto.File::build).collect(Collectors.toList()))
+                    .files(postfiles.stream().map(PostDto.File::build).collect(Collectors.toList()))
+                    .completeFiles(completeFiles.stream().map(PostDto.File::build).collect(Collectors.toList()))
                     .completeContent(post.getContent())
                     .refLink(post.getRefLink())
                     .createAt(post.getCreatedAt())

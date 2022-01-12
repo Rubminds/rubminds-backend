@@ -55,6 +55,10 @@ public class PostControllerTest extends MvcTest {
     private User user;
     private Post post1;
     private Post post2;
+    private PostFile postFile;
+    private PostFile completeFile;
+    private List<PostFile> postFiles = new ArrayList<>();
+    private List<PostFile> completeFiles = new ArrayList<>();
     private List<Post> postList = new ArrayList<>();
 
     @BeforeEach
@@ -83,8 +87,8 @@ public class PostControllerTest extends MvcTest {
                 .postSkills(Collections.singletonList(PostSkill.builder().id(1L).skill(Skill.builder().id(1L).name("JAVA").build()).build()))
                 .customSkills(Collections.singletonList(CustomSkill.builder().id(1L).name("java").build()))
                 .team(Team.builder().id(1L).admin(user).build())
-                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").build()))
-                .completeFileList(Collections.singleton(CompleteFile.builder().id(1L).url("file url").build()))
+                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").complete(false).build()))
+                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("completefile url").complete(true).build()))
                 .build();
 
         post1.setCreatedAt(LocalDateTime.of(2021,2,3,9,00));
@@ -105,6 +109,12 @@ public class PostControllerTest extends MvcTest {
                 .build();
         postList.add(post1);
         postList.add(post2);
+
+        completeFile = PostFile.builder().complete(true).url("completeUrl").build();
+        postFile = PostFile.builder().complete(false).url("completeUrl").build();
+
+        completeFiles.add(completeFile);
+        postFiles.add(postFile);
     }
 
     @Test
@@ -170,7 +180,7 @@ public class PostControllerTest extends MvcTest {
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
         given(postService.update(any(), any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/edit"), 1l)
+        ResultActions results = mvc.perform(fileUpload(format("/api/post/{postId}/update"), 1l)
                 .file(postInfo)
                 .file(files)
                 .contentType(MediaType.MULTIPART_MIXED)
@@ -199,7 +209,7 @@ public class PostControllerTest extends MvcTest {
     public void detailPost() throws Exception {
         CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
-        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails);
+        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails, postFiles, completeFiles);
 
         given(postService.getOne(any(), any())).willReturn(response);
 

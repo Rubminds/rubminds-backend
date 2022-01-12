@@ -43,7 +43,7 @@ Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg
 ###
-PUT {{apiUrl}}/post/1
+POST {{apiUrl}}/post/1/update
 Authorization: {{authorizationToken}}
 Content-Type: multipart/form-data; boundary=boundary
 Accept: application/json, image/*
@@ -74,7 +74,6 @@ Content-Disposition: form-data; name="files"; filename="white.jpeg"
 Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg
-
 ###
 DELETE {{apiUrl}}/post/6
 Authorization: {{authorizationToken}}
@@ -106,7 +105,7 @@ Content-Type: application/json;charset=UTF-8
   "completeContent" : "완료게시글"
 }
 --boundary
-Content-Disposition: form-data; name="completeFiles"; filename="white.jpeg"
+Content-Disposition: form-data; name="files"; filename="white.jpeg"
 Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg

@@ -12,15 +12,12 @@ public class PostDto {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class File {
         private String url;
-        private Boolean complete;
 
-        @Builder
-        @QueryProjection
-        public static PostDto.File build(PostFile postFile, boolean complete) {
+        public static PostDto.File build(PostFile postFile) {
             if (postFile == null) {
                 return null;
             }
-            return File.builder().complete(complete).url(postFile.getUrl()).build();
+            return File.builder().url(postFile.getUrl()).build();
         }
     }
 

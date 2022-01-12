@@ -88,7 +88,7 @@ include::{snippets}/post_postLike/path-parameters.adoc[]
 include::{snippets}/post_postLike/http-response.adoc[]
 
 === 게시글 수정
-`POST /api/post/{postId}/edit`
+`POST /api/post/{postId}/update`
 ----
 [source]
 {

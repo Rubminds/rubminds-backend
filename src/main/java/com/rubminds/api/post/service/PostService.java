@@ -60,7 +60,9 @@ public class PostService {
 
     public PostResponse.Info getOne(Long postId, CustomUserDetails customUserDetails) {
         Post post = postRepository.findByIdWithSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
-        return PostResponse.Info.build(post, customUserDetails);
+        List<PostFile> postFiles = postFileRepository.findAllByPostAndComplete(post, false);
+        List<PostFile> completeFiles = postFileRepository.findAllByPostAndComplete(post, true);
+        return PostResponse.Info.build(post, customUserDetails, postFiles, completeFiles);
     }
 
     @Transactional
@@ -70,7 +72,7 @@ public class PostService {
 
         postSkillRepository.deleteAllByPost(post);
         customSkillRepository.deleteAllByPost(post);
-        postFileRepository.deleteAllByPost(post);
+        postFileRepository.deleteAllByPostAndComplete(post, false);
 
         createOrUpdatePostAndCustomSKill(request, post);
         saveFiles(files, post, false);
@@ -92,10 +94,11 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         loginUser.isAdmin(post.getWriter().getId());
 
-        Integer finishNum = postRepository.FindCountFinish(post);
+        Integer finishNum = postRepository.findCountFinish(post);
         isFinished(post, finishNum);
         isPostStatusFinished(post);
 
+        postFileRepository.deleteAllByPostAndComplete(post, true);
         post.updateComplete(request);
         saveFiles(files, post, true);
 
@@ -108,7 +111,7 @@ public class PostService {
         loginUser.isAdmin(post.getWriter().getId());
 
         if(request.getPostStatus().equals(PostStatus.FINISHED)){
-            Integer finishNum = postRepository.FindCountFinish(post);
+            Integer finishNum = postRepository.findCountFinish(post);
             isFinished(post, finishNum);
         }
         post.changeStatus(request);

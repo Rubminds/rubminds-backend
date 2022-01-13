@@ -82,6 +82,15 @@ public class PostController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/user/{userId}/posts")
+    public ResponseEntity<Page<PostResponse.GetList>> getListByStatus(@PathVariable Long userId,
+                                                              @RequestParam(name = "status", required = false) PostStatus postStatus,
+                                                              PageDto pageDto,
+                                                              @CurrentUser CustomUserDetails customUserDetails) {
+        Page<PostResponse.GetList> response = postService.getListByStatus(postStatus, userId, pageDto, customUserDetails);
+        return ResponseEntity.ok().body(response);
+    }
+
 //    @DeleteMapping("/post/{postId}")
 //    public ResponseEntity<Void> delete(@PathVariable("postId") Long postId) {
 //        postService.delete(postId);

@@ -17,4 +17,7 @@ UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.avatar where u.id=:userId")
     Optional<User> findByIdWithAvatar(@Param("userId") Long userId);
+
+    @Query("select u.nickname from User u where u.id=:userId")
+    Optional<String> findNicknameById(Long userId);
 }

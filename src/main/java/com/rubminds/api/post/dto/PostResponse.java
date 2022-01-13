@@ -70,7 +70,7 @@ public class PostResponse {
                     .teamId(post.getTeam().getId())
                     .files(postfiles.stream().map(PostDto.File::build).collect(Collectors.toList()))
                     .completeFiles(completeFiles.stream().map(PostDto.File::build).collect(Collectors.toList()))
-                    .completeContent(post.getContent())
+                    .completeContent(post.getCompleteContent())
                     .refLink(post.getRefLink())
                     .createAt(post.getCreatedAt())
                     .build();

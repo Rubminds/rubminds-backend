@@ -1,5 +1,4 @@
-GET {{apiUrl}}/post/5
-Authorization: {{authorizationToken}}
+GET {{apiUrl}}/post/2
 Content-Type: application/json;charset=UTF-8
 
 ###
@@ -38,10 +37,10 @@ Content-Type: application/json;charset=UTF-8
   ]
 }
 --boundary
-Content-Disposition: form-data; name="files"; filename="white.jpeg"
-Content-Type: image/jpeg
+Content-Disposition: form-data; name="files"; filename="arr.png"
+Content-Type: image/png
 
-< ./../main/resources/dummy/image/white.jpeg
+< ./../main/resources/dummy/image/arr.png
 ###
 POST {{apiUrl}}/post/1/update
 Authorization: {{authorizationToken}}
@@ -91,7 +90,7 @@ Content-Type: application/json;charset=UTF-8
 
 
 ###
-POST {{apiUrl}}/post/4/complete
+POST {{apiUrl}}/post/2/complete
 Authorization: {{authorizationToken}}
 Content-Type: multipart/form-data; boundary=boundary
 Accept: application/json, image/*

@@ -37,10 +37,10 @@ Content-Type: application/json;charset=UTF-8
   ]
 }
 --boundary
-Content-Disposition: form-data; name="files"; filename="arr.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="files"; filename="white.jpeg"
+Content-Type: image/jpeg
 
-< ./../main/resources/dummy/image/arr.png
+< ./../main/resources/dummy/image/white.jpe
 ###
 POST {{apiUrl}}/post/1/update
 Authorization: {{authorizationToken}}

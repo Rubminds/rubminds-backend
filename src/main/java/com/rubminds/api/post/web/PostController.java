@@ -83,11 +83,10 @@ public class PostController {
     }
 
     @GetMapping("/user/{userId}/posts")
-    public ResponseEntity<Page<PostResponse.GetList>> getListByStatus(@PathVariable Long userId,
+    public ResponseEntity<Page<PostResponse.GetListByStatus>> getListByStatus(@PathVariable Long userId,
                                                               @RequestParam(name = "status", required = false) PostStatus postStatus,
-                                                              PageDto pageDto,
-                                                              @CurrentUser CustomUserDetails customUserDetails) {
-        Page<PostResponse.GetList> response = postService.getListByStatus(postStatus, userId, pageDto, customUserDetails);
+                                                              PageDto pageDto) {
+        Page<PostResponse.GetListByStatus> response = postService.getListByStatus(postStatus, userId, pageDto);
         return ResponseEntity.ok().body(response);
     }
 

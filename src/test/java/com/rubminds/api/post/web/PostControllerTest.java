@@ -476,13 +476,12 @@ public class PostControllerTest extends MvcTest {
     @Test
     @DisplayName("유저 게시물 목록 조회 문서화")
     public void getPostsByStatus() throws Exception {
-        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
         Page<Post> postPage = new PageImpl<>(postList, PageRequest.of(1, 5), postList.size());
-        Page<PostResponse.GetList> response = postPage.map(post1 -> PostResponse.GetList.build(post1, customUserDetails));
+        Page<PostResponse.GetListByStatus> response = postPage.map(post1 -> PostResponse.GetListByStatus.build(post1));
 
-        given(postService.getListByStatus(any(), any(), any(),any())).willReturn(response);
+        given(postService.getListByStatus(any(), any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/user/{userId}/posts", 1L, user)
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/user/{userId}/posts", 1L)
                 .param("status", "RECRUIT")
                 .param("page", "1")
                 .param("size", "5")
@@ -501,12 +500,13 @@ public class PostControllerTest extends MvcTest {
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("게시글식별자"),
+                                fieldWithPath("content[].writer").type(JsonFieldType.STRING).description("작성자(닉네임)"),
                                 fieldWithPath("content[].title").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("content[].kinds").type(JsonFieldType.STRING).description("글종류"),
+                                fieldWithPath("content[].kinds").type(JsonFieldType.STRING).description("글 종류"),
                                 fieldWithPath("content[].region").type(JsonFieldType.STRING).description("지역"),
                                 fieldWithPath("content[].status").type(JsonFieldType.STRING).description("글 상태"),
-                                fieldWithPath("content[].skill[]").type(JsonFieldType.ARRAY).description("커스텀 스킬 식별자"),
-                                fieldWithPath("content[].isLike").type(JsonFieldType.BOOLEAN).description("찜하기여부 - 찜하면 true"),
+                                fieldWithPath("content[].postSkills[]").type(JsonFieldType.ARRAY).description("포스트 스킬 이름 목록"),
+                                fieldWithPath("content[].customSkills[]").type(JsonFieldType.ARRAY).description("커스텀 스킬 이름 목록"),
                                 fieldWithPath("totalElements").description("전체 개수"),
                                 fieldWithPath("last").description("마지막 페이지인지 식별"),
                                 fieldWithPath("totalPages").description("전체 페이지")

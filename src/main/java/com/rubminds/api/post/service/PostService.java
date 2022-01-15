@@ -126,9 +126,9 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
-    public Page<PostResponse.GetList> getListByStatus(PostStatus postStatus, Long userId, PageDto pageDto, CustomUserDetails customUserDetails) {
+    public Page<PostResponse.GetListByStatus> getListByStatus(PostStatus postStatus, Long userId, PageDto pageDto) {
         Page<Post> posts = postRepository.findAllByStatusAndUser(postStatus, userId, pageDto.of());
-        return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
+        return posts.map(post -> PostResponse.GetListByStatus.build(post));
     }
 
     public Page<PostResponse.GetList> getLikePosts(Kinds kinds, PageDto pageDto, CustomUserDetails customUserDetails) {

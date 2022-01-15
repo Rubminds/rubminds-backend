@@ -9,4 +9,6 @@ public interface PostFileRepository extends JpaRepository<PostFile, Long> {
 
     List<PostFile> findAllByPostAndComplete(Post post, boolean complete);
 
+    PostFile findByPostAndComplete(Post post, boolean complete);
+
 }

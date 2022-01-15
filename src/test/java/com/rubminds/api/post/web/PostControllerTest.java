@@ -5,7 +5,7 @@ import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
-import com.rubminds.api.post.service.PostService;
+import com.rubminds.api.post.service.PostService1;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.team.domain.Team;
@@ -47,11 +47,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("게시물 정보입력(생성) 문서화")
-@WebMvcTest(PostController.class)
+//@WebMvcTest(PostController.class)
+@WebMvcTest(PostController1.class)
 public class PostControllerTest extends MvcTest {
 
     @MockBean
-    private PostService postService;
+    private PostService1 postService;
+//    private PostService postService;
     private User user;
     private Post post1;
     private Post post2;
@@ -204,12 +206,57 @@ public class PostControllerTest extends MvcTest {
                 ));
     }
 
+//    @Test
+//    @DisplayName("게시물 디테일 조회 문서화")
+//    public void detailPost() throws Exception {
+//        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
+//
+//        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails, postFiles, completeFiles);
+//
+//        given(postService.getOne(any(), any())).willReturn(response);
+//
+//        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+//                .get("/api/post/{postId}", 1L));
+//
+//        results.andExpect(status().isOk())
+//                .andDo(print())
+//                .andDo(document("post_detail",
+//                        pathParameters(
+//                                parameterWithName("postId").description("게시물 식별자")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글식별자"),
+//                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+//                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
+//                                fieldWithPath("kinds").type(JsonFieldType.STRING).description("게시물 종류"),
+//                                fieldWithPath("region").type(JsonFieldType.STRING).description("지역"),
+//                                fieldWithPath("postsStatus").type(JsonFieldType.STRING).description("진행상태"),
+//                                fieldWithPath("headcount").type(JsonFieldType.NUMBER).description("모집인원"),
+//                                fieldWithPath("meeting").type(JsonFieldType.STRING).description("미팅방법"),
+//                                fieldWithPath("createAt").type(JsonFieldType.STRING).description("작성 날짜"),
+//                                fieldWithPath("writer.nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
+//                                fieldWithPath("writer.avatar").type(JsonFieldType.STRING).description("작성자 프로필 url"),
+//                                fieldWithPath("writer.id").type(JsonFieldType.NUMBER).description("작성자 식별자"),
+//                                fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
+//                                fieldWithPath("completeFiles[].url").type(JsonFieldType.STRING).description("완료게시글파일").optional(),
+//                                fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
+//                                fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
+//                                fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),
+//                                fieldWithPath("teamId").type(JsonFieldType.NUMBER).description("팀 id"),
+//                                fieldWithPath("refLink").type(JsonFieldType.STRING).description("참조링크").optional(),
+//                                fieldWithPath("completeContent").type(JsonFieldType.STRING).description("완료게시글내용").optional()
+//
+//                        )
+//                ));
+//
+//    }
+
     @Test
     @DisplayName("게시물 디테일 조회 문서화")
     public void detailPost() throws Exception {
         CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
-        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails, postFiles, completeFiles);
+        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails, postFile, completeFile);
 
         given(postService.getOne(any(), any())).willReturn(response);
 
@@ -235,8 +282,10 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("writer.nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
                                 fieldWithPath("writer.avatar").type(JsonFieldType.STRING).description("작성자 프로필 url"),
                                 fieldWithPath("writer.id").type(JsonFieldType.NUMBER).description("작성자 식별자"),
-                                fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
-                                fieldWithPath("completeFiles[].url").type(JsonFieldType.STRING).description("완료게시글파일").optional(),
+//                                fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
+                                fieldWithPath("files.url").type(JsonFieldType.STRING).description("파일"),
+//                                fieldWithPath("completeFiles[].url").type(JsonFieldType.STRING).description("완료게시글파일").optional(),
+                                fieldWithPath("completeFiles.url").type(JsonFieldType.STRING).description("완료게시글파일").optional(),
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),

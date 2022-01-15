@@ -5,7 +5,7 @@ import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.post.domain.*;
 import com.rubminds.api.post.dto.PostRequest;
 import com.rubminds.api.post.dto.PostResponse;
-import com.rubminds.api.post.service.PostService1;
+import com.rubminds.api.post.service.PostService;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.team.domain.Team;
@@ -47,12 +47,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("게시물 정보입력(생성) 문서화")
-//@WebMvcTest(PostController.class)
-@WebMvcTest(PostController1.class)
+@WebMvcTest(PostController.class)
 public class PostControllerTest extends MvcTest {
 
     @MockBean
-    private PostService1 postService;
+    private PostService postService;
 //    private PostService postService;
     private User user;
     private Post post1;

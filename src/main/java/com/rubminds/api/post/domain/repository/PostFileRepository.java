@@ -7,8 +7,6 @@ import java.util.List;
 public interface PostFileRepository extends JpaRepository<PostFile, Long> {
     List<PostFile> deleteAllByPostAndComplete(Post post, boolean complete);
 
-    List<PostFile> findAllByPostAndComplete(Post post, boolean complete);
-
     PostFile findByPostAndComplete(Post post, boolean complete);
 
 }

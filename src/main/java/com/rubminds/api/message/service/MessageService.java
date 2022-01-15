@@ -36,18 +36,27 @@ public class MessageService {
     public MessageResponse.Info getOne(Long messageId, User loginUser) {
         Message message = messageRepository.findById(messageId).orElseThrow(PostNotFoundException::new);
 
-        if(message.isRead() == false){
-            message.updateRead(message);
-        }
-
-        if(!loginUser.getId().equals(message.getReceiverId())){
-            throw new PermissionException();
-        }
+        readMessage(message);
+        isReciever(loginUser, message);
 
         String sender = userRepository.findNicknameById(message.getSenderId()).orElseThrow(UserNotFoundException::new);
         String receiver = userRepository.findNicknameById(message.getReceiverId()).orElseThrow(UserNotFoundException::new);
 
         return MessageResponse.Info.build(message, sender, receiver);
+    }
+
+
+    private void isReciever(User loginUser, Message message) {
+        if(!loginUser.getId().equals(message.getReceiverId())){
+            throw new PermissionException();
+        }
+    }
+
+
+    private void readMessage(Message message) {
+        if(message.isRead() == false){
+            message.updateRead(message);
+        }
     }
 
 }

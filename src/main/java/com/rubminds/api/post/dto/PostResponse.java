@@ -137,5 +137,34 @@ public class PostResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class GetListByStatus {
+        private Long id;
+        private String writer;
+        private String title;
+        private String kinds;
+        private String region;
+        private String status;
+        private List<String> postSkills;
+        private List<String> customSkills;
+
+
+        public static GetListByStatus build(Post post) {
+            return GetListByStatus.builder()
+                    .id(post.getId())
+                    .writer(post.getWriter().getNickname())
+                    .title(post.getTitle())
+                    .kinds(post.getKinds().name())
+                    .region(post.getRegion())
+                    .status(post.getPostStatus().name())
+                    .postSkills(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
+                    .customSkills(post.getCustomSkills().stream().map(customSkill -> customSkill.getName()).collect(Collectors.toList()))
+                    .build();
+        }
+    }
 }
 

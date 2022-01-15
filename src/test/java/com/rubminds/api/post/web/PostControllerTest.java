@@ -52,7 +52,6 @@ public class PostControllerTest extends MvcTest {
 
     @MockBean
     private PostService postService;
-//    private PostService postService;
     private User user;
     private Post post1;
     private Post post2;

@@ -6,6 +6,7 @@ import com.rubminds.api.file.dto.SavedFile;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -48,6 +49,13 @@ public class PostFile extends BaseEntity {
                 .build();
         postFile.setPost(post);
         return postFile;
+    }
+
+    public boolean isImage(){
+            return Optional.ofNullable(this.getExtension())
+                    .map(s -> s.toLowerCase().matches("png|jpeg|jpg|bmp|gif|svg"))
+                    .orElse(false);
+
     }
 }
 

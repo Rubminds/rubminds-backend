@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/2
+GET {{apiUrl}}/post/1
 Content-Type: application/json;charset=UTF-8
 
 ###
@@ -94,7 +94,7 @@ Content-Type: application/json;charset=UTF-8
 
 
 ###
-POST {{apiUrl}}/post/2/complete
+POST {{apiUrl}}/post/1/complete
 Authorization: {{authorizationToken}}
 Content-Type: multipart/form-data; boundary=boundary
 Accept: application/json, image/*
@@ -112,6 +112,11 @@ Content-Disposition: form-data; name="files"; filename="white.jpeg"
 Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg
+--boundary
+Content-Disposition: form-data; name="files"; filename="testFile.pdf"
+Content-Type: multipart/form-data
+
+< ./../main/resources/dummy/file/testFile.pdf
 
 
 ###

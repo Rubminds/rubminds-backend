@@ -48,12 +48,13 @@ public class PostResponse {
         private Boolean isLike;
         private Long teamId;
         private List<PostDto.File> files;
-        private List<PostDto.File> completeFiles;
+        private PostDto.File completeFile;
+        private List<PostDto.File> completeImages;
         private String refLink;
         private String completeContent;
         private Kinds kinds;
 
-        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails, List<PostFile> postfiles, List<PostFile> completeFiles) {
+        public static PostResponse.Info build(Post post, CustomUserDetails customUserDetails, List<PostFile> postfiles, PostFile completeFile, List<PostFile> completeImages) {
             return Info.builder()
                     .id(post.getId())
                     .writer(PostDto.Writer.build(post.getWriter()))
@@ -69,12 +70,14 @@ public class PostResponse {
                     .isLike(post.isLike(customUserDetails))
                     .teamId(post.getTeam().getId())
                     .files(postfiles.stream().map(PostDto.File::build).collect(Collectors.toList()))
-                    .completeFiles(completeFiles.stream().map(PostDto.File::build).collect(Collectors.toList()))
+                    .completeFile(PostDto.File.build(completeFile))
+                    .completeImages(completeImages.stream().map(PostDto.File::build).collect(Collectors.toList()))
                     .completeContent(post.getCompleteContent())
                     .refLink(post.getRefLink())
                     .createAt(post.getCreatedAt())
                     .build();
         }
+
     }
 
     @Getter
@@ -108,7 +111,6 @@ public class PostResponse {
                     .build();
         }
     }
-
 
     @Getter
     @Builder

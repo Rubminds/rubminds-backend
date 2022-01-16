@@ -9,7 +9,6 @@ public class MessageRequest {
     public static class Create {
         private Long postId;
         private Long receiverId;
-        private String title;
         private String content;
     }
 }

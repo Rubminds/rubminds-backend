@@ -1,9 +1,10 @@
 package com.rubminds.api.message.dto;
 
 import com.rubminds.api.message.domain.Message;
-import com.rubminds.api.post.domain.Post;
-import com.rubminds.api.post.dto.PostResponse;
 import lombok.*;
+
+
+import java.time.LocalDateTime;
 
 public class MessageResponse {
     @Getter
@@ -28,21 +29,19 @@ public class MessageResponse {
     public static class Info {
         private Long id;
         private Long postId;
+        private String postTitle;
         private String sender;
-        private String receiver;
-        private String title;
         private String content;
-        private Boolean read;
+        private LocalDateTime createAt;
 
         public static MessageResponse.Info build(Message message, String sender, String recevier) {
             return Info.builder()
                     .id(message.getId())
                     .postId(message.getPost().getId())
+                    .postTitle(message.getPost().getTitle())
                     .sender(sender)
-                    .receiver(recevier)
-                    .title(message.getTitle())
                     .content(message.getContent())
-                    .read(message.isRead())
+                    .createAt(message.getCreatedAt())
                     .build();
         }
 

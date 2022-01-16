@@ -32,9 +32,6 @@ public class Message extends BaseEntity{
     private Long receiverId;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false, name = "is_read")
@@ -45,7 +42,6 @@ public class Message extends BaseEntity{
                 .post(post)
                 .senderId(senderId)
                 .receiverId(request.getReceiverId())
-                .title(request.getTitle())
                 .content(request.getContent())
                 .read(false)
                 .build();

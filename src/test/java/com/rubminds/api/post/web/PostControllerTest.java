@@ -57,8 +57,9 @@ public class PostControllerTest extends MvcTest {
     private Post post2;
     private PostFile postFile;
     private PostFile completeFile;
+    private PostFile completeImage;
     private List<PostFile> postFiles = new ArrayList<>();
-    private List<PostFile> completeFiles = new ArrayList<>();
+    private List<PostFile> completeImages = new ArrayList<>();
     private List<Post> postList = new ArrayList<>();
 
     @BeforeEach
@@ -110,10 +111,12 @@ public class PostControllerTest extends MvcTest {
         postList.add(post1);
         postList.add(post2);
 
-        completeFile = PostFile.builder().complete(true).url("completeUrl").build();
+        completeFile = PostFile.builder().complete(true).url("completeFileUrl").build();
         postFile = PostFile.builder().complete(false).url("completeUrl").build();
 
-        completeFiles.add(completeFile);
+        completeImage = PostFile.builder().complete(true).url("completeImageUrl").build();
+        completeImages.add(completeImage);
+
         postFiles.add(postFile);
     }
 
@@ -209,7 +212,7 @@ public class PostControllerTest extends MvcTest {
     public void detailPost() throws Exception {
         CustomUserDetails customUserDetails = CustomUserDetails.create(user);
 
-        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails, postFiles, completeFiles);
+        PostResponse.Info response = PostResponse.Info.build(post1, customUserDetails, postFiles, completeFile, completeImages);
 
         given(postService.getOne(any(), any())).willReturn(response);
 
@@ -236,7 +239,8 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("writer.avatar").type(JsonFieldType.STRING).description("작성자 프로필 url"),
                                 fieldWithPath("writer.id").type(JsonFieldType.NUMBER).description("작성자 식별자"),
                                 fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
-                                fieldWithPath("completeFiles[].url").type(JsonFieldType.STRING).description("완료게시글파일").optional(),
+                                fieldWithPath("completeFile.url").type(JsonFieldType.STRING).description("완료게시글 파일"),
+                                fieldWithPath("completeImages[].url").type(JsonFieldType.STRING).description("완료게시글 이미지").optional(),
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),

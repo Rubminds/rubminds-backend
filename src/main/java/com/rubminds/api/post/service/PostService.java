@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -62,7 +63,30 @@ public class PostService {
         Post post = postRepository.findByIdWithSkillAndUser(postId).orElseThrow(PostNotFoundException::new);
         List<PostFile> postFiles = postFileRepository.findAllByPostAndComplete(post, false);
         List<PostFile> completeFiles = postFileRepository.findAllByPostAndComplete(post, true);
-        return PostResponse.Info.build(post, customUserDetails, postFiles, completeFiles);
+        PostFile completeFile = getCompleteFile(completeFiles);
+        List<PostFile> completeImages = getImages(completeFiles);
+        return PostResponse.Info.build(post, customUserDetails, postFiles, completeFile, completeImages);
+    }
+
+    private List<PostFile> getImages(List<PostFile> completeFiles){
+        List<PostFile> images = new ArrayList<>();
+        for(PostFile completeFile : completeFiles){
+            if(completeFile.isImage()){
+                images.add(completeFile);
+            }
+        }
+        return images;
+    }
+
+    private PostFile getCompleteFile(List<PostFile> completeFiles){
+        PostFile file = null;
+        for(PostFile completeFile : completeFiles){
+            if(!completeFile.isImage()){
+                file = completeFile;
+            }
+        }
+        return file;
+
     }
 
     @Transactional

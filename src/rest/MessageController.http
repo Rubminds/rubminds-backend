@@ -1,4 +1,4 @@
-GET {{apiUrl}}/message/2
+GET {{apiUrl}}/message/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -10,7 +10,6 @@ Content-Type: application/json;charset=UTF-8
 {
   "postId" : 1,
   "receiverId" : 3,
-  "title" : "쪽지제목",
   "content" : "내용"
 
 }

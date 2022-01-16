@@ -1,0 +1,36 @@
+= Rubminds API 문서 (Team)
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+= Message
+---
+== *기본* API
+
+=== 쪽지 단건 조회
+
+`GET /api/message/{messageId}`
+
+요청 HTTP
+include::{snippets}/getOne_message/http-request.adoc[]
+include::{snippets}/getOne_message/path-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/getOne_message/http-response.adoc[]
+include::{snippets}/getOne_message/response-fields.adoc[]
+
+=== 쪽지 보내기
+
+`POST /api/message`
+
+요청 HTTP
+include::{snippets}/send_message/http-request.adoc[]
+include::{snippets}/send_message/request-fields.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/send_message/http-response.adoc[]
+include::{snippets}/send_message/response-fields.adoc[]

@@ -36,14 +36,14 @@ public class UserService {
     private final S3Service s3Service;
 
     @Transactional
-    public AuthResponse.Signup signup(AuthRequest.Signup request, MultipartFile file, User user) {
+    public AuthResponse.CreateOrUpdate signup(AuthRequest.Signup request, MultipartFile file, User user) {
         User findUser = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
         duplicateNickname(request.getNickname());
         List<Skill> skills = skillRepository.findAllByIdIn(request.getSkillIds());
         List<UserSkill> userSkills = skills.stream().map(skill -> UserSkill.create(findUser, skill)).collect(Collectors.toList());
         Avatar avatar = uploadAvatar(file);
         findUser.signup(request, avatar, userSkills);
-        return AuthResponse.Signup.build(findUser, avatar);
+        return AuthResponse.CreateOrUpdate.build(findUser);
     }
 
     public void nicknameCheck(String nickname) {
@@ -51,7 +51,7 @@ public class UserService {
     }
 
     @Transactional
-    public void update(AuthRequest.Update request, MultipartFile file, User user) {
+    public AuthResponse.CreateOrUpdate update(AuthRequest.Update request, MultipartFile file, User user) {
         User findUser = userRepository.findByIdWithAvatar(user.getId()).orElseThrow(UserNotFoundException::new);
         if (request.isNicknameChanged()) {
             duplicateNickname(request.getNickname());
@@ -65,6 +65,7 @@ public class UserService {
         List<UserSkill> userSkills = skills.stream().map(skill -> UserSkill.create(findUser, skill)).collect(Collectors.toList());
 
         findUser.update(request, userSkills);
+        return AuthResponse.CreateOrUpdate.build(findUser);
     }
 
     public UserResponse.Info getUserInfo(Long userId, User loginUser) {

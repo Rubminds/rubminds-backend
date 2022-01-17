@@ -35,11 +35,11 @@ Content-Disposition: form-data; name="userInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
-  "nickname": "테스트2",
-  "job": "학생",
-  "introduce": "update테스트",
+  "nickname": "테스트222",
+  "job": "학생2",
+  "introduce": "update테스트2",
   "skillIds": [2, 3],
-  "nicknameChanged": false,
+  "nicknameChanged": true,
   "avatarChanged": true
 }
 

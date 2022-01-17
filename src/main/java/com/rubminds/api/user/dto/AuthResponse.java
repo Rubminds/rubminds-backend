@@ -38,17 +38,17 @@ public class AuthResponse {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Signup {
+    public static class CreateOrUpdate {
         private Long id;
         private String nickname;
         private String avatar;
 
-        public static Signup build(User user, Avatar avatar) {
-            SignupBuilder builder = Signup.builder()
+        public static CreateOrUpdate build(User user) {
+            CreateOrUpdateBuilder builder = CreateOrUpdate.builder()
                     .id(user.getId())
                     .nickname(user.getNickname());
-            if (avatar != null) {
-                builder.avatar(avatar.getUrl());
+            if (user.getAvatar() != null) {
+                builder.avatar(user.getAvatar().getUrl());
             }
             return builder.build();
         }

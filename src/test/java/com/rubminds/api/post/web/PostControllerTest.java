@@ -415,7 +415,7 @@ public class PostControllerTest extends MvcTest {
 
         results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("post_chageStatus",
+                .andDo(document("post_changeStatus",
                         pathParameters(
                                 parameterWithName("postId").description("게시물 식별자")
                         ),
@@ -467,6 +467,29 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("totalElements").description("전체 개수"),
                                 fieldWithPath("last").description("마지막 페이지인지 식별"),
                                 fieldWithPath("totalPages").description("전체 페이지")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("게시물 삭제 문서화")
+    public void deletePost() throws Exception {
+        PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);
+
+        given(postService.delete(any(), any())).willReturn(response);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .delete("/api/post/{postId}", 1L));
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_delete",
+                        pathParameters(
+                                parameterWithName("postId").description("게시물 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시물 식별자")
                         )
                 ));
 

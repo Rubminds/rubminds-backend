@@ -9,6 +9,7 @@ import com.rubminds.api.post.dto.PostResponse;
 import com.rubminds.api.post.exception.NotFullFinishedException;
 import com.rubminds.api.post.exception.NotPostStatusFinishedException;
 import com.rubminds.api.post.exception.PostNotFoundException;
+import com.rubminds.api.post.exception.PostStateException;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.domain.Skill;
 import com.rubminds.api.skill.domain.repository.CustomSkillRepository;
@@ -156,6 +157,18 @@ public class PostService {
     public Page<PostResponse.GetList> getLikePosts(Kinds kinds, PageDto pageDto, CustomUserDetails customUserDetails) {
         Page<Post> posts = postRepository.findAllLikePostByUserId(kinds, customUserDetails.getUser(), pageDto.of());
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
+    }
+
+    public PostResponse.OnlyId delete(Long postId, User loginUser){
+        Post post = findPost(postId);
+        loginUser.isAdmin(post.getWriter().getId());
+        if(post.getPostStatus().equals(PostStatus.RECRUIT)||post.getPostStatus().equals(PostStatus.WORKING)){
+            postRepository.deleteById(postId);
+        }else{
+            throw new PostStateException();
+        }
+        return PostResponse.OnlyId.build(post);
+
     }
 
     private void saveFiles(List<MultipartFile> files, Post savedPost, boolean complete) {

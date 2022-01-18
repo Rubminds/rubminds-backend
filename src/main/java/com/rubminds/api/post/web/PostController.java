@@ -77,7 +77,7 @@ public class PostController {
     }
 
     @PutMapping("/post/{postId}/changeStatus")
-    public ResponseEntity<PostResponse.OnlyId> chanegStatus (@PathVariable Long postId, @RequestBody PostRequest.ChangeStatus request, @CurrentUser CustomUserDetails customUserDetails) {
+    public ResponseEntity<PostResponse.OnlyId> changeStatus (@PathVariable Long postId, @RequestBody PostRequest.ChangeStatus request, @CurrentUser CustomUserDetails customUserDetails) {
         PostResponse.OnlyId response = postService.changeStatus(postId, request, customUserDetails.getUser());
         return ResponseEntity.ok().body(response);
     }
@@ -90,9 +90,9 @@ public class PostController {
         return ResponseEntity.ok().body(response);
     }
 
-//    @DeleteMapping("/post/{postId}")
-//    public ResponseEntity<Void> delete(@PathVariable("postId") Long postId) {
-//        postService.delete(postId);
-//        return ResponseEntity.ok().build();
-//    }
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<PostResponse.OnlyId> delete(@PathVariable("postId") Long postId, @CurrentUser CustomUserDetails customUserDetails) {
+        PostResponse.OnlyId response = postService.delete(postId, customUserDetails.getUser());
+        return ResponseEntity.ok().body(response);
+    }
 }

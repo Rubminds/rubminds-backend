@@ -5,8 +5,10 @@ import com.rubminds.api.post.domain.*;
 import com.rubminds.api.skill.domain.CustomSkill;
 import com.rubminds.api.skill.dto.CustomSkillResponse;
 import com.rubminds.api.skill.dto.PostSkillResponse;
+import com.rubminds.api.user.domain.User;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.*;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -145,26 +147,14 @@ public class PostResponse {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetListByStatus {
-        private Long id;
-        private String writer;
-        private String title;
-        private String kinds;
-        private String region;
-        private String status;
-        private List<String> postSkills;
-        private List<String> customSkills;
+        private String nickname;
+        private Page<PostResponse.GetList> posts;
 
 
-        public static GetListByStatus build(Post post) {
+        public static GetListByStatus build(User user, Page<Post> posts, CustomUserDetails customUserDetails) {
             return GetListByStatus.builder()
-                    .id(post.getId())
-                    .writer(post.getWriter().getNickname())
-                    .title(post.getTitle())
-                    .kinds(post.getKinds().name())
-                    .region(post.getRegion())
-                    .status(post.getPostStatus().name())
-                    .postSkills(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
-                    .customSkills(post.getCustomSkills().stream().map(customSkill -> customSkill.getName()).collect(Collectors.toList()))
+                    .nickname(user.getNickname())
+                    .posts(posts.map(post -> PostResponse.GetList.build(post, customUserDetails)))
                     .build();
         }
     }

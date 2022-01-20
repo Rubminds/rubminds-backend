@@ -12,6 +12,7 @@ Content-Type: application/json;charset=UTF-8
 
 ###
 GET {{apiUrl}}/user/1/posts?status=RECRUIT&page=1&size=5
+Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
@@ -94,7 +95,7 @@ Content-Type: application/json;charset=UTF-8
 
 
 ###
-POST {{apiUrl}}/post/1/complete
+POST {{apiUrl}}/post/2/complete
 Authorization: {{authorizationToken}}
 Content-Type: multipart/form-data; boundary=boundary
 Accept: application/json, image/*
@@ -109,7 +110,12 @@ Content-Type: application/json;charset=UTF-8
 }
 --boundary
 Content-Disposition: form-data; name="files"; filename="white.jpeg"
-Content-Type: image/jpeg
+Content-Type: multipart/form-data
+
+< ./../main/resources/dummy/image/white.jpeg
+--boundary
+Content-Disposition: form-data; name="files"; filename="white.jpeg"
+Content-Type: multipart/form-data
 
 < ./../main/resources/dummy/image/white.jpeg
 --boundary

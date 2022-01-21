@@ -1,7 +1,7 @@
 package com.rubminds.api.chat.dto;
 
 import com.rubminds.api.chat.domain.Chat;
-import com.rubminds.api.chat.domain.ChatRoom;
+import com.rubminds.api.post.domain.Post;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
@@ -27,18 +27,16 @@ public class ChatResponse {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetList {
-        private Long chatRoomId;
-        private String postTitle;
         private Long postId;
+        private String postTitle;
         private Long writerId;
         private Page<ChatDto.GetChat> chats;
 
-        public static ChatResponse.GetList build(ChatRoom chatRoom, Page<ChatDto.GetChat> chats) {
+        public static ChatResponse.GetList build(Post post, Page<ChatDto.GetChat> chats) {
             return GetList.builder()
-                    .chatRoomId(chatRoom.getId())
-                    .postId(chatRoom.getPost().getId())
-                    .postTitle(chatRoom.getPost().getTitle())
-                    .writerId(chatRoom.getPost().getWriter().getId())
+                    .postId(post.getId())
+                    .postTitle(post.getTitle())
+                    .writerId(post.getWriter().getId())
                     .chats(chats)
                     .build();
         }
@@ -50,15 +48,13 @@ public class ChatResponse {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetPostList {
-        private Long id;
         private Long postId;
         private String postTitle;
 
-        public static ChatResponse.GetPostList build(ChatRoom chatRoom) {
+        public static ChatResponse.GetPostList build(Post post) {
             return ChatResponse.GetPostList.builder()
-                    .id(chatRoom.getId())
-                    .postId(chatRoom.getPost().getId())
-                    .postTitle(chatRoom.getPost().getTitle())
+                    .postId(post.getId())
+                    .postTitle(post.getTitle())
                     .build();
         }
     }

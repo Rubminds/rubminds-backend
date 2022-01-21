@@ -15,7 +15,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "chatRoomId" : 3,
-  "content" : "2번입니다."
+  "postId" : 4,
+  "content" : "1번입니다."
 
 }

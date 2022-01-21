@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `chat`;
 CREATE TABLE `chat`
 (
     `id`               BIGINT       NOT NULL AUTO_INCREMENT,
-    `chatroom_id`      BIGINT       NOT NULL,
+    `post_id`      BIGINT       NOT NULL,
     `sender_id`        BIGINT       NULL NULL,
     `content`          VARCHAR(255)  NOT NULL,
     `created_at`       DATETIME DEFAULT NULL,

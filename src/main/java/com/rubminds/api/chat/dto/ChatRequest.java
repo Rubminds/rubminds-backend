@@ -8,7 +8,7 @@ public class ChatRequest {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Create {
-        private Long chatRoomId;
+        private Long postId;
         private String content;
     }
 

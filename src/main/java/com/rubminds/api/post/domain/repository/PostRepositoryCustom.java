@@ -23,4 +23,6 @@ public interface PostRepositoryCustom {
     Page<Post> findAllLikePostByUserId(Kinds kinds, User user, Pageable of);
 
     Page<Post> findAllByStatusAndUser(PostStatus postStatus, Long userId, Pageable of);
+
+    Page<Post> findAllBySender(Long postId, Pageable of);
 }

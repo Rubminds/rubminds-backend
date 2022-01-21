@@ -14,9 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 import static com.rubminds.api.chat.domain.QChat.chat;
 import static com.rubminds.api.chat.domain.QChatRoom.chatRoom;
-import static com.rubminds.api.user.domain.QUser.user;
 
 @RequiredArgsConstructor
 public class ChatRepositoryImpl implements ChatRepositoryCustom, ChatRoomRepositoryCustom {
@@ -45,20 +46,22 @@ public class ChatRepositoryImpl implements ChatRepositoryCustom, ChatRoomReposit
     }
 
     @Override
-    public Page<ChatRoom> findAllById(User loginUser, Pageable pageable) {
-        QueryResults<ChatRoom> result = queryFactory.select(chatRoom)
-                .from(chatRoom)
-                .where(chatRoom.id.eq(
+    public Page<ChatRoom> findAllById(Long loginUserId, Pageable pageable) {
+        QueryResults<ChatRoom> result = queryFactory.selectFrom(chatRoom)
+                .where(chatRoom.id.in(
                         JPAExpressions
-                        .select(chat.chatRoom.id)
-                        .from(chat)
-                        .where(chat.sender.eq(loginUser))))
+                            .select(chat.chatRoom.id)
+                            .from(chat)
+                            .where(chat.sender.id.eq(loginUserId))
+                ))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
+
+
 }
 
 

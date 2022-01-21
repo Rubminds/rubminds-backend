@@ -5,6 +5,7 @@ import com.rubminds.api.chat.dto.ChatDto;
 import com.rubminds.api.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 
 
 public interface ChatRepositoryCustom {

@@ -3,6 +3,7 @@ package com.rubminds.api.chat.service;
 import com.rubminds.api.chat.domain.Chat;
 import com.rubminds.api.chat.domain.ChatRoom;
 import com.rubminds.api.chat.domain.repository.ChatRoomRepository;
+import com.rubminds.api.chat.domain.repository.ChatRoomRepositoryCustom;
 import com.rubminds.api.chat.dto.ChatDto;
 import com.rubminds.api.common.dto.PageDto;
 import com.rubminds.api.chat.domain.repository.ChatRepository;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomRepositoryCustom chatRoomRepositoryCustom;
 
     @Transactional
     public ChatResponse.OnlyId create(ChatRequest.Create request, User sender) {
@@ -39,7 +41,7 @@ public class ChatService {
 
 
     public Page<ChatResponse.GetPostList> getPostList(User loginUser, PageDto pageDto) {
-        Page<ChatRoom> chatRooms = chatRoomRepository.findAllById(loginUser,pageDto.of());
+        Page<ChatRoom> chatRooms = chatRoomRepositoryCustom.findAllById(loginUser.getId(),pageDto.of());
         return chatRooms.map(chatRoom -> ChatResponse.GetPostList.build(chatRoom));
     }
 

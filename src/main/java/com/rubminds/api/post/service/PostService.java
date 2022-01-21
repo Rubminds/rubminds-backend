@@ -19,6 +19,8 @@ import com.rubminds.api.team.domain.TeamUser;
 import com.rubminds.api.team.domain.repository.TeamRepository;
 import com.rubminds.api.team.domain.repository.TeamUserRepository;
 import com.rubminds.api.user.domain.User;
+import com.rubminds.api.user.domain.repository.UserRepository;
+import com.rubminds.api.user.exception.UserNotFoundException;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,6 +46,7 @@ public class PostService {
     private final S3Service s3Service;
     private final PostFileRepository postFileRepository;
     private final TeamUserRepository teamUserRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, List<MultipartFile> files, User user) {
@@ -149,9 +152,10 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
-    public Page<PostResponse.GetListByStatus> getListByStatus(PostStatus postStatus, Long userId, PageDto pageDto) {
+    public PostResponse.GetListByStatus getListByStatus(PostStatus postStatus, Long userId, PageDto pageDto, CustomUserDetails customUserDetails) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Page<Post> posts = postRepository.findAllByStatusAndUser(postStatus, userId, pageDto.of());
-        return posts.map(post -> PostResponse.GetListByStatus.build(post));
+        return PostResponse.GetListByStatus.build(user, posts, customUserDetails);
     }
 
     public Page<PostResponse.GetList> getLikePosts(Kinds kinds, PageDto pageDto, CustomUserDetails customUserDetails) {

@@ -1,6 +1,7 @@
 package com.rubminds.api.chat.web;
 
 import com.rubminds.MvcTest;
+import com.rubminds.api.chat.domain.Chat;
 import com.rubminds.api.file.domain.Avatar;
 import com.rubminds.api.chat.dto.ChatRequest;
 import com.rubminds.api.chat.dto.ChatResponse;
@@ -16,18 +17,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
+
+import javax.print.DocFlavor;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,8 +45,11 @@ public class ChatControllerTest extends MvcTest {
 
     @MockBean
     private ChatService chatService;
-    private Message message;
+    private Chat chat;
+    private List<Chat> chats  = new ArrayList<>() ;
+    private List<ChatResponse.GetPostList> posts  = new ArrayList<>() ;
     private Post post1;
+    private ChatResponse.GetPostList post2;
     private User user;
 
     @BeforeEach
@@ -72,14 +82,22 @@ public class ChatControllerTest extends MvcTest {
                 .postFileList(Collections.singleton(PostFile.builder().id(1L).url("completefile url").complete(true).build()))
                 .build();
 
-        message = Message.builder()
+        chat = chat.builder()
                 .id(1L)
                 .content("채팅내용")
-                .read(false)
-                .receiverId(2L)
-                .senderId(1L)
+                .sender(user)
                 .post(post1)
                 .build();
+
+        post2 = post2.builder()
+                .postId(1L)
+                .postTitle("제목")
+                .build();
+
+        chats.add(chat);
+        posts.add(post2);
+
+
     }
 
 
@@ -87,12 +105,12 @@ public class ChatControllerTest extends MvcTest {
     @Test
     @DisplayName("쪽지 보내기 문서화")
     public void sendMessage() throws Exception {
-        ChatRequest.Create request = ChatRequest.Create.builder().receiverId(2L).content("쪽지내용").postId(1L).build();
-        ChatResponse.OnlyId response = ChatResponse.OnlyId.build(message);
+        ChatRequest.Create request = ChatRequest.Create.builder().postId(1L).content("쪽지내용").build();
+        ChatResponse.OnlyId response = ChatResponse.OnlyId.build(chat);
 
         given(chatService.create(any(),any())).willReturn(response);
 
-        ResultActions results = mvc.perform(post("/api/message")
+        ResultActions results = mvc.perform(post("/api/chat")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .characterEncoding("UTF-8")
@@ -104,7 +122,6 @@ public class ChatControllerTest extends MvcTest {
                 .andDo(document("send_message",
                         requestFields(
                                 fieldWithPath("postId").type(JsonFieldType.NUMBER).description("게시물 ID"),
-                                fieldWithPath("receiverId").type(JsonFieldType.NUMBER).description("수신자 ID"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
                         ),
                         responseFields(
@@ -114,33 +131,67 @@ public class ChatControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("쪽지 상세조회")
-    public void getMessage() throws Exception {
-
-        ChatResponse.Info response = ChatResponse.Info.build(message,"보내는이","받는이");
-        given(chatService.getOne(any(), any())).willReturn(response);
+    @DisplayName("쪽지내역 보기")
+    public void getChats() throws Exception {
+        Page<Chat> chatPage = new PageImpl<>(chats, PageRequest.of(1, 5), chats.size());
+        ChatResponse.GetList response = ChatResponse.GetList.build(post1, chatPage);
+        given(chatService.getChatList(any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
-                .get("/api/message/{messageId}",1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8"));
+                .get("/api/chat/{postId}",1L)
+                .param("page", "1")
+                .param("size", "10"));
 
         results.andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("getOne_message", pathParameters(
-                                parameterWithName("messageId").description("쪽지 식별자")
+                .andDo(document("chat_list", requestParameters(
+                                parameterWithName("page").description("조회할 페이지"),
+                                parameterWithName("size").description("조회할 사이즈")
+                        ),
+                        pathParameters(
+                                parameterWithName("postId").description("게시물 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("유저 식별자"),
                                 fieldWithPath("postId").type(JsonFieldType.NUMBER).description("게시글 식별자"),
                                 fieldWithPath("postTitle").type(JsonFieldType.STRING).description("게시글 제목"),
-                                fieldWithPath("sender").type(JsonFieldType.STRING).description("보낸이 닉네임"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
-                                fieldWithPath("createAt").type(JsonFieldType.STRING).description("보낸시간").optional()
-
+                                fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("게시글 작성자 식별자"),
+                                fieldWithPath("chats[].id").type(JsonFieldType.NUMBER).description("쪽지 식별자"),
+                                fieldWithPath("chats[].senderId").type(JsonFieldType.NUMBER).description("보낸이 식별자"),
+                                fieldWithPath("chats[].senderNickname").type(JsonFieldType.STRING).description("보낸이 닉네임"),
+                                fieldWithPath("chats[].avatar").type(JsonFieldType.STRING).description("보낸이 프로필").optional(),
+                                fieldWithPath("chats[].content").type(JsonFieldType.STRING).description("보낸 쪽지 내용").optional(),
+                                fieldWithPath("chats[].createAt").type(JsonFieldType.STRING).description("보낸 시간").optional()
                         )
                 ));
     }
+
+    @Test
+    @DisplayName("쪽지방(게시물방) 보기")
+    public void getPosts() throws Exception {
+        Page<ChatResponse.GetPostList> postlist = new PageImpl<>(posts, PageRequest.of(1, 5), posts.size());
+        given(chatService.getPostList(any(), any(), any())).willReturn(postlist);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders
+                .get("/api/chat")
+                .param("kinds", "PROJECT")
+                .param("page", "1")
+                .param("size", "10"));
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("chat_post_list", requestParameters(
+                        parameterWithName("page").description("조회할 페이지"),
+                        parameterWithName("size").description("조회할 사이즈"),
+                        parameterWithName("kinds").description("게시글 종류")
+                        ),
+
+                        relaxedResponseFields(
+                                fieldWithPath("content[].postId").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("content[].postTitle").type(JsonFieldType.STRING).description("게시글 제목")
+                        )
+                ));
+    }
+
 
 
 }

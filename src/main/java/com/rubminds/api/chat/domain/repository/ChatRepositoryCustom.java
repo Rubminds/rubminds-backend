@@ -6,6 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface ChatRepositoryCustom {
-    Page<ChatDto.GetChat> findAllByPostId(Long chatRoomId, Pageable pageable);
+
 
 }

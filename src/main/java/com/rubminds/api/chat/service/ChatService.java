@@ -1,7 +1,6 @@
 package com.rubminds.api.chat.service;
 
 import com.rubminds.api.chat.domain.Chat;
-import com.rubminds.api.chat.dto.ChatDto;
 import com.rubminds.api.common.dto.PageDto;
 import com.rubminds.api.chat.domain.repository.ChatRepository;
 import com.rubminds.api.chat.dto.ChatRequest;
@@ -14,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.rubminds.api.post.domain.Kinds;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,13 +33,13 @@ public class ChatService {
 
     public ChatResponse.GetList getChatList(Long postId, PageDto pageDto) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        Page<ChatDto.GetChat> chats = chatRepository.findAllByPostId(postId,pageDto.of());
+        Page<Chat> chats = chatRepository.findAllByPostId(postId, pageDto.of());
         return ChatResponse.GetList.build(post, chats);
     }
 
 
-    public Page<ChatResponse.GetPostList> getPostList(User loginUser, PageDto pageDto) {
-        Page<Post> posts = postRepository.findAllBySender(loginUser.getId(),pageDto.of());
+    public Page<ChatResponse.GetPostList> getPostList(User loginUser, Kinds kinds, PageDto pageDto) {
+        Page<Post> posts = postRepository.findAllBySenderAndKinds(loginUser.getId(), kinds, pageDto.of());
         return posts.map(post -> ChatResponse.GetPostList.build(post));
     }
 

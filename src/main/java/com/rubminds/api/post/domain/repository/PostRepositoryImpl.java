@@ -96,7 +96,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<Post> findAllBySender(Long loginUserId, Pageable pageable) {
+    public Page<Post> findAllBySenderAndKinds(Long loginUserId, Kinds kinds, Pageable pageable) {
         QueryResults<Post> result = queryFactory.selectDistinct(post)
                 .from(post)
                 .where(post.id.in(
@@ -105,6 +105,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                             .from(chat)
                             .where(chat.sender.id.eq(loginUserId))
                 ))
+                .where(post.kinds.eq(kinds))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(post.title.desc())

@@ -5,6 +5,9 @@ import com.rubminds.api.post.domain.Post;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ChatResponse {
 
     @Getter
@@ -30,14 +33,14 @@ public class ChatResponse {
         private Long postId;
         private String postTitle;
         private Long writerId;
-        private Page<ChatDto.GetChat> chats;
+        private List<ChatDto.GetChat> chats;
 
-        public static ChatResponse.GetList build(Post post, Page<ChatDto.GetChat> chats) {
+        public static ChatResponse.GetList build(Post post, Page<Chat> chats) {
             return GetList.builder()
                     .postId(post.getId())
                     .postTitle(post.getTitle())
                     .writerId(post.getWriter().getId())
-                    .chats(chats)
+                    .chats(chats.stream().map(chat -> ChatDto.GetChat.build(chat)).collect(Collectors.toList()))
                     .build();
         }
 

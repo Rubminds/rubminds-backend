@@ -1,7 +1,8 @@
 package com.rubminds.api.chat.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
+import com.rubminds.api.chat.domain.Chat;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 public class ChatDto {
@@ -9,6 +10,7 @@ public class ChatDto {
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class GetChat {
         private Long id;
         private Long senderId;
@@ -17,18 +19,16 @@ public class ChatDto {
         private String content;
         private LocalDateTime createAt;
 
-        @Builder
-        @QueryProjection
-        public GetChat(Long id, Long senderId, String senderNickname, String avatar, String content, LocalDateTime createAt) {
-            this.id = id;
-            this.senderId = senderId;
-            this.senderNickname = senderNickname;
-            this.content = content;
-            this.createAt = createAt;
-
-            if (avatar != null) {
-                this.avatar = avatar;
-            }
+        public static ChatDto.GetChat build(Chat chat) {
+            return GetChat.builder()
+                    .id(chat.getId())
+                    .senderId(chat.getSender().getId())
+                    .senderNickname(chat.getSender().getNickname())
+                    .content(chat.getContent())
+                    .createAt(chat.getCreatedAt())
+//                    .avatar(chat.getSender().getAvatar().getUrl() == null? null : chat.getSender().getAvatar().getUrl())
+                    .build();
         }
     }
+
 }

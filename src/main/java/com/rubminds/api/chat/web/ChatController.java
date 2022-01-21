@@ -4,6 +4,7 @@ import com.rubminds.api.common.dto.PageDto;
 import com.rubminds.api.chat.dto.ChatRequest;
 import com.rubminds.api.chat.dto.ChatResponse;
 import com.rubminds.api.chat.service.ChatService;
+import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.user.security.userdetails.CurrentUser;
 import com.rubminds.api.user.security.userdetails.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,10 @@ public class ChatController {
     }
 
     @GetMapping("/chat")
-    public ResponseEntity<Page<ChatResponse.GetPostList>> getPostList(@CurrentUser CustomUserDetails customUserDetails, PageDto pageDto) {
-        Page<ChatResponse.GetPostList> response = chatService.getPostList(customUserDetails.getUser(), pageDto);
+    public ResponseEntity<Page<ChatResponse.GetPostList>> getPostList(@CurrentUser CustomUserDetails customUserDetails,
+                                                                      @RequestParam(name = "kinds", required = true) Kinds kinds,
+                                                                      PageDto pageDto) {
+        Page<ChatResponse.GetPostList> response = chatService.getPostList(customUserDetails.getUser(), kinds, pageDto);
         return ResponseEntity.ok().body(response);
     }
 }

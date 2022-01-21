@@ -1,10 +1,10 @@
 ###
-GET {{apiUrl}}/chat/1?page=1&size=5
+GET {{apiUrl}}/chat/1?page=2&size=5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-GET {{apiUrl}}/chat?page=1&size=5
+GET {{apiUrl}}/chat?page=1&size=5&kinds=PROJECT
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -15,7 +15,7 @@ Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "postId" : 4,
-  "content" : "1번입니다."
+  "postId" : 1,
+  "content" : "3번입니다."
 
 }

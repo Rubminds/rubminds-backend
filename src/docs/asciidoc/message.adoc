@@ -11,21 +11,10 @@
 ---
 == *기본* API
 
-=== 쪽지 단건 조회
-
-`GET /api/message/{messageId}`
-
-요청 HTTP
-include::{snippets}/getOne_message/http-request.adoc[]
-include::{snippets}/getOne_message/path-parameters.adoc[]
-
-성공 응답 HTTP
-include::{snippets}/getOne_message/http-response.adoc[]
-include::{snippets}/getOne_message/response-fields.adoc[]
 
 === 쪽지 보내기
 
-`POST /api/message`
+`POST /api/chat`
 
 요청 HTTP
 include::{snippets}/send_message/http-request.adoc[]
@@ -34,3 +23,31 @@ include::{snippets}/send_message/request-fields.adoc[]
 성공 응답 HTTP
 include::{snippets}/send_message/http-response.adoc[]
 include::{snippets}/send_message/response-fields.adoc[]
+
+
+=== 쪽지리스트 조회
+
+`GET /api/chat/{postId}`
+
+요청 HTTP
+include::{snippets}/chat_list/http-request.adoc[]
+include::{snippets}/chat_list/path-parameters.adoc[]
+include::{snippets}/chat_list/request-parameters.adoc[]
+
+성공 응답 HTTP
+include::{snippets}/chat_list/http-response.adoc[]
+include::{snippets}/chat_list/response-fields.adoc[]
+
+
+=== 게시물 리스트 조회
+
+`GET /api/chat`
+
+요청 HTTP
+include::{snippets}/chat_post_list/http-request.adoc[]
+include::{snippets}/chat_post_list/request-parameters.adoc[]
+
+
+성공 응답 HTTP
+include::{snippets}/chat_post_list/http-response.adoc[]
+include::{snippets}/chat_post_list/response-fields.adoc[]

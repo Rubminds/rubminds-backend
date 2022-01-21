@@ -1,15 +1,21 @@
-GET {{apiUrl}}/message/1
+###
+GET {{apiUrl}}/chat/1?page=0&size=5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
-POST {{apiUrl}}/message/
+GET {{apiUrl}}/chat?page=1&size=5
+Authorization: {{authorizationToken}}
+Content-Type: application/json;charset=UTF-8
+
+
+###
+POST {{apiUrl}}/chat
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "postId" : 1,
-  "receiverId" : 3,
-  "content" : "내용"
+  "chatRoomId" : 1,
+  "content" : "2번입니다."
 
 }

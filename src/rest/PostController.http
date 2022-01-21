@@ -45,7 +45,7 @@ Content-Type: application/json;charset=UTF-8
 Content-Disposition: form-data; name="files"; filename="white.jpeg"
 Content-Type: image/jpeg
 
-< ./../main/resources/dummy/image/white.jpe
+< ./../main/resources/dummy/image/white.jpeg
 ###
 POST {{apiUrl}}/post/1/update
 Authorization: {{authorizationToken}}
@@ -79,7 +79,7 @@ Content-Type: image/jpeg
 
 < ./../main/resources/dummy/image/white.jpeg
 ###
-DELETE {{apiUrl}}/post/6
+DELETE {{apiUrl}}/post/1
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
@@ -126,10 +126,10 @@ Content-Type: multipart/form-data
 
 
 ###
-PUT {{apiUrl}}/post/1/changeStatus
+PUT {{apiUrl}}/post/2/changeStatus
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 {
-  "postStatus" : "RANKING"
+  "postStatus" : "FINISHED"
 }

@@ -1,14 +1,15 @@
-package com.rubminds.api.message.dto;
-import lombok.*;
+package com.rubminds.api.chat.dto;
 
-public class MessageRequest {
+
+import lombok.*;
+public class ChatRequest {
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Create {
         private Long postId;
-        private Long receiverId;
         private String content;
     }
+
 }

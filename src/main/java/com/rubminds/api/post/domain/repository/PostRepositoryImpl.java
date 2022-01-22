@@ -1,8 +1,10 @@
 package com.rubminds.api.post.domain.repository;
 
+import com.amazonaws.jmespath.JmesPathAndExpression;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.rubminds.api.post.domain.Kinds;
 import com.rubminds.api.post.domain.Post;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.rubminds.api.chat.domain.QChat.chat;
 import static com.rubminds.api.post.domain.QPost.post;
 import static com.rubminds.api.post.domain.QPostLike.postLike;
 import static com.rubminds.api.post.domain.QPostSkill.postSkill;
@@ -87,6 +90,25 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(post.id.desc())
+                .fetchResults();
+
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
+
+    @Override
+    public Page<Post> findAllBySenderAndKinds(Long loginUserId, Kinds kinds, Pageable pageable) {
+        QueryResults<Post> result = queryFactory.selectDistinct(post)
+                .from(post)
+                .where(post.id.in(
+                        JPAExpressions
+                            .select(chat.post.id)
+                            .from(chat)
+                            .where(chat.sender.id.eq(loginUserId))
+                ))
+                .where(post.kinds.eq(kinds))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.title.desc())
                 .fetchResults();
 
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());

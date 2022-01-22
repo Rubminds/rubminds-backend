@@ -1,12 +1,10 @@
-DROP TABLE IF EXISTS `message`;
-CREATE TABLE `message`
+DROP TABLE IF EXISTS `chat`;
+CREATE TABLE `chat`
 (
     `id`               BIGINT       NOT NULL AUTO_INCREMENT,
-    `post_id`          BIGINT       NOT NULL,
+    `post_id`      BIGINT       NOT NULL,
     `sender_id`        BIGINT       NULL NULL,
-    `receiver_id`      BIGINT       NOT NULL,
     `content`          VARCHAR(255)  NOT NULL,
-    `is_read`             BOOLEAN       NOT NULL,
     `created_at`       DATETIME DEFAULT NULL,
     `updated_at`       DATETIME DEFAULT NULL,
     `deleted_at`       DATETIME DEFAULT NULL,

@@ -29,8 +29,10 @@ public class ChatController {
     }
 
     @GetMapping("/chat/{chatRoomId}")
-    public ResponseEntity<ChatResponse.GetList> getList(@PathVariable(value = "chatRoomId") Long chatRoomId, PageDto pageDto) {
-        ChatResponse.GetList response = chatService.getChatList(chatRoomId, pageDto);
+    public ResponseEntity<ChatResponse.GetList> getList(@PathVariable(value = "chatRoomId") Long chatRoomId,
+                                                        @CurrentUser CustomUserDetails customUserDetails,
+                                                        PageDto pageDto) {
+        ChatResponse.GetList response = chatService.getChatList(customUserDetails.getUser(), chatRoomId, pageDto);
         return ResponseEntity.ok().body(response);
     }
 

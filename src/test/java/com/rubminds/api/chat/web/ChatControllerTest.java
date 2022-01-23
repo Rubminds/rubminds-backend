@@ -135,7 +135,7 @@ public class ChatControllerTest extends MvcTest {
     public void getChats() throws Exception {
         Page<Chat> chatPage = new PageImpl<>(chats, PageRequest.of(1, 5), chats.size());
         ChatResponse.GetList response = ChatResponse.GetList.build(post1, chatPage);
-        given(chatService.getChatList(any(), any())).willReturn(response);
+        given(chatService.getChatList( any(),any(), any())).willReturn(response);
 
         ResultActions results = mvc.perform(RestDocumentationRequestBuilders
                 .get("/api/chat/{postId}",1L)

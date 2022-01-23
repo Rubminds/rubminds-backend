@@ -35,7 +35,7 @@ public class ChatService {
     public ChatResponse.GetList getChatList(User sender, Long postId, PageDto pageDto) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         isFirstParticipate(sender, post);
-        Page<Chat> chats = chatRepository.findAllByPostId(postId, pageDto.of());
+        Page<Chat> chats = chatRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageDto.of());
         return ChatResponse.GetList.build(post, chats);
     }
 

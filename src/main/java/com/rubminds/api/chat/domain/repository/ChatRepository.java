@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface ChatRepository extends JpaRepository<Chat, Long>, ChatRepositoryCustom {
-    Page<Chat> findAllByPostId(Long postId, Pageable pageable);
+    Page<Chat> findAllByPostIdOrderByCreatedAtDesc(Long postId, Pageable pageable);
 
     boolean existsBySenderAndPost(User loginUser, Post post);
 

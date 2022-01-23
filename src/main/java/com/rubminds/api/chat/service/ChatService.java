@@ -31,6 +31,7 @@ public class ChatService {
         return ChatResponse.OnlyId.build(saveChat);
     }
 
+    @Transactional
     public ChatResponse.GetList getChatList(User sender, Long postId, PageDto pageDto) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         isFirstParticipate(sender, post);

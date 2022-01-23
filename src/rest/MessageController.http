@@ -1,5 +1,5 @@
 ###
-GET {{apiUrl}}/chat/1?page=2&size=5
+GET {{apiUrl}}/chat/6?page=1&size=5
 Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 

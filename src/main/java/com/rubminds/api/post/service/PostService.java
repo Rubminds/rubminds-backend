@@ -1,5 +1,7 @@
 package com.rubminds.api.post.service;
 
+import com.rubminds.api.chat.domain.Chat;
+import com.rubminds.api.chat.domain.repository.ChatRepository;
 import com.rubminds.api.common.dto.PageDto;
 import com.rubminds.api.file.service.S3Service;
 import com.rubminds.api.post.domain.*;
@@ -47,6 +49,7 @@ public class PostService {
     private final PostFileRepository postFileRepository;
     private final TeamUserRepository teamUserRepository;
     private final UserRepository userRepository;
+    private final ChatRepository chatRepository;
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, List<MultipartFile> files, User user) {
@@ -59,6 +62,9 @@ public class PostService {
 
         createOrUpdatePostAndCustomSKill(request, post);
         saveFiles(files, savedPost, false);
+
+        Chat chat = Chat.create(post,user,user.getNickname()+"님이 참가하셨습니다.");
+        chatRepository.save(chat);
 
         return PostResponse.OnlyId.build(savedPost);
     }

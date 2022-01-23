@@ -1,4 +1,4 @@
-GET {{apiUrl}}/post/1
+GET {{apiUrl}}/post/7
 Content-Type: application/json;charset=UTF-8
 
 ###

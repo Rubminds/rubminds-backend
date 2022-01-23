@@ -88,8 +88,8 @@ public class PostControllerTest extends MvcTest {
                 .postSkills(Collections.singletonList(PostSkill.builder().id(1L).skill(Skill.builder().id(1L).name("JAVA").build()).build()))
                 .customSkills(Collections.singletonList(CustomSkill.builder().id(1L).name("java").build()))
                 .team(Team.builder().id(1L).admin(user).build())
-                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").complete(false).build()))
-                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("completefile url").complete(true).build()))
+                .postFileList(Collections.singleton(PostFile.builder().id(1L).originalName("file name").url("file url").complete(false).build()))
+                .postFileList(Collections.singleton(PostFile.builder().id(1L).originalName("completefile name").url("completefile url").complete(true).build()))
                 .build();
 
         post1.setCreatedAt(LocalDateTime.of(2021,2,3,9,00));
@@ -106,15 +106,15 @@ public class PostControllerTest extends MvcTest {
                 .postSkills(Collections.singletonList(PostSkill.builder().id(1L).skill(Skill.builder().id(1L).name("JAVA").build()).build()))
                 .customSkills(Collections.singletonList(CustomSkill.builder().id(1L).name("react").build()))
                 .team(Team.builder().id(1L).admin(user).build())
-                .postFileList(Collections.singleton(PostFile.builder().id(1L).url("file url").build()))
+                .postFileList(Collections.singleton(PostFile.builder().id(1L).originalName("file name").url("file url").build()))
                 .build();
         postList.add(post1);
         postList.add(post2);
 
-        completeFile = PostFile.builder().complete(true).url("completeFileUrl").build();
-        postFile = PostFile.builder().complete(false).url("completeUrl").build();
+        completeFile = PostFile.builder().complete(true).originalName("completeFile name").url("completeFileUrl").build();
+        postFile = PostFile.builder().complete(false).originalName("postFile name").url("postFile url").build();
 
-        completeImage = PostFile.builder().complete(true).url("completeImageUrl").build();
+        completeImage = PostFile.builder().complete(true).originalName("completeImageName").url("completeImageUrl").build();
         completeImages.add(completeImage);
 
         postFiles.add(postFile);
@@ -238,9 +238,12 @@ public class PostControllerTest extends MvcTest {
                                 fieldWithPath("writer.nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
                                 fieldWithPath("writer.avatar").type(JsonFieldType.STRING).description("작성자 프로필 url"),
                                 fieldWithPath("writer.id").type(JsonFieldType.NUMBER).description("작성자 식별자"),
-                                fieldWithPath("files[].url").type(JsonFieldType.STRING).description("파일"),
-                                fieldWithPath("completeFile.url").type(JsonFieldType.STRING).description("완료게시글 파일"),
-                                fieldWithPath("completeImages[].url").type(JsonFieldType.STRING).description("완료게시글 이미지").optional(),
+                                fieldWithPath("files[].fileName").type(JsonFieldType.STRING).description("게시물 파일 명").optional(),
+                                fieldWithPath("files[].url").type(JsonFieldType.STRING).description("게시물 파일 Url").optional(),
+                                fieldWithPath("completeFile.fileName").type(JsonFieldType.STRING).description("완료게시글 파일 명"),
+                                fieldWithPath("completeFile.url").type(JsonFieldType.STRING).description("완료게시글 파일 Url"),
+                                fieldWithPath("completeImages[].fileName").type(JsonFieldType.STRING).description("완료게시글 이미지 명").optional(),
+                                fieldWithPath("completeImages[].url").type(JsonFieldType.STRING).description("완료게시글 이미지 Url").optional(),
                                 fieldWithPath("postSkills[]").type(JsonFieldType.ARRAY).description("게시물 스킬"),
                                 fieldWithPath("customSkills[]").type(JsonFieldType.ARRAY).description("커스텀스킬(직접입력한)"),
                                 fieldWithPath("isLike").type(JsonFieldType.BOOLEAN).description("자신이 찜한 게시물이라면 true"),

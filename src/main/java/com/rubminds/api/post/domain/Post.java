@@ -33,7 +33,6 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private int headcount;
 
     @Enumerated(EnumType.STRING)
@@ -97,7 +96,7 @@ public class Post extends BaseEntity {
         this.refLink = request.getRefLink();
     }
 
-    public static Post create(PostRequest.Create request, Team team, User user) {
+    public static Post create(PostRequest.Create request, User user) {
         return Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -107,8 +106,10 @@ public class Post extends BaseEntity {
                 .postStatus(PostStatus.RECRUIT)
                 .region(request.getRegion())
                 .writer(user)
-                .team(team)
                 .build();
+    }
+    public void setTeam(Team team){
+        this.team = team;
     }
 
     public void isHeadcountFull(Team team) {

@@ -19,6 +19,7 @@ public class PostFile extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String originalName;
     private String name;
     private String extension;
     private String url;
@@ -39,6 +40,7 @@ public class PostFile extends BaseEntity {
 
     public static PostFile create(Post post, SavedFile file, boolean complete) {
         PostFile postFile = PostFile.builder()
+                .originalName(file.getOriginalName())
                 .name(file.getName())
                 .extension(file.getExtension())
                 .height(file.getHeight())

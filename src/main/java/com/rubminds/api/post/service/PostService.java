@@ -50,11 +50,13 @@ public class PostService {
 
     @Transactional
     public PostResponse.OnlyId create(PostRequest.Create request, List<MultipartFile> files, User user) {
-        TeamUser teamUser = TeamUser.create(user);
-        Team team = Team.create(user, teamUser);
-        teamRepository.save(team);
-
-        Post post = Post.create(request, team, user);
+        Post post = Post.create(request, user);
+        if(!request.getKinds().equals(Kinds.SCOUT)){
+            TeamUser teamUser = TeamUser.create(user);
+            Team team = Team.create(user, teamUser);
+            teamRepository.save(team);
+            post.setTeam(team);
+        }
         Post savedPost = postRepository.save(post);
 
         createOrUpdatePostAndCustomSKill(request, post);

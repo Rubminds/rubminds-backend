@@ -1,4 +1,6 @@
-GET {{apiUrl}}/post/7
+
+GET {{apiUrl}}/post/1
+Authorization: {{authorizationToken}}
 Content-Type: application/json;charset=UTF-8
 
 ###
@@ -63,7 +65,7 @@ Content-Type: application/json;charset=UTF-8
   "kinds": "STUDY",
   "meeting": "BOTH",
   "postsStatus": "GATHERING",
-  "region": "서울",
+  "region": "부산",
   "skillIds": [
     1,
     2

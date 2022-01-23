@@ -11,13 +11,14 @@ public class PostDto {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class File {
+        private String fileName;
         private String url;
 
         public static PostDto.File build(PostFile postFile) {
             if (postFile == null) {
                 return null;
             }
-            return File.builder().url(postFile.getUrl()).build();
+            return File.builder().fileName(postFile.getOriginalName()).url(postFile.getUrl()).build();
         }
     }
 

@@ -3,10 +3,10 @@ CREATE TABLE `post`
 (
     `id`               BIGINT       NOT NULL AUTO_INCREMENT,
     `user_id`          BIGINT       NOT NULL,
-    `team_id`          BIGINT       NOT NULL,
+    `team_id`          BIGINT       DEFAULT NULL,
     `title`            VARCHAR(50)  NULL NULL,
     `content`          VARCHAR(255) NOT NULL,
-    `headcount`        INT          NOT NULL,
+    `headcount`        INT          DEFAULT NULL,
     `kinds`            VARCHAR(30)  NOT NULL,
     `meeting`          VARCHAR(30)  NOT NULL,
     `post_status`      VARCHAR(20)  NOT NULL,

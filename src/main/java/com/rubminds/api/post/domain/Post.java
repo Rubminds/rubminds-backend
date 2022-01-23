@@ -85,6 +85,7 @@ public class Post extends BaseEntity {
         this.headcount = request.getHeadcount();
         this.meeting = request.getMeeting();
         this.kinds = request.getKinds();
+        this.region = request.getRegion();
     }
 
     public void changeStatus(PostRequest.ChangeStatus request) {

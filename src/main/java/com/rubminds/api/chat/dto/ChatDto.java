@@ -26,7 +26,7 @@ public class ChatDto {
                     .senderNickname(chat.getSender().getNickname())
                     .content(chat.getContent())
                     .createAt(chat.getCreatedAt())
-//                    .avatar(chat.getSender().getAvatar().getUrl() == null? null : chat.getSender().getAvatar().getUrl())
+                    .avatar(chat.getSender().getAvatar() == null? null : chat.getSender().getAvatar().getUrl())
                     .build();
         }
     }

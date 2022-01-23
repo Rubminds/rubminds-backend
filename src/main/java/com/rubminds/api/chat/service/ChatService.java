@@ -31,9 +31,11 @@ public class ChatService {
         return ChatResponse.OnlyId.build(saveChat);
     }
 
-    public ChatResponse.GetList getChatList(Long postId, PageDto pageDto) {
+    @Transactional
+    public ChatResponse.GetList getChatList(User sender, Long postId, PageDto pageDto) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        Page<Chat> chats = chatRepository.findAllByPostId(postId, pageDto.of());
+        isFirstParticipate(sender, post);
+        Page<Chat> chats = chatRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageDto.of());
         return ChatResponse.GetList.build(post, chats);
     }
 
@@ -43,5 +45,17 @@ public class ChatService {
         return posts.map(post -> ChatResponse.GetPostList.build(post));
     }
 
+
+    private void isFirstParticipate(User sender, Post post) {
+        boolean exists = chatRepository.existsBySenderAndPost(sender, post);
+        if(exists == false){
+            ChatRequest.Create request = ChatRequest.Create.builder()
+                    .postId(post.getId())
+                    .content(sender.getNickname()+"님이 입장하셨습니다")
+                    .build();
+
+            create(request, sender);
+        }
+    }
 
 }

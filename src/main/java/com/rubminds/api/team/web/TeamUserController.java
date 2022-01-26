@@ -20,11 +20,13 @@ public class TeamUserController {
 
     private final TeamUserService teamUserService;
 
-    @PostMapping("/team/{teamId}/user/{userId}")
+    @PostMapping("/team/{postId}/user/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TeamUserResponse.OnlyId> addTeamUser(@PathVariable(value = "teamId") Long teamId, @PathVariable(value = "userId") Long userId, @CurrentUser CustomUserDetails customUserDetails) {
-        TeamUserResponse.OnlyId response = teamUserService.add(teamId, userId, customUserDetails.getUser());
-        return ResponseEntity.created(URI.create("/api/teamUsers/" + teamId)).body(response);
+    public ResponseEntity<TeamUserResponse.OnlyId> addTeamUser(@PathVariable(value = "postId") Long postId,
+                                                               @PathVariable(value = "userId") Long userId,
+                                                               @CurrentUser CustomUserDetails customUserDetails) {
+        TeamUserResponse.OnlyId response = teamUserService.add(postId, userId, customUserDetails.getUser());
+        return ResponseEntity.created(URI.create("/api/teamUsers/" + response.getId())).body(response);
     }
 
     @GetMapping("/team/{teamId}/teamUsers")

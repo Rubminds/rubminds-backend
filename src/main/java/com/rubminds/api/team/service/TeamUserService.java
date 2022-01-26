@@ -31,16 +31,19 @@ public class TeamUserService {
     private final TeamUserRepository teamUserRepository;
     private final PostRepository postRepository;
 
-    public TeamUserResponse.OnlyId add(Long teamId, Long userId, User loginUser) {
-        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
-        loginUser.isAdmin(team.getAdmin().getId());
-        Post post = postRepository.findByTeam(team).orElseThrow(PostNotFoundException::new);
-        post.isHeadcountFull(team);
-        User applicant = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        if(teamUserRepository.existsByUserAndTeam(applicant, team)){
+    public TeamUserResponse.OnlyId add(Long postId, Long accepterId, User loginUser) {
+
+        loginUser.isRightUser(accepterId);
+
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        post.isHeadcountFull(post.getTeam());
+
+        User accepter = userRepository.findById(accepterId).orElseThrow(UserNotFoundException::new);
+        if(teamUserRepository.existsByUserAndTeam(accepter, post.getTeam())){
             throw new DuplicateTeamUserException();
         }
-        TeamUser teamUser = TeamUser.createWithTeam(applicant, team);
+
+        TeamUser teamUser = TeamUser.createWithTeam(accepter, post.getTeam());
         teamUserRepository.save(teamUser);
         return TeamUserResponse.OnlyId.build(teamUser);
     }
@@ -78,7 +81,7 @@ public class TeamUserService {
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         TeamUser teamUser = teamUserRepository.findByUserAndTeam(user, team).orElseThrow(TeamUserNotFoundException::new);
-        loginUser.isAdmin(team.getAdmin().getId());
+        loginUser.isRightUser(team.getAdmin().getId());
         if(user == team.getAdmin()){
             throw new AdminDeleteException();
         }
@@ -86,4 +89,5 @@ public class TeamUserService {
         teamUserRepository.deleteById(teamUser.getId());
         return teamUser.getUser().getId();
     }
+
 }

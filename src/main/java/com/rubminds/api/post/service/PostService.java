@@ -128,7 +128,7 @@ public class PostService {
     @Transactional
     public PostResponse.OnlyId updateCompletePost(Long postId, PostRequest.CreateCompletePost request, List<MultipartFile> files, User loginUser) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        loginUser.isAdmin(post.getWriter().getId());
+        loginUser.isRightUser(post.getWriter().getId());
 
         Integer finishNum = postRepository.findCountFinish(post);
         isFinished(post, finishNum);
@@ -144,7 +144,7 @@ public class PostService {
     @Transactional
     public PostResponse.OnlyId changeStatus(Long postId, PostRequest.ChangeStatus request, User loginUser) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        loginUser.isAdmin(post.getWriter().getId());
+        loginUser.isRightUser(post.getWriter().getId());
 
         if(request.getPostStatus().equals(PostStatus.FINISHED)){
             Integer finishNum = postRepository.findCountFinish(post);
@@ -174,7 +174,7 @@ public class PostService {
     @Transactional
     public PostResponse.OnlyId delete(Long postId, User loginUser){
         Post post = findPost(postId);
-        loginUser.isAdmin(post.getWriter().getId());
+        loginUser.isRightUser(post.getWriter().getId());
         if(post.getPostStatus().equals(PostStatus.RECRUIT)||post.getPostStatus().equals(PostStatus.WORKING)){
             postRepository.deleteById(postId);
         }else{

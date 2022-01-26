@@ -90,7 +90,7 @@ public class User extends BaseEntity {
         this.workLevel = workLevel;
     }
 
-    public void isAdmin(Long userId) {
+    public void isRightUser(Long userId) {
         if (!Objects.equals(this.id, userId)) throw new AdminPermissionException();
     }
 }

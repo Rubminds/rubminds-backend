@@ -154,21 +154,21 @@ public class TeamUserControllerTest extends MvcTest {
     }
 
     @Test
-    @DisplayName("팀원 초대 문서화")
+    @DisplayName("팀원 초대수락 문서화")
     public void getTeamUser() throws Exception {
         TeamUserResponse.OnlyId response = TeamUserResponse.OnlyId.build(teamUser2);
         given(teamUserService.add(any(), any(), any())).willReturn(response);
 
-        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.post("/api/team/{teamId}/user/{userId}", 1L, 1L));
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.post("/api/team/{postId}/user/{userId}", 1L, 1L));
 
         results.andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(document("teamUser_add", pathParameters(
-                        parameterWithName("teamId").description("팀 식별자"),
-                        parameterWithName("userId").description("유저 식별자")
+                        parameterWithName("postId").description("게시글 식별자"),
+                        parameterWithName("userId").description("추가할 유저 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("추가된 유저 식별자")
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("teamUser 식별자")
                         )
                 ));
 

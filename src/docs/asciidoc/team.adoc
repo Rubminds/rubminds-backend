@@ -23,7 +23,7 @@ include::{snippets}/team_info/path-parameters.adoc[]
 include::{snippets}/team_info/http-response.adoc[]
 include::{snippets}/team_info/response-fields.adoc[]
 
-=== 팀원 초대
+=== 팀원 초대 수락
 
 `POST /api/team/{teamId}/user/{userId}`
 

@@ -171,6 +171,7 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
+    @Transactional
     public PostResponse.OnlyId delete(Long postId, User loginUser){
         Post post = findPost(postId);
         loginUser.isAdmin(post.getWriter().getId());

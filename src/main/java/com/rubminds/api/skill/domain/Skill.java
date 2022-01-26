@@ -16,5 +16,7 @@ public class Skill {
     private Long id;
 
     private String name;
+
+    private String url;
 }
 

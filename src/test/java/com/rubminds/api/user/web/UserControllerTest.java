@@ -162,8 +162,8 @@ class UserControllerTest extends MvcTest {
                 .build();
 
         List<UserSkill> userSkills = new ArrayList<>();
-        UserSkill userSkill1 = UserSkill.builder().id(1L).user(user).skill(Skill.builder().id(1L).name("Spring").build()).build();
-        UserSkill userSkill2 = UserSkill.builder().id(2L).user(user).skill(Skill.builder().id(2L).name("JavaScript").build()).build();
+        UserSkill userSkill1 = UserSkill.builder().id(1L).user(user).skill(Skill.builder().id(1L).name("Spring").url("imageUrl").build()).build();
+        UserSkill userSkill2 = UserSkill.builder().id(2L).user(user).skill(Skill.builder().id(2L).name("JavaScript").url("imageUrl").build()).build();
         userSkills.add(userSkill1);
         userSkills.add(userSkill2);
         user.getUserSkills().addAll(userSkills);
@@ -191,6 +191,7 @@ class UserControllerTest extends MvcTest {
                                 fieldWithPath("userSkills").type(JsonFieldType.ARRAY).description("관심기술"),
                                 fieldWithPath("userSkills[].id").type(JsonFieldType.NUMBER).description("유저스킬 식별자"),
                                 fieldWithPath("userSkills[].name").type(JsonFieldType.STRING).description("유저스킬 이름"),
+                                fieldWithPath("userSkills[].url").type(JsonFieldType.STRING).description("유저스킬 이미지url"),
                                 fieldWithPath("attendLevel").type(JsonFieldType.NUMBER).description("참여도"),
                                 fieldWithPath("workLevel").type(JsonFieldType.NUMBER).description("숙련도"),
                                 fieldWithPath("avatar").type(JsonFieldType.STRING).description("프로필이미지Url"),

@@ -55,13 +55,18 @@ Content-Disposition: form-data; name="userInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
-  "nickname": "테스트1",
+  "nickname": "테스트",
   "job": "학생",
   "introduce": "update테스트",
   "skillIds": [1, 3],
-  "isAvatarChanged": true
+  "nicknameChanged": true,
+  "avatarChanged": true
 }
---boundary--
+--boundary
+Content-Disposition: form-data; name="avatar"; filename="white.jpeg"
+Content-Type: image/jpeg
+
+< ./../main/resources/dummy/image/white.jpeg
 
 ###
 GET {{apiUrl}}/user/1

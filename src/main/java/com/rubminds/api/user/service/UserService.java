@@ -83,7 +83,9 @@ public class UserService {
     }
 
     private void updateAvatar(MultipartFile file, User findUser) {
-        avatarRepository.deleteById(findUser.getAvatar().getId());
+        if(findUser.getAvatar()!=null) {
+            avatarRepository.deleteById(findUser.getAvatar().getId());
+        }
         Avatar avatar = uploadAvatar(file);
         findUser.updateAvatar(avatar);
     }

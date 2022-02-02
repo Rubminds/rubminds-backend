@@ -146,11 +146,15 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         loginUser.isRightUser(post.getWriter().getId());
 
-        if(request.getPostStatus().equals(PostStatus.FINISHED)){
+        if(post.getKinds().equals(Kinds.SCOUT)){
+            post.changeStatus(request);
+        }
+
+        else if(request.getPostStatus().equals(PostStatus.FINISHED)){
             Integer finishNum = postRepository.findCountFinish(post);
             isFinished(post, finishNum);
+            post.changeStatus(request);
         }
-        post.changeStatus(request);
 
         return PostResponse.OnlyId.build(post);
     }

@@ -70,7 +70,7 @@ public class PostResponse {
                     .postSkills(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
                     .customSkills(post.getCustomSkills().stream().map(CustomSkill::getName).collect(Collectors.toList()))
                     .isLike(post.isLike(customUserDetails))
-                    .teamId(post.getTeam().getId())
+                    .teamId(post.getKinds().equals(Kinds.SCOUT)? 0 : post.getTeam().getId())
                     .files(postfiles.stream().map(PostDto.File::build).collect(Collectors.toList()))
                     .completeFile(PostDto.File.build(completeFile))
                     .completeImages(completeImages.stream().map(PostDto.File::build).collect(Collectors.toList()))

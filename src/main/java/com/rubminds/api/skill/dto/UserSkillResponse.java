@@ -14,11 +14,13 @@ public class UserSkillResponse {
     public static class GetUserSkill {
         private Long id;
         private String name;
+        private String url;
 
         public static UserSkillResponse.GetUserSkill build(UserSkill userSkill){
             return UserSkillResponse.GetUserSkill.builder()
                     .id(userSkill.getId())
                     .name(userSkill.getSkill().getName())
+                    .url(userSkill.getSkill().getUrl())
                     .build();
         }
     }

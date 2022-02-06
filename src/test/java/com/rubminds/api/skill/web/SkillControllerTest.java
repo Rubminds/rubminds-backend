@@ -35,9 +35,9 @@ class SkillControllerTest extends MvcTest {
 
     @BeforeEach
     void setup() {
-        Skill skill1 = Skill.builder().id(1L).name("SPRING").build();
-        Skill skill2 = Skill.builder().id(1L).name("SPRING").build();
-        Skill skill3 = Skill.builder().id(1L).name("SPRING").build();
+        Skill skill1 = Skill.builder().id(1L).name("SPRING").url("imgUrl").build();
+        Skill skill2 = Skill.builder().id(2L).name("JAVA").url("imgUrl").build();
+        Skill skill3 = Skill.builder().id(3L).name("C").url("imgUrl").build();
         skillList.addAll(Arrays.asList(skill1, skill2, skill3));
     }
 

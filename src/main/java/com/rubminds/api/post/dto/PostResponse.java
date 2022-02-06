@@ -123,8 +123,8 @@ public class PostResponse {
         private String title;
         private String kinds;
         private String status;
-        private List<String> skill;
-        private List<String> customSkills;
+        private List<PostSkillResponse.GetPostSkill> skill;
+        private List<CustomSkillResponse.GetCustomSkill> customSkills;
         private String region;
         private Boolean isLike;
 
@@ -135,8 +135,8 @@ public class PostResponse {
                     .kinds(post.getKinds().name())
                     .region(post.getRegion())
                     .status(post.getPostStatus().name())
-                    .skill(post.getPostSkills().stream().map(postSkill -> postSkill.getSkill().getName()).collect(Collectors.toList()))
-                    .customSkills(post.getCustomSkills().stream().map(customSkill -> customSkill.getName()).collect(Collectors.toList()))
+                    .skill(post.getPostSkills().stream().map(PostSkillResponse.GetPostSkillByPost::build).collect(Collectors.toList()))
+                    .customSkills(post.getCustomSkills().stream().map(CustomSkillResponse.GetCustomSkill::build).collect(Collectors.toList()))
                     .isLike(post.isLike(customUserDetails))
                     .build();
         }

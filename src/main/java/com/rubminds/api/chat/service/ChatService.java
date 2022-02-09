@@ -34,8 +34,9 @@ public class ChatService {
     @Transactional
     public ChatResponse.GetList getChatList(User sender, Long postId, PageDto pageDto) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        isFirstParticipate(sender, post);
         Page<Chat> chats = chatRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageDto.of());
+        isFirstParticipate(sender, post);
+
         return ChatResponse.GetList.build(post, chats);
     }
 
@@ -46,7 +47,7 @@ public class ChatService {
     }
 
 
-    private void isFirstParticipate(User sender, Post post) {
+    public void isFirstParticipate(User sender, Post post) {
         boolean exists = chatRepository.existsBySenderAndPost(sender, post);
         if(exists == false){
             ChatRequest.Create request = ChatRequest.Create.builder()
@@ -54,7 +55,8 @@ public class ChatService {
                     .content(sender.getNickname()+"님이 입장하셨습니다")
                     .build();
 
-            create(request, sender);
+            Chat chat = Chat.create(post,sender,request.getContent());
+            chatRepository.save(chat);
         }
     }
 

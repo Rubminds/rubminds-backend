@@ -8,7 +8,7 @@ Content-Disposition: form-data; name="userInfo";
 Content-Type: application/json;charset=UTF-8
 
 {
-  "nickname": "테스트1",
+  "nickname": "테스트6",
   "job": "학생",
   "introduce": "test",
   "skillIds": [1,2]

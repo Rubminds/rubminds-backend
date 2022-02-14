@@ -90,6 +90,12 @@ public class PostController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/post/user")
+    public ResponseEntity<List<PostResponse.GetTitleList>> getTitleList(@CurrentUser CustomUserDetails customUserDetails) {
+        List<PostResponse.GetTitleList> response = postService.getTitleList(customUserDetails.getUser().getId());
+        return ResponseEntity.ok().body(response);
+    }
+
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<PostResponse.OnlyId> delete(@PathVariable("postId") Long postId, @CurrentUser CustomUserDetails customUserDetails) {
         PostResponse.OnlyId response = postService.delete(postId, customUserDetails.getUser());

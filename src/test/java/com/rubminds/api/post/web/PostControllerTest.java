@@ -478,6 +478,30 @@ public class PostControllerTest extends MvcTest {
     }
 
     @Test
+    @DisplayName("유저의 게시글 리스트 가져오기")
+    public void getPostsTitle() throws Exception {
+        List<PostResponse.GetTitleList> responseList = new ArrayList<>();
+        CustomUserDetails customUserDetails = CustomUserDetails.create(user);
+        PostResponse.GetTitleList response = PostResponse.GetTitleList.build(post1);
+        responseList.add(response);
+
+        given(postService.getTitleList(any())).willReturn(responseList);
+
+        ResultActions results = mvc.perform(RestDocumentationRequestBuilders.get("/api/post/user")
+        );
+
+        results.andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post_getTitleList",
+                        relaxedResponseFields(
+                                fieldWithPath("[].id").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                fieldWithPath("[].title").type(JsonFieldType.STRING).description("제목")
+                        )
+                ));
+
+    }
+
+    @Test
     @DisplayName("게시물 삭제 문서화")
     public void deletePost() throws Exception {
         PostResponse.OnlyId response = PostResponse.OnlyId.build(post1);

@@ -175,6 +175,11 @@ public class PostService {
         return posts.map(post -> PostResponse.GetList.build(post, customUserDetails));
     }
 
+    public List<PostResponse.GetTitleList> getTitleList(Long userId){
+        List<Post> posts = postRepository.findAllByWriterIdOrderByIdDesc(userId);
+        return posts.stream().map(post -> PostResponse.GetTitleList.build(post)).collect(Collectors.toList());
+    }
+
     @Transactional
     public PostResponse.OnlyId delete(Long postId, User loginUser){
         Post post = findPost(postId);

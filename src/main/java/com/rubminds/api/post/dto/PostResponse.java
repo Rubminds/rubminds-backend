@@ -166,11 +166,15 @@ public class PostResponse {
     public static class GetTitleList {
         private Long id;
         private String title;
+        private String kinds;
+        private String status;
 
         public static GetTitleList build(Post post) {
             return GetTitleList.builder()
                     .id(post.getId())
                     .title(post.getTitle())
+                    .status(post.getPostStatus().name())
+                    .kinds(post.getKinds().name())
                     .build();
         }
     }

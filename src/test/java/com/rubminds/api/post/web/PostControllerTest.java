@@ -495,7 +495,9 @@ public class PostControllerTest extends MvcTest {
                 .andDo(document("post_getTitleList",
                         relaxedResponseFields(
                                 fieldWithPath("[].id").type(JsonFieldType.NUMBER).description("게시글 식별자"),
-                                fieldWithPath("[].title").type(JsonFieldType.STRING).description("제목")
+                                fieldWithPath("[].title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("[].status").type(JsonFieldType.STRING).description("게시글 상태"),
+                                fieldWithPath("[].kinds").type(JsonFieldType.STRING).description("종류")
                         )
                 ));
 

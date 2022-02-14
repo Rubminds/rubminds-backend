@@ -147,7 +147,7 @@ include::{snippets}/post_changeStatus/request-fields.adoc[]
 include::{snippets}/post_chageStatus/http-response.adoc[]
 include::{snippets}/post_chageStatus/response-fields.adoc[]
 
-=== 게시물 상태 변화시키기
+=== 게시물 목록들만가져오기
 `Get /api/post/user`
 
 요청 HTTP
